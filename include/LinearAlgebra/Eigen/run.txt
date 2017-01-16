@@ -1,0 +1,75 @@
+ccdsadmin@mae-ccds-server:~/OCDT/wsp$ cake run &
+[1] 2809
+ccdsadmin@mae-ccds-server:~/OCDT/wsp$ Building src
+2016-06-09T11:22:12.705Z - INFO:  WSP internal|Starting WSP with settings:
+{
+  "_doc": "The possible settings are documented in detail in the README.md file.",
+  "salt": "5c8a2358efa6a58988a3a0827544913a676a6bd5a62dc4c318d3ea52c66cd3a8",
+  "postgreSqlBinDirectory": {
+    "linux": "/opt/PostgreSQL/9.4/bin/",
+    "windows": "C:/Program Files/PostgreSQL/9.4/bin"
+  },
+  "server": {
+    "_doc": "use ip = 0.0.0.0 for localhost;",
+    "ip": "0.0.0.0",
+    "port": 1234,
+    "https": {
+      "enable": false,
+      "serverKey": "server.key",
+      "serverCertificate": "server.crt",
+      "passphrase": "ocdt",
+      "mutual": {
+        "_doc": "if enable is false, simple version of https will be used;",
+        "enable": true,
+        "certificates": [
+          "client.crt"
+        ]
+      }
+    }
+  },
+  "db": {
+    "user": "ocdt",
+    "password": "db",
+    "host": "localhost",
+    "port": 5432,
+    "poolSize": 30,
+    "siteDirectory": "SiteDirectory"
+  },
+  "log": {
+    "_doc": "level can be one of TRACE, DEBUG, EXTRA, INFO, WARN, ERROR or FATAL; maxsize is maximum log file size in bytes;",
+    "file": {
+      "level": "EXTRA",
+      "silent": false,
+      "timestamp": true,
+      "directory": "logs",
+      "filename": "/home/ccdsadmin/OCDT/wsp/logs/ocdt.log",
+      "maxsize": 10000000,
+      "maxFiles": 32,
+      "tailable": true,
+      "zippedArchive": false,
+      "json": false
+    },
+    "console": {
+      "level": "INFO",
+      "silent": false,
+      "timestamp": true,
+      "colorize": true,
+      "json": false
+    }
+  },
+  "accessRights": {
+    "enableAccessRights": true,
+    "ldap": {
+      "enable": false,
+      "url": "ldap://127.0.0.1:1389"
+    }
+  },
+  "session": {
+    "maxAgeInMillisecond": 18000000,
+    "purgePeriodInMillisecond": 10000,
+    "connectionTimeOutInMillisecond": 900000
+  }
+}
+Server running at http://0.0.0.0:1234
+2016-06-09T11:22:13.633Z - INFO:  WSP internal|Server running at http://0.0.0.0:1234
+
