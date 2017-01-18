@@ -1,27 +1,31 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/*
+------------Copyright (C) 2016 University of Strathclyde--------------
+------------ e-mail: annalisa.riccardi@strath.ac.uk ------------------
+------------ e-mail: carlos.ortega@strath.ac.uk ----------------------
+--------- Author: Annalisa Riccardi and Carlos Ortega Absil ----------
+*/
+
+
 #ifndef SMARTMATH_BASE_DYNAMICS_H
 #define SMARTMATH_BASE_DYNAMICS_H
 
 #include <vector>
-#include "../config.h"
+#include <cmath>
 #include "../exception.h"
-
-#ifdef ENABLE_SMARTUQ
-#include "smartuq.h"
-#endif
 
 namespace smartmath
 {
     namespace dynamics {
 
         /**
-         * @brief The base_dynamics class is an abstract class. Any dynamics added to the toolbox needs to inherit from it and implement the method evaluate()
+         * @brief The base_dynamics class is a template abstract class. Any dynamics added to the toolbox needs to inherit from it and implement the method evaluate()
          *
          * The base_dynamics class is an abstract class. Any dynamical system added to the toolbox need to extend this class and implement the method evaluate.
-         * The class has been designed to allow external forces in the dynamics. These are defined through a Thrust vector or Control vector functions
-         * given as an input in the constructor. It is possible to define for each dynamics also a scaling factor for the position and the time.
-         * The planetary constants is updated accordingly [L^3/T^2] and the position scaled.
          */
-	template < class T >
+        template < class T >
         class base_dynamics
         {
 
@@ -30,35 +34,40 @@ namespace smartmath
             /**
              * @brief base_dynamics constructor.
              *
-             * In the constructor the name of the dynamics, the thrust and control profiles are initialized as class members.
+             * The base dynamics classed is constructed with just the name of the dynamical system. Being an abstract class it is not possible to instantiate an object of this class.
+             * The constructor will be called by the sublcasses.
+             * The dynamics are implemented as template classes because they can operate in the space pf real number or in the algebra of polynomials.
              * @param name dynamical system name
-             * @param r_scale position scaling factor. Default value = 1 (no scaling).
-             * @param t_scale time scaling factor. Default value = 1 (no scaling)
              */
-            base_dynamics(const std::string &name,
-                          const double &r_scale = 1.0,
-                          const double &t_scale = 1.0);
+            base_dynamics(const std::string &name);
+
             virtual ~base_dynamics();
 
             /**
-             * @brief Function to evaluate the dinamics at a given instant of time and a given state. It is a virtual function so any class that inherits from base_dynamics need to implement it
+             * @brief evaluate evaluate the dinamics at a given instant of time and a given state.
+             *
+             * Function to evaluate the dinamics at a given instant of time and a given state. It is a virtual function so any class that inherites from base_dynamics need to implement it.
              * @param[in] t time
              * @param[in] state state values at time t
              * @param[out] dstate derivative of the states at time t
              * @return
              */
             virtual int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const = 0;
-            
+
             /**
-             * @brief Returns the name of the dynamics
-             * @param[out] name name of the dynamics
+             * @brief get_name return dynamical system name
+             *
+             * Function to get the name of the dynamical system
+             * @return
              */
             std::string get_name() const;
 
         protected:
+            /**
+             * @brief m_name dynamical system name (used in error messages)
+             */
             std::string m_name;
-            double m_r_scale;
-            double m_t_scale;
+
         };
 
     }

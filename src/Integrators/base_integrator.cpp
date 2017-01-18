@@ -32,7 +32,6 @@ base_integrator<T>::~base_integrator(){
 template class base_integrator<double>;
 template class base_integrator<float>;
 template class base_integrator<long double>;
-//template class base_integrator<astrocore::base_state*>;
 #ifdef ENABLE_SMARTUQ
 template class base_integrator<smartuq::polynomial::chebyshev_polynomial<double> >;
 template class base_integrator<smartuq::polynomial::chebyshev_polynomial<float> >;

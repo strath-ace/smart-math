@@ -77,7 +77,6 @@ int rk4<T>::integrate(const double &ti, const double &tend, const int &nsteps, c
 template class rk4<double>;
 template class rk4<float>;
 template class rk4<long double>;
-//template class rk4<astrocore::base_state*>;
 #ifdef ENABLE_SMARTUQ
 template class rk4<smartuq::polynomial::chebyshev_polynomial<double> >;
 template class rk4<smartuq::polynomial::chebyshev_polynomial<float> >;
