@@ -31,6 +31,9 @@ T inverse(T x){
 //MATH STUFFS
 inline int factorial(int n)
 {
+    if(n<0)
+        smart_throw("FACT: factorial of non positive integer does not exist");
+
     return (n == 1 || n == 0) ? 1 : factorial(n - 1) * n;
 }
 
@@ -69,6 +72,80 @@ inline void variations(const std::vector<int> values, const int k, std::vector<s
     std::vector<int> item(k);
     rep(res, values, item, 0);
 }
+
+
+typedef double (*fun)(double);
+inline double bisection_method(fun f, double lb, double ub, double prec){
+    double f_low = f(lb);
+    double f_up  = f(ub);
+    if( (f_low*f_up) < 0 && (ub-lb) <= prec )
+    {
+        return lb;
+    }
+
+    double temp   = (ub+lb)/2;
+    double f_temp = f(temp);
+
+    if( (f_temp*f_low) > 0 )
+        lb = temp;
+    
+    if( (f_temp*f_up) > 0 )
+        ub = temp;
+     
+return bisection_method(f, lb, ub, prec);
+}
+
+inline double Legendre(int l, int m, double x)
+{
+    if(x*x>1.0)
+        smart_throw("LEGENDRE: real number must be in [-1,1]");
+
+    if(l<0)
+        return Legendre(-l-1,m,x);
+
+    if(m<0)
+        return pow(-1.0,-m)*double(factorial(l+m))*Legendre(l,-m,x)/double(factorial(l-m));
+
+    if(m>l)
+        return 0.0;        
+
+    /* l>=m>=0 */
+    double out=1.0; // default value (l=0)
+
+    if(l==1){
+        if(m==1){
+            out=-sqrt(1.0-x*x);
+        }
+        if(m==0){
+            out=x;
+        }       
+    }
+
+    if(l>1){
+        if(l==m){
+            out=-double(2*l-1)*sqrt(1.0-x*x)*Legendre(l-1,l-1,x);
+        }
+        else if(m==l-1){
+            out=double(2*m+1)*x*Legendre(m,m,x);
+        }        
+        else{
+            out=(double(2*l-1)*x*Legendre(l-1,m,x)-double(l-1+m)*Legendre(l-2,m,x))/double(l-m); 
+        }        
+    }
+
+    return out;
+}
+
+
+inline double Legendre_derivative(int l, int m, double x)
+{
+    if(x*x>=1.0)
+        smart_throw("LEGENDRE: real number must be in ]-1,1[");  
+
+    return (double(l)*x*Legendre(l,m,x)-double(l+m)*Legendre(l-1,m,x))/(x*x-1.0); 
+}
+
+
 
 }
 
