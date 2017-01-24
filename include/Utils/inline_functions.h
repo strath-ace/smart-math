@@ -13,7 +13,7 @@
 
 #include <vector>
 #include <cmath>
-#include "Eigen/Eigen"
+#include "../LinearAlgebra/Eigen/Eigen"
 
 namespace smartmath{
 
