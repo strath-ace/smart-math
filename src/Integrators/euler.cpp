@@ -1,14 +1,3 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/*
-------------Copyright (C) 2016 University of Strathclyde--------------
------------- e-mail: annalisa.riccardi@strath.ac.uk ------------------
------------- e-mail: carlos.ortega@strath.ac.uk ----------------------
---------- Author: Annalisa Riccardi and Carlos Ortega Absil ----------
-*/
-
-
 #include "../../include/Integrators/euler.h"
 
 
@@ -16,7 +5,7 @@ using namespace smartmath;
 using namespace smartmath::integrator;
 
 template < class T >
-euler<T>::euler(const dynamics::base_dynamics<T> *dyn) : base_integrator<T>("Forward Euler integration scheme", dyn)
+euler<T>::euler(const dynamics::base_dynamics<T> *dyn) : base_integrator<T>("Explicit Euler integration scheme", dyn)
 {
 }
 
@@ -26,24 +15,51 @@ euler<T>::~euler(){
 }
 
 template < class T >
-int euler<T>::integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+int euler<T>::integration_step(const double &t, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+	
+	std::vector<T> dx=x0;
+	unsigned int l = x0.size();
 
-	xfinal.clear();
+	m_dyn->evaluate(t, x0, dx);
 
-	std::vector<T> dx(x0);
-	std::vector<T> x(x0);
-
-	double h = (tend-ti)/nsteps;
-
-    for(int i=0; i<nsteps; i++){
-		m_dyn->evaluate(ti+i*h, x, dx);
-		for(size_t j=0; j<x.size(); j++){
-			x[j] += h*dx[j];
-		}
+	xfinal=x0;	
+	for(unsigned int j=0; j<l; j++){
+		xfinal[j] += h*dx[j];
 	}
 
-	for(int i=0; i<x0.size(); i++)
-	    xfinal.push_back(x[i]);
+	return 0;
+}
+
+template < class T >
+int euler<T>::integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
+	
+	t_history.clear();
+	x_history.clear();
+
+	std::vector<T> dx=x0, x=x0, x_temp=x0;
+
+	double t=ti, h = (tend-ti)/nsteps;
+
+    for(int i=0; i<nsteps; i++){
+		integration_step(t,h,x,x_temp);
+		t+=h;
+		x=x_temp;
+		t_history.push_back(t);
+		x_history.push_back(x);
+	}
+
+	return 0;
+}
+
+template < class T >
+int euler<T>::integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+
+	std::vector<std::vector<T> > x_history;
+	std::vector<double> t_history;
+
+	integrate(ti,tend,nsteps,x0,x_history,t_history);
+
+	xfinal=x_history.back();
 
 	return 0;
 }

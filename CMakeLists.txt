@@ -62,7 +62,9 @@ SET(MANDATORY_LIBRARIES "")
 file(GLOB SRC
   "${SRC_PATH}/LinearAlgebra/*.cpp"
   "${SRC_PATH}/Dynamics/*.cpp"
+  "${SRC_PATH}/Events/*.cpp"
   "${SRC_PATH}/Integrators/*.cpp"
+  "${SRC_PATH}/Utils/*.cpp"
 )
 
 set(MAIN_SRC
@@ -72,7 +74,9 @@ set(MAIN_SRC
 file(GLOB TEST_SRC
   "${TEST_SRC_PATH}/LinearAlgebra/*.cpp"
   "${TEST_SRC_PATH}/Dynamics/*.cpp"
+  "${TEST_SRC_PATH}/Events/*.cpp"
   "${TEST_SRC_PATH}/Integrators/*.cpp"
+  "${TEST_SRC_PATH}/Utils/*.cpp"
 )
 
 # Set CMake build-type. If it not supplied by the user, the default built type is "Release".

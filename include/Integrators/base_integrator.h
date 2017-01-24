@@ -13,6 +13,7 @@
 #define SMARTMATH_BASE_INTEGRATOR_H
 
 #include "../Dynamics/base_dynamics.h"
+#include "../config.h"
 #include "../exception.h"
 
 #ifdef ENABLE_SMARTUQ

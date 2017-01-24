@@ -12,6 +12,8 @@
 
 #include "LinearAlgebra/smartmath_la.h"
 #include "Dynamics/smartmath_dynamics.h"
+#include "Events/smartmath_events.h"
 #include "Integrators/smartmath_integrators.h"
+#include "Utils/smartmath_utils.h"
 
 #endif /* SMART_SMARTUQ_H */

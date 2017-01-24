@@ -1,14 +1,3 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-/*
-------------Copyright (C) 2016 University of Strathclyde--------------
------------- e-mail: annalisa.riccardi@strath.ac.uk ------------------
------------- e-mail: carlos.ortega@strath.ac.uk ----------------------
---------- Author: Annalisa Riccardi and Carlos Ortega Absil ----------
-*/
-
-
 #include "../../include/Integrators/heun.h"
 
 
@@ -26,32 +15,56 @@ heun<T>::~heun(){
 }
 
 template < class T >
-int heun<T>::integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+int heun<T>::integration_step(const double &t, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+	
+	std::vector<T> dx=x0, dx_temp=x0, x_temp=x0;
+	unsigned int l = x0.size();
 
-	xfinal.clear();
+	m_dyn->evaluate(t, x0, dx);
 
-	unsigned int size = x0.size();
-	std::vector<T> dx(x0), dx_temp(x0);
-	std::vector<T> x(x0), x_temp(x0);
-
-	double h = (tend-ti)/nsteps;
-
-    for(int i=0; i<nsteps; i++){
-		m_dyn->evaluate(ti+i*h, x, dx);
-
-		for(size_t j=0; j<size; j++){
-		    x_temp[j] = x[j] + h*dx[j];
-		}
-
-		m_dyn->evaluate(ti+(i+1)*h, x_temp, dx_temp);
-		for(size_t j=0; j<size; j++){
-		    x[j] += h/2.0*(dx[j] + dx_temp[j]);
-		}
-
+	for(unsigned int j=0; j<l; j++){
+	    x_temp[j] = x0[j] + h*dx[j];
+	}
+	m_dyn->evaluate(t+h, x_temp, dx_temp);
+	
+	xfinal=x0;
+	for(unsigned int j=0; j<l; j++){
+	    xfinal[j] += h/2.0*(dx[j] + dx_temp[j]);
 	}
 
-	for(int i=0; i<x0.size(); i++)
-	    xfinal.push_back(x[i]);
+	return 0;
+}
+
+template < class T >
+int heun<T>::integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
+	
+	x_history.clear();
+	t_history.clear();
+
+	std::vector<T> x(x0), x_temp(x0);
+
+	double t=ti, h = (tend-ti)/nsteps;
+
+    for(int i=0; i<nsteps; i++){
+		integration_step(t,h,x,x_temp);
+		t+=h;
+		x=x_temp;
+		t_history.push_back(t);
+		x_history.push_back(x);
+	}
+
+	return 0;
+}
+
+template < class T >
+int heun<T>::integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+
+	std::vector<std::vector<T> > x_history;
+	std::vector<double> t_history;
+
+	integrate(ti,tend,nsteps,x0,x_history,t_history);
+
+	xfinal=x_history.back();
 
 	return 0;
 }

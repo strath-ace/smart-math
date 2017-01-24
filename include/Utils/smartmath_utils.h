@@ -7,16 +7,9 @@
 --------- Author: Annalisa Riccardi ----------------------------------
 */
 
+#ifndef SMARTMATH_UTILS_H
+#define SMARTMATH_UTILS_H
 
-#include <iostream>
-#include <Eigen/Dense>
+#include "inline_functions.h"
 
-#include "../include/smartmath.h"
-
-using namespace std;
-
-int main(){
-
-    cout << "Welcome to SMART-MATH!" << endl;
-
-}
+#endif // SMARTMATH_UTILS_H

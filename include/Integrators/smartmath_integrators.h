@@ -19,5 +19,10 @@
 #include "rk4.h"
 #include "rkf45.h"
 #include "rk87.h"
+#include "AB6.h"
+#include "ABM6.h"
+#include "AB.h"
+#include "ABM.h"
+#include "PECEvar.h"
 
 #endif // SMARTMATH_INTEGRATORS_H
