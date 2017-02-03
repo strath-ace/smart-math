@@ -42,12 +42,12 @@ namespace smartmath
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
-            base_integrator(const std::string &name, const dynamics::base_dynamics<T> *dyn);
+            base_integrator(const std::string &name, const dynamics::base_dynamics<T> *dyn): m_name(name), m_dyn(dyn){}
 
             /**
              * @brief ~base_integrator deconstructor
              */
-            virtual ~base_integrator();
+            virtual ~base_integrator(){}
 
 
             /**
@@ -70,7 +70,7 @@ namespace smartmath
              * Function to get the name of the integration scheme
              * @return
              */
-            std::string get_name() const;
+            std::string get_name() const{return m_name;}
 
 
         protected:

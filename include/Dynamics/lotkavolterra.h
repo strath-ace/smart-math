@@ -44,12 +44,18 @@ namespace smartmath
              * The constructor initializes the parameters of the Lotka-Volterra problem
              * @param[in] param 4 dimensional vector containing the parameters of the problem.
              */
-            lotkavolterra(const std::vector<T> &param);
+            lotkavolterra(const std::vector<T> &param): base_dynamics<T>("Lotka-Volterra dynamical system"), m_param(param)
+			{
+				//sanity checks
+				if(m_param.size()!=4)
+					smart_throw(m_name+": the size of the parameters vector need to be 4");
+
+			}
 
             /**
               * @brief ~lotkavolterra deconstructor
               */
-            ~lotkavolterra();
+            ~lotkavolterra(){}
 
             /**
              * @brief evaluate evaluate the dinamics of the Lotka Volterra problem at a given instant of time and a given state.
@@ -60,7 +66,21 @@ namespace smartmath
              * @param[out] dstate derivative of the states at time t
              * @return
              */
-            int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const;
+            int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
+				//sanity checks
+				if(t<0)
+					smart_throw(m_name+": negative time supplied in evaluation of the dynamical system");
+				if(state.size()!=2)
+					smart_throw(m_name+": the state dimension needs to be 2");
+
+				dstate.clear();
+
+				T xy = state[0]*state[1];
+				dstate.push_back(m_param[0]*state[0]-m_param[1]*xy);
+				dstate.push_back(-m_param[2]*state[1]+m_param[3]*xy);
+
+				return 0;
+			}
 
         private:
             /**

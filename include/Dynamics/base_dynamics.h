@@ -39,9 +39,9 @@ namespace smartmath
              * The dynamics are implemented as template classes because they can operate in the space pf real number or in the algebra of polynomials.
              * @param name dynamical system name
              */
-            base_dynamics(const std::string &name);
+            base_dynamics(const std::string &name): m_name(name){}
 
-            virtual ~base_dynamics();
+            virtual ~base_dynamics(){}
 
             /**
              * @brief evaluate evaluate the dinamics at a given instant of time and a given state.
@@ -60,7 +60,7 @@ namespace smartmath
              * Function to get the name of the dynamical system
              * @return
              */
-            std::string get_name() const;
+            std::string get_name() const{return m_name;}
 
         protected:
             /**

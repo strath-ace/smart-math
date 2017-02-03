@@ -40,21 +40,6 @@ option(BUILD_MAIN                              "Build main function"            
 option(BUILD_DOCS                              "Build docs"                     OFF)
 option(BUILD_TESTS                             "Build tests"                    OFF)
 option(BUILD_EXAMPLES                          "Build examples"                 OFF)
-option(ENABLE_SMARTUQ			       "UQ methods"			OFF)
-
-if(ENABLE_SMARTUQ)
-        find_library(SMARTUQ_LIBRARY NAMES smart-uq)
-        find_path(SMARTUQ_INCLUDE_DIR NAMES smartuq.h)
-        if(NOT SMARTUQ_LIBRARY OR NOT SMARTUQ_INCLUDE_DIR)
-                message(FATAL_ERROR "SMARTUQ support was requested, but the smart-uq library or headers could not be located.")
-        endif(NOT SMARTUQ_LIBRARY OR NOT SMARTUQ_INCLUDE_DIR)
-        message(STATUS "smartuq library: ${SMARTUQ_LIBRARY}")
-        message(STATUS "smartuq headers: ${SMARTUQ_INCLUDE_DIR}")
-
-        set(MANDATORY_LIBRARIES ${MANDATORY_LIBRARIES} ${SMARTUQ_LIBRARY})
-        include_directories("${SMARTUQ_INCLUDE_DIR}")      
-endif(ENABLE_SMARTUQ)
-
 
 # Initialise (empty) list of libraries to link against.
 SET(MANDATORY_LIBRARIES "")

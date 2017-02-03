@@ -40,12 +40,12 @@ namespace smartmath
              * @brief vanderpol constructor
              * @param mu problem parameter (constant or polynomial value)
              */
-            vanderpol(const T &mu=.5);
+            vanderpol(const T &mu=.5): base_dynamics<T>("Van der Pol dynamical system"), m_mu(mu){}
 
             /**
               * @brief ~vanderpol
               */
-            ~vanderpol();
+            ~vanderpol(){}
 
             /**
              * @brief evaluate evaluate the dinamics of the Van der Pol oscillator at a given instant of time and a given state.
@@ -56,7 +56,22 @@ namespace smartmath
              * @param[out] dstate derivative of the states at time t
              * @return
              */
-            int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const;
+            int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const
+		{
+		    //sanity checks
+		    if(t<0)
+			smart_throw(m_name+": negative time supplied in evaluation of the dynamical system");
+		    if(state.size()!=2)
+			smart_throw(m_name+": the state dimension needs to be 2");
+
+		    dstate.clear();
+
+		    dstate.push_back(state[1]);
+		    dstate.push_back(m_mu*(1.0-state[0]*state[0])*state[1]-state[0]);
+
+		    return 0;
+		}
+
 
         private:
             T m_mu;

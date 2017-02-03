@@ -65,5 +65,4 @@ namespace smartmath
     }
 }
 
-
 #endif // SMARTMATH_SPRING_H

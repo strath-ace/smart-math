@@ -9,7 +9,6 @@
 
 #include "../../include/Dynamics/spring.h"
 
-
 using namespace smartmath;
 using namespace dynamics;
 
