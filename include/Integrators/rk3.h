@@ -53,7 +53,7 @@ namespace smartmath
 	            unsigned int l = x0.size();
 	            double t1, t2, t3;
 
-	            t1 = t + h;
+	            t1 = ti + h;
 	            t2 = t1 + h/2.0;
 	            t3 = t1 + h*3.0/4.0;
 

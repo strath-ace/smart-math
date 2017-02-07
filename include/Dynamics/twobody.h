@@ -57,7 +57,7 @@ namespace smartmath
 				m_param(param), m_t_scale(t_scale), m_r_scale(r_scale)
 			{
 				if(m_param.size()!=10)
-					smart_throw(m_name+": the parameters list need to be of size 10");
+					smartmath_throw(m_name+": the parameters list need to be of size 10");
 
 			}
 
@@ -80,9 +80,9 @@ namespace smartmath
 			{
 				//sanity checks
 				if(t<0)
-					smart_throw(m_name+": negative time supplied in evaluation of the dynamical system");
+					smartmath_throw(m_name+": negative time supplied in evaluation of the dynamical system");
 				if(state.size()!=7)
-					smart_throw(m_name+": the state dimension needs to be 7");
+					smartmath_throw(m_name+": the state dimension needs to be 7");
 
 				dstate.clear();
 

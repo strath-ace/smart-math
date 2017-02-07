@@ -37,11 +37,11 @@ namespace smartmath
             {
 	            /** sanity checks **/
 	            if(tol<=0.0)
-                   smart_throw("tolerance for estimated error must be non negative");
+                   smartmath_throw("tolerance for estimated error must be non negative");
                 if((multiplier>5.0)||(multiplier<2.0))
-                   smart_throw("maximum step-multiplier must be between 2 and 5");
+                   smartmath_throw("maximum step-multiplier must be between 2 and 5");
 	            if(minstep_events<=0.0)
-                   smart_throw("minimum step for events must be non negative");
+                   smartmath_throw("minimum step for events must be non negative");
 
             }
 
@@ -64,50 +64,50 @@ namespace smartmath
              */
             int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal, T &er) const{
 		
-		        int n = x.size();
-		        std::vector<T> k1(x), k2(x), k3(x), k4(x), k5(x), k6(x), xbar(x);
+		        int n = x0.size();
+		        std::vector<T> k1(x0), k2(x0), k3(x0), k4(x0), k5(x0), k6(x0), xbar(x0), xtemp(x0);
 		        double t1, t2, t3, t4, t5, t6;
 
-		        t1 = t;
-		        t2 = t + h/4.0;
-		        t3 = t + h*3.0/8.0;
-		        t4 = t + h*12.0/13.0;
-		        t5 = t + h;
-		        t6 = t + h/2.0;
+		        t1 = ti;
+		        t2 = t1 + h/4.0;
+		        t3 = t1 + h*3.0/8.0;
+		        t4 = t1 + h*12.0/13.0;
+		        t5 = t1 + h;
+		        t6 = t1 + h/2.0;
 
 		        //* Evaluate k1 
-		        m_dyn->evaluate(t1, x, k1);
+		        m_dyn->evaluate(t1, x0, k1);
 
 		        //* Evaluate k2 
 		        for(int j=0; j<n; j++)
-		            xtemp[j] = x[j]+k1[j]*h/4.0;
+		            xtemp[j] = x0[j]+k1[j]*h/4.0;
 		        m_dyn->evaluate(t2, xtemp, k2);
 
 		        //* Evaluate k3 
 		        for(int j=0; j<n; j++)
-		            xtemp[j] = x[j]+k1[j]*h*3.0/32.0+k2[j]*h*9.0/32.0;
+		            xtemp[j] = x0[j]+k1[j]*h*3.0/32.0+k2[j]*h*9.0/32.0;
 		        m_dyn->evaluate(t3, xtemp, k3);
 
 		        //* Evaluate k4 
 		        for(int j=0; j<n; j++)
-		            xtemp[j] = x[j]+k1[j]*h*1932.0/2197.0-k2[j]*h*7200.0/2197.0+k3[j]*h*7296.0/2197.0;
+		            xtemp[j] = x0[j]+k1[j]*h*1932.0/2197.0-k2[j]*h*7200.0/2197.0+k3[j]*h*7296.0/2197.0;
 		        m_dyn->evaluate(t4, xtemp, k4);
 
 		        //* Evaluate k5
 		        for(int j=0; j<n; j++)
-		            xtemp[j] = x[j]+k1[j]*h*439.0/216.0-k2[j]*h*8.0+k3[j]*h*3680.0/513.0-k4[j]*h*845.0/4104.0;
+		            xtemp[j] = x0[j]+k1[j]*h*439.0/216.0-k2[j]*h*8.0+k3[j]*h*3680.0/513.0-k4[j]*h*845.0/4104.0;
 		        m_dyn->evaluate(t5, xtemp, k5);
 
 		        //* Evaluate k6
 		        for(int j=0; j<n; j++)
-		            xtemp[j] = x[j]-k1[j]*h*8.0/27.0+k2[j]*h*2.0-k3[j]*h*3544.0/2565.0+k4[j]*h*1859.0/4104.0-k4[j]*h*11.0/40.0;
+		            xtemp[j] = x0[j]-k1[j]*h*8.0/27.0+k2[j]*h*2.0-k3[j]*h*3544.0/2565.0+k4[j]*h*1859.0/4104.0-k4[j]*h*11.0/40.0;
 		        m_dyn->evaluate(t6, xtemp, k6);
 
 		        //* Return x(t+h) computed from fourth-order Runge Kutta.
-		        er=0.0*x[0];
+		        er=0.0*x0[0];
 		        for(int j=0; j<n; j++){
-		            xbar[j] = x[j]+ (k1[j]*16.0/135.0+k3[j]*6656.0/12825.0+k4[j]*28561.0/56430.0-k5[j]*9.0/50.0+k6[j]*2.0/55.0)*h;
-		            xtemp[j] = x[j] + (k1[j]*25.0/216.0+k3[j]*1408.0/2565.0+k4[j]*2197.0/4104.0-k5[j]/5.0)*h;
+		            xbar[j] = x0[j]+ (k1[j]*16.0/135.0+k3[j]*6656.0/12825.0+k4[j]*28561.0/56430.0-k5[j]*9.0/50.0+k6[j]*2.0/55.0)*h;
+		            xtemp[j] = x0[j] + (k1[j]*25.0/216.0+k3[j]*1408.0/2565.0+k4[j]*2197.0/4104.0-k5[j]/5.0)*h;
 		            er+=pow(xbar[j]-xtemp[j],2);
 		        }
 		        er=sqrt(er);
@@ -127,7 +127,7 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &xfinal, std::vector<double> &t_history) const{
+            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
 
 	            double t0=ti, tf=tend, n=nsteps;
 	            std::vector<T> x(x0);
@@ -295,18 +295,11 @@ namespace smartmath
              * @param[out] val double equal to x for real numbers and something else for polynomials
              * @return
              */
-            int error(const float &x, double &val) const{
+            int error(const T &x, T &val) const{
 	            val=x;
-            return 0;
+                return 0;
             }
-            int error(const double &x, double &val) const{
-	            val=x;
-            return 0;
-            }
-            int error(const long double &x, double &val) const{
-	            val=x;
-            return 0;
-            }
+
             #ifdef ENABLE_SMARTUQ
                 int error(const smartuq::polynomial::chebyshev_polynomial<double> &x, double &val) const{
 	                val=x.get_range()[1];

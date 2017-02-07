@@ -24,7 +24,8 @@ namespace smartmath
          * The spring problem models the dynamics of an object of mass \f$m\f$ linked to the equilibrium point by a spring.
          *
          */
-        class spring: public base_dynamics<double>
+        template < class T >
+        class spring: public base_dynamics<T>
         {
 
         private:
@@ -43,12 +44,18 @@ namespace smartmath
              * @param t_scale time scaling factor
              * @param r_scale position scaling factor
              */
-            spring(const double &k, const double &t_scale=1, const double &r_scale=1);
+            spring(const double &k, const double &t_scale=1, const double &r_scale=1) : base_dynamics<double>("Spring Problem"),
+                m_k(k), m_t_scale(t_scale), m_r_scale(r_scale)
+            {
+                if(m_k < 0.0)
+                    smartmath_throw(this->m_name+": the elastic coefficient must be >= 0");
+
+            }
 
             /**
               * @brief ~spring deconstructor
               */
-            ~spring();
+            ~spring(){}
 
             /**
              * @brief evaluate evaluate the dinamics of the Two-body problem at a given instant of time and a given state.
@@ -59,7 +66,36 @@ namespace smartmath
              * @param[out] dstate derivative of the states at time t
              * @return
              */
-            int evaluate(const double &t, const std::vector<double> &state, std::vector<double> &dstate) const;
+            int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
+                //sanity checks
+                if(t<0)
+                    smartmath_throw(this->m_name+": negative time supplied in evaluation of the dynamical system");
+                if(state.size() > 6)
+                    smartmath_throw(this->m_name+": it's difficult to imagine a spring acting ot time or higher dimensions...");
+                if(state.size()%2 != 0)
+                    smartmath_throw(this->m_name+": half dimensions are not contemplated in this version. Wait for update #42.");
+
+                unsigned int dimension = state.size()/2;
+
+                dstate.clear();
+
+                // velocities
+                for(unsigned int index = 0; index < dimension; ++index)
+                {
+                    dstate.push_back(state[dimension+index]);
+                }
+
+                // acceerations
+                for(unsigned int index = 0; index < dimension; ++index)
+                {
+                    dstate.push_back(-m_k*state[index]);
+                }
+
+                if(dstate.size() != state.size())
+                    smartmath_throw(this->m_name+": state and dstate dimensions mismatch.");
+
+                return 0;
+}
         };
 
     }

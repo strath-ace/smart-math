@@ -40,11 +40,11 @@ namespace smartmath
             {
 	            /** sanity checks **/
 	            if(tol<=0.0)
-                   smart_throw("tolerance for estimated error must be non negative");
+                   smartmath_throw("tolerance for estimated error must be non negative");
                 if((multiplier>5.0)||(multiplier<2.0))
-                   smart_throw("maximum step-multiplier must be between 2 and 5");
+                   smartmath_throw("maximum step-multiplier must be between 2 and 5");
 	            if(minstep_events<=0.0)
-                   smart_throw("minimum step for events must be non negative"); 
+                   smartmath_throw("minimum step for events must be non negative"); 
 
                m_control=8.0;
 
@@ -65,10 +65,10 @@ namespace smartmath
              * @param[out] er estimated error 
              * @return
              */
-            int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal, T &er) const{
+            int integration_step(const double &t, const double &h, const std::vector<T> &x, std::vector<T> &xfinal, T &er) const{
 		
 		        int n = x.size();
-		        std::vector<T> xbar(x), k1(x), k2(x), k3(x), k4(x), k5(x), k6(x), k7(x), k8(x), k9(x), k10(x), k11(x), k12(x), k13(x);
+		        std::vector<T> xtemp(x), xbar(x), k1(x), k2(x), k3(x), k4(x), k5(x), k6(x), k7(x), k8(x), k9(x), k10(x), k11(x), k12(x), k13(x);
 		        double t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13;
 
 		        t1 = t;
@@ -359,7 +359,7 @@ namespace smartmath
              * @param[in] event function
              * @return
              */
-            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal, std::vector<events::base_event<T>*> &event_list) const{
+            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal, std::vector<T> &t_history, std::vector<events::base_event<T>*> &event_list) const{
 
 	            xfinal.clear();
 	            t_history.clear();
@@ -458,7 +458,7 @@ namespace smartmath
             }
 
 
-            int integrate(const double &ti,const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &xfinal, std::vector<double> &t, std::vector<events::base_event<T>*> &event_list){
+             int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal, std::vector<events::base_event<T>*> &event_list) const{
 
 	            std::vector<std::vector<T> > xf;
 	            std::vector<double> t;
@@ -480,17 +480,9 @@ namespace smartmath
              * @param[out] val double equal to x for real numbers and something else for polynomials
              * @return
              */
-            int error(const float &x, double &val) const{
+            int error(const T &x, T &val) const{
 	            val=x;
-            return 0;
-            }
-            int error(const double &x, double &val) const{
-	            val=x;
-            return 0;
-            }
-            int error(const long double &x, double &val) const{
-	            val=x;
-            return 0;
+                return 0;
             }
             #ifdef ENABLE_SMARTUQ
                 int error(const smartuq::polynomial::chebyshev_polynomial<double> &x, double &val) const{

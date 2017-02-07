@@ -33,17 +33,17 @@ namespace smartmath
             {
 
 	            if(order_min>order_max)
-                	smart_throw("minimum order must be smaller or equal to maximum order");
+                	smartmath_throw("minimum order must be smaller or equal to maximum order");
 	            if((order_min<1)||(order_min>8))
-                	smart_throw("minimum order must be between 1 and 8");    
+                	smartmath_throw("minimum order must be between 1 and 8");    
 	            if((order_max<1)||(order_max>8))
-                	smart_throw("maximum order must be between 1 and 8");
+                	smartmath_throw("maximum order must be between 1 and 8");
 	            if(tol<=0.0)
-                   smart_throw("tolerance for estimated error must be non negative");
+                   smartmath_throw("tolerance for estimated error must be non negative");
                 if((multiplier>5.0)||(multiplier<2.0))
-                   smart_throw("maximum step-multiplier must be between 2 and 5");
+                   smartmath_throw("maximum step-multiplier must be between 2 and 5");
 	            if(minstep_events<=0.0)
-                   smart_throw("minimum step for events must be non negative");
+                   smartmath_throw("minimum step for events must be non negative");
 
 	            double gamma[9]={1.0,-1.0/2.0,-1.0/12.0,-1.0/24.0,-19.0/720.0,-3.0/160.0,-863.0/60480.0,-275.0/24192.0,-33953.0/3628800.0};
 	            for(int i=0; i<=m_order_max; i++)
@@ -68,7 +68,7 @@ namespace smartmath
             int backward_differences(const std::vector<std::vector<T> > &f, const int &m, std::vector<std::vector<T> > &Df) const{
 
 	            if(f.size()!=m)
-                	smart_throw("wrong number of saved states in multistep integration"); 
+                	smartmath_throw("wrong number of saved states in multistep integration"); 
 
 	            Df.clear();
 	            Df.push_back(f[m-1]);
@@ -102,11 +102,12 @@ namespace smartmath
              * @return
              */    
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal)const{
+	            std::vector<std::vector<T> > x_history;
+	            std::vector<double> t_history;
 
-	            double t0=ti, tf=tend, n=nsteps;
-	            std::vector<T> x(x0);
+	            integrate(ti,tend,nsteps,x0,x_history,t_history);
 
-	            integrate(t0,tf,n,x,x_history,t_history,dummy_event);
+	            xfinal=x_history.back();
 
 	            return 0;
             }
@@ -126,14 +127,13 @@ namespace smartmath
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history)  const{
 
-	            std::vector<std::vector<T> > x_history;
-	            std::vector<double> t_history;
+	            double t0=ti, tf=tend, n=nsteps;
+	            std::vector<T> x(x0);
 
-	            integrate(ti,tend,nsteps,x0,x_history,t_history);
-
-	            xfinal=x_history.back();
+	            integrate(t0,tf,n,x,x_history,t_history,dummy_event);
 
 	            return 0;
+
             }
 
             /**
@@ -150,7 +150,7 @@ namespace smartmath
              * @param[in] event function             
              * @return
              */
-            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &xfinal, std::vector<double> t_history, std::vector<int> (*g)(std::vector<T> x, double d)) const{
+            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> t_history, std::vector<int> (*g)(std::vector<T> x, double d)) const{
 
 	            t_history.clear();
 	            x_history.clear();
@@ -316,10 +316,10 @@ namespace smartmath
             }
             
 
-            int integration_step(const double &ti, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const{
+            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const{
                 	
 	            if(f.size()!=m)
-                	smart_throw("wrong number of saved states in multistep integration"); 
+                	smartmath_throw("wrong number of saved states in multistep integration"); 
 
 	            integrator::AB<T> predictor(m_dyn, m);	    	
 	            std::vector<T> x(x0), dx(x0);
@@ -360,44 +360,43 @@ namespace smartmath
              * @param[out] val double equal to x for real numbers and something else for polynomials
              * @return
              */
-            int error(const float &x, double &val) const{
+       
+            int error(const T &x, T &val) const{
+	            val=x;
+            return 0;
+            }
+
+       #ifdef ENABLE_SMARTUQ
+            int error(const smartuq::polynomial::chebyshev_polynomial<double> &x, double &val) const{
 	            val=x.get_range()[1];
             return 0;
             }
-            int error(const double &x, double &val) const{
+
+            int error(const smartuq::polynomial::chebyshev_polynomial<float> &x, double &val) const{
 	            val=x.get_range()[1];
             return 0;
             }
-            int error(const long double &x, double &val) const{
+
+            int error(const smartuq::polynomial::chebyshev_polynomial<long double> &x, double &val) const{
 	            val=x.get_range()[1];
             return 0;
             }
-            #ifdef ENABLE_SMARTUQ
-                int error(const smartuq::polynomial::chebyshev_polynomial<double> &x, double &val) const{
-	                val=x.get_coeffs()[0];
-                return 0;
-                }
-                int error(const smartuq::polynomial::chebyshev_polynomial<float> &x, double &val) const{
-	                val=x.get_coeffs()[0];
-                return 0;
-                }
-                int error(const smartuq::polynomial::chebyshev_polynomial<long double> &x, double &val) const{
-	                val=x.get_coeffs()[0];
-                return 0;
-                }                      
-                int error(const smartuq::polynomial::taylor_polynomial<double> &x, double &val) const{
-	                val=x.get_coeffs()[0];
-                return 0;
-                }
-                int error(const smartuq::polynomial::taylor_polynomial<float> &x, double &val) const{
-	                val=x.get_coeffs()[0];
-                return 0;
-                }
-                int error(const smartuq::polynomial::taylor_polynomial<long double> &x, double &val) const{
-	                val=x.get_coeffs()[0];
-                return 0;
-                }            
-            #endif
+
+            int error(const smartuq::polynomial::taylor_polynomial<double> &x, double &val) const{
+	            val=x.get_coeffs()[0];
+            return 0;
+            }
+
+            int error(const smartuq::polynomial::taylor_polynomial<float> &x, double &val) const{
+	            val=x.get_coeffs()[0];
+            return 0;
+            }
+
+            int error(const smartuq::polynomial::taylor_polynomial<long double> &x, double &val) const{
+	            val=x.get_coeffs()[0];
+            return 0;
+            }
+    #endif
       	
         };
 

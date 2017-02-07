@@ -30,7 +30,7 @@ namespace smartmath
             {
 
 	            if((order<1)||(order>8))
-                	smart_throw("order must be between 1 and 8");    
+                	smartmath_throw("order must be between 1 and 8");    
 
 	            double gamma[9]={1.0,1.0/2.0,5.0/12.0,3.0/8.0,251.0/720.0,95.0/288.0,19087.0/60480.0,5257.0/17280.0,1070017.0/3628800.0};
 	            for(int i=0; i<=m_order; i++)
@@ -55,7 +55,7 @@ namespace smartmath
             int backward_differences(const std::vector<std::vector<T> > &f, const int &m, std::vector<std::vector<T> > &Df) const{
 
 	            if(f.size()!=m)
-                	smart_throw("wrong number of saved states in multistep integration"); 
+                	smartmath_throw("wrong number of saved states in multistep integration"); 
 
 	            Df.clear();
 	            Df.push_back(f[m-1]);

@@ -30,7 +30,7 @@ namespace smartmath
             {
 
 	            if((order<1)||(order>8))
-                	smart_throw("order must be between 1 and 8");    
+                	smartmath_throw("order must be between 1 and 8");    
 
 	            double gamma[9]={1.0,-1.0/2.0,-1.0/12.0,-1.0/24.0,-19.0/720.0,-3.0/160.0,-863.0/60480.0,-275.0/24192.0,-33953.0/3628800.0};
 	            for(int i=0; i<=m_order; i++)
@@ -55,7 +55,7 @@ namespace smartmath
             int backward_differences(const std::vector<std::vector<T> > &f, const int &m, std::vector<std::vector<T> > &Df) const{
 
 	            if(f.size()!=m)
-                	smart_throw("wrong number of saved states in multistep integration"); 
+                	smartmath_throw("wrong number of saved states in multistep integration"); 
 
 	            Df.clear();
 	            Df.push_back(f[m-1]);
@@ -183,10 +183,10 @@ namespace smartmath
              * @param[out] xfinal vector of final states 
              * @return
              */
-            int integration_step(const double &ti, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
+            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
                 	
 	            if(f.size()!=m)
-                	smart_throw("wrong number of saved states in multistep integration"); 
+                	smartmath_throw("wrong number of saved states in multistep integration"); 
 
 	            integrator::AB<T> predictor(m_dyn, m);	    	
 	            std::vector<T> x(x0), dx(x0);

@@ -16,4 +16,4 @@
 #include "Integrators/smartmath_integrators.h"
 #include "Utils/smartmath_utils.h"
 
-#endif /* SMART_SMARTUQ_H */
+#endif /* SMART_SMARTMATH_H */

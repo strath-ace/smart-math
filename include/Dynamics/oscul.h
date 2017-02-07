@@ -32,7 +32,7 @@ namespace smartmath
 			{
 				
 				if(m_param.size()!=3)
-					smart_throw(m_name+": the parameters list need to be of size 3");
+					smartmath_throw(m_name+": the parameters list need to be of size 3");
 
 			}
 
@@ -41,7 +41,7 @@ namespace smartmath
             int evaluate(const double &E, const std::vector<T> &state, std::vector<T> &dstate) const{
 				//sanity checks
 				if(state.size()!=4)
-					smart_throw(m_name+": the state dimension needs to be 4");
+					smartmath_throw(m_name+": the state dimension needs to be 4");
 
 				dstate.clear();
 

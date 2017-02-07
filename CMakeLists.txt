@@ -45,10 +45,6 @@ option(BUILD_EXAMPLES                          "Build examples"                 
 SET(MANDATORY_LIBRARIES "")
 
 file(GLOB SRC
-  "${SRC_PATH}/LinearAlgebra/*.cpp"
-  "${SRC_PATH}/Dynamics/*.cpp"
-  "${SRC_PATH}/Events/*.cpp"
-  "${SRC_PATH}/Integrators/*.cpp"
   "${SRC_PATH}/Utils/*.cpp"
 )
 
@@ -103,11 +99,6 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
     set(CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
 endif(CMAKE_COMPILER_IS_GNUCXX)
-
-configure_file(
-        "${INCLUDE_PATH}/config.h.in"
-        "${INCLUDE_PATH}/config.h"
-        )
 
 include_directories(${EIGEN_INCLUDE_PATH})
 

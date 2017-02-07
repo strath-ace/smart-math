@@ -52,10 +52,10 @@ namespace smartmath
 	            std::vector<T> x_temp=x0, k1=x0, k2=x0, k3=x0, k4=x0;
 	            unsigned int l = x0.size();
 	            double t1, t2, t3, t4;
-	            t1 = t;
-	            t2 = t + h/2.0;
-	            t3 = t + h/2.0;
-	            t4 = t + h;
+	            t1 = ti;
+	            t2 = t1 + h/2.0;
+	            t3 = t1 + h/2.0;
+	            t4 = t1 + h;
 
 	            //* Evaluate k1 = f(x).
 	            m_dyn->evaluate(t1, x0, k1);

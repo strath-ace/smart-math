@@ -60,9 +60,9 @@ namespace smartmath
 		{
 		    //sanity checks
 		    if(t<0)
-			smart_throw(m_name+": negative time supplied in evaluation of the dynamical system");
+			smartmath_throw(m_name+": negative time supplied in evaluation of the dynamical system");
 		    if(state.size()!=2)
-			smart_throw(m_name+": the state dimension needs to be 2");
+			smartmath_throw(m_name+": the state dimension needs to be 2");
 
 		    dstate.clear();
 

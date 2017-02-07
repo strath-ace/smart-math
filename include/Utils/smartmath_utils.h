@@ -10,6 +10,6 @@
 #ifndef SMARTMATH_UTILS_H
 #define SMARTMATH_UTILS_H
 
-#include "inline_functions.h"
+#include "mixed_functions.h"
 
 #endif // SMARTMATH_UTILS_H

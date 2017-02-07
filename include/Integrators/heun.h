@@ -51,12 +51,12 @@ namespace smartmath
 	            std::vector<T> dx=x0, dx_temp=x0, x_temp=x0;
 	            unsigned int l = x0.size();
 
-	            m_dyn->evaluate(t, x0, dx);
+	            m_dyn->evaluate(ti, x0, dx);
 
 	            for(unsigned int j=0; j<l; j++){
 	                x_temp[j] = x0[j] + h*dx[j];
 	            }
-	            m_dyn->evaluate(t+h, x_temp, dx_temp);
+	            m_dyn->evaluate(ti+h, x_temp, dx_temp);
 	
 	            xfinal=x0;
 	            for(unsigned int j=0; j<l; j++){

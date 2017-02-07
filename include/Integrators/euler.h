@@ -51,7 +51,7 @@ namespace smartmath
 	            std::vector<T> dx=x0;
 	            unsigned int l = x0.size();
 
-	            m_dyn->evaluate(t, x0, dx);
+	            m_dyn->evaluate(ti, x0, dx);
 
 	            xfinal=x0;	
 	            for(unsigned int j=0; j<l; j++){

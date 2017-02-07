@@ -15,21 +15,22 @@
 #include <iostream>
 #include <string>
 
-#define _EXCEPTION_QUOTEME(x) #x
-#define EXCEPTION_QUOTEME(x) _EXCEPTION_QUOTEME(x)
-#define EXCEPTION_EXCTOR(s) ((std::string(__FILE__ "," EXCEPTION_QUOTEME(__LINE__) ": ") + s) + ".")
-#define EX_THROW(s) (throw smart_exception(EXCEPTION_EXCTOR(s)))
+#define _SMARTMATH_EXCEPTION_QUOTEME(x) #x
+#define SMARTMATH_EXCEPTION_QUOTEME(x) _SMARTMATH_EXCEPTION_QUOTEME(x)
+#define SMARTMATH_EXCEPTION_EXCTOR(s) ((std::string(__FILE__ "," SMARTMATH_EXCEPTION_QUOTEME(__LINE__) ": ") + s) + ".")
+#define SMARTMATH_EX_THROW(s) (throw smartmath_exception(SMARTMATH_EXCEPTION_EXCTOR(s)))
 
-#define smart_throw(s) EX_THROW(s)
+#define smartmath_throw(s) SMARTMATH_EX_THROW(s)
 
 namespace smartmath{
-class smart_exception: public std::exception {
+
+class smartmath_exception: public std::exception {
 	public:
-		smart_exception(const std::string &s):m_what(s) {}
+		smartmath_exception(const std::string &s):m_what(s) {}
 		virtual const char *what() const throw() {
 			return m_what.c_str();
 		}
-		virtual ~smart_exception() throw() {}
+		virtual ~smartmath_exception() throw() {}
 	protected:
 		std::string m_what;
 };

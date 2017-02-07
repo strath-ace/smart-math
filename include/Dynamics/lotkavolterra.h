@@ -48,7 +48,7 @@ namespace smartmath
 			{
 				//sanity checks
 				if(m_param.size()!=4)
-					smart_throw(m_name+": the size of the parameters vector need to be 4");
+					smartmath_throw(m_name+": the size of the parameters vector need to be 4");
 
 			}
 
@@ -69,9 +69,9 @@ namespace smartmath
             int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
 				//sanity checks
 				if(t<0)
-					smart_throw(m_name+": negative time supplied in evaluation of the dynamical system");
+					smartmath_throw(m_name+": negative time supplied in evaluation of the dynamical system");
 				if(state.size()!=2)
-					smart_throw(m_name+": the state dimension needs to be 2");
+					smartmath_throw(m_name+": the state dimension needs to be 2");
 
 				dstate.clear();
 

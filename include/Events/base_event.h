@@ -14,11 +14,6 @@
 #include <math.h>
 #include <vector>
 #include <algorithm>
-#include "../config.h"
-
-#ifdef ENABLE_SMARTUQ
-#include "smartuq.h"
-#endif
 
 namespace smartmath
 {
@@ -36,27 +31,30 @@ namespace smartmath
             /**
             *
             */
-            virtual ~base_event();
+            virtual ~base_event(){}
 
             /**
              *
              */
-            bool get_trigger();
+            bool get_trigger(){return m_trigger;}
 
             /**
              *
              */
-            void switch_trigger_on(const double &t);
+            void switch_trigger_on(const double &t){
+                m_trigger = true;
+                m_last_time = t;
+            }
 
             /**
              *
              */
-            void switch_trigger_off();
+            void switch_trigger_off(){m_trigger = false;}
 
             /**
              *
              */
-            double get_last_time();
+            double get_last_time(){return m_last_time;}
 
             /**
             *
