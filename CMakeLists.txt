@@ -41,9 +41,6 @@ option(BUILD_DOCS                              "Build docs"                     
 option(BUILD_TESTS                             "Build tests"                    OFF)
 option(BUILD_EXAMPLES                          "Build examples"                 OFF)
 
-# Initialise (empty) list of libraries to link against.
-SET(MANDATORY_LIBRARIES "")
-
 file(GLOB SRC
   "${SRC_PATH}/Utils/*.cpp"
 )
