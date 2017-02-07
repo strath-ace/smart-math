@@ -42,6 +42,9 @@ option(BUILD_TESTS                             "Build tests"                    
 option(BUILD_EXAMPLES                          "Build examples"                 OFF)
 option(ENABLE_SMARTUQ			       "UQ methods"			OFF)
 
+# Initialise (empty) list of libraries to link against.
+SET(MANDATORY_LIBRARIES "")
+
 if(ENABLE_SMARTUQ)
         find_library(SMARTUQ_LIBRARY NAMES smart-uq)
         find_path(SMARTUQ_INCLUDE_DIR NAMES smartuq.h)
@@ -55,9 +58,6 @@ if(ENABLE_SMARTUQ)
         include_directories("${SMARTUQ_INCLUDE_DIR}")      
 endif(ENABLE_SMARTUQ)
 
-
-# Initialise (empty) list of libraries to link against.
-SET(MANDATORY_LIBRARIES "")
 
 file(GLOB SRC
   "${SRC_PATH}/LinearAlgebra/*.cpp"
