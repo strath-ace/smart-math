@@ -23,6 +23,7 @@ namespace smartmath
         class base_event
         {
         protected:
+            std::string m_name;
             int m_value;
             bool m_trigger;
             double m_last_time;
@@ -36,15 +37,22 @@ namespace smartmath
             /**
              *
              */
+            std::string get_name(){return m_name;}
+
+            /**
+             *
+             */
+            int get_value(){return m_value;}
+
+            /**
+             *
+             */
             bool get_trigger(){return m_trigger;}
 
             /**
              *
              */
-            void switch_trigger_on(const double &t){
-                m_trigger = true;
-                m_last_time = t;
-            }
+            virtual void switch_trigger_on(const double &t) = 0;
 
             /**
              *
@@ -55,6 +63,11 @@ namespace smartmath
              *
              */
             double get_last_time(){return m_last_time;}
+
+            /**
+             *
+             */
+            void set_last_time(const double &t){m_last_time = t;}
 
             /**
             *

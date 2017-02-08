@@ -37,13 +37,12 @@ namespace smartmath
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
-            base_integrator(const std::string &name, const dynamics::base_dynamics<T> *dyn): m_name(name), m_dyn(dyn){}
+            base_integrator(const std::string &name, const dynamics::base_dynamics<T> *dyn){}
 
             /**
              * @brief ~base_integrator deconstructor
              */
             virtual ~base_integrator(){}
-
 
             /**
              * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
@@ -65,7 +64,7 @@ namespace smartmath
              * Function to get the name of the integration scheme
              * @return
              */
-            std::string get_name() const{return m_name;}
+            std::string get_name() const {return m_name;}
 
 
         protected:
@@ -78,7 +77,6 @@ namespace smartmath
              */
             const dynamics::base_dynamics<T> *m_dyn;
         };
-
     }
 }
 
