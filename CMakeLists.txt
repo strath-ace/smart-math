@@ -57,6 +57,11 @@ file(GLOB TEST_SRC
   "${TEST_SRC_PATH}/Utils/*.cpp"
 )
 
+file(GLOB_RECURSE LibFiles
+    "${INCLUDE_PATH}/*.h"
+    )
+add_custom_target(headers SOURCES ${LibFiles})
+
 # Set CMake build-type. If it not supplied by the user, the default built type is "Release".
 if(((NOT CMAKE_BUILD_TYPE))
   OR (CMAKE_BUILD_TYPE STREQUAL "Release"))
@@ -70,7 +75,7 @@ endif(((NOT CMAKE_BUILD_TYPE))
 # Set platform-specific compiler flags.
 if(WIN32)
   if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /Ox /W3 /FC -D_SCL_SECURE_NO_WARNINGS")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /Ox /W3 /FC -D_SCL_SECURE_NO_WARNINGS -std=c++11")
     # We need to force MSVC to use static runtime:
     # (from http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace).
     foreach(flag_var
@@ -84,17 +89,17 @@ if(WIN32)
   else(MSVC)
     set(CMAKE_LEGACY_CYGWIN_WIN32 0)
     set(CMAKE_CXX_FLAGS
-      "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual -Wnon-virtual-dtor")
+      "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual -Wnon-virtual-dtor -std=c++11")
   endif(MSVC)
 else(WIN32)
   set(CMAKE_CXX_FLAGS
-    "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual -Wnon-virtual-dtor")
+    "${CMAKE_CXX_FLAGS} -Wall -Woverloaded-virtual -Wnon-virtual-dtor -std=c++11")
 endif(WIN32)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g3")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-    set(CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+    set(CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -std=c++11")
 endif(CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories(${EIGEN_INCLUDE_PATH})
