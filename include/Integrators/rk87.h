@@ -1,3 +1,12 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/*
+------------Copyright (C) 2017 University of Strathclyde--------------
+-------------------- Author: Romain Serra -------------------------
+-------------- e-mail: romain.serra@strath.ac.uk ------------------
+*/
+
 #ifndef SMARTMATH_RK87_H
 #define SMARTMATH_RK87_H
 
@@ -28,6 +37,9 @@ namespace smartmath
             double m_maxstep_events;
 
         public:
+        	
+        	using base_integrator<T>::integrate;
+
             /**
              * @brief rk87 constructor
              *
@@ -222,31 +234,6 @@ namespace smartmath
 	            return 0;
             }
 
-            /**
-             * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
-             *
-             * The method implements the RK8(7)-13 scheme to integrate with given initial time,
-             * final time, initial state condition and initial guess for step-size
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-
-	            xfinal.clear();
-
-	            std::vector<std::vector<T> > xf;
-	            std::vector<double> t_history;
-
-	            integrate(ti, tend, nsteps, x0, xf, t_history);
-
-	            xfinal=xf.back();
-
-	            return 0;
-            }
 
             /**
              * @brief integrate method to integrate bewteen two given time steps, initial condition and initial guess for step-size

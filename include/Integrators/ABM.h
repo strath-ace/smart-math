@@ -1,3 +1,12 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/*
+------------Copyright (C) 2017 University of Strathclyde--------------
+-------------------- Author: Romain Serra -------------------------
+-------------- e-mail: romain.serra@strath.ac.uk ------------------
+*/
+
 #ifndef SMARTMATH_ABM_H
 #define SMARTMATH_ABM_H
 
@@ -19,6 +28,9 @@ namespace smartmath
             std::vector<double> m_gamma;
 
         public:
+
+        using base_integrator<T>::integrate;
+
             /**
              * @brief Adam Bashforth Moulton constructor
              *
@@ -76,30 +88,6 @@ namespace smartmath
 	            return 0;
             }
 
-            
-            /**
-             * @brief integrate method to integrate between two given time steps, initial condition and number of steps
-             *
-             * The method implements the Adam Bashforth Moulton scheme to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */    
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-
-	            std::vector<std::vector<T> > x_history;
-	            std::vector<double> t_history;
-
-	            integrate(ti,tend,nsteps,x0,x_history,t_history);
-
-	            xfinal=x_history.back();
-
-	            return 0;
-            }
             
             /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)

@@ -22,6 +22,9 @@ namespace smartmath
             using base_integrator<T>::m_dyn;
 
         public:
+
+            using base_integrator<T>::integrate;
+            
             /**
              * @brief euler constructor
              *
@@ -57,30 +60,6 @@ namespace smartmath
 	            for(unsigned int j=0; j<l; j++){
 		            xfinal[j] += h*dx[j];
 	            }
-
-	            return 0;
-            }
-
-            /**
-             * @brief integrate method to integrate between two given time steps, initial condition and number of steps
-             *
-             * The method implements the explicit Euler scheme to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-
-	            std::vector<std::vector<T> > x_history;
-	            std::vector<double> t_history;
-
-	            integrate(ti,tend,nsteps,x0,x_history,t_history);
-
-	            xfinal=x_history.back();
 
 	            return 0;
             }

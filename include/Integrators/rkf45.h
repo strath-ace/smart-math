@@ -1,3 +1,12 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/*
+------------Copyright (C) 2017 University of Strathclyde--------------
+-------------------- Author: Romain Serra -------------------------
+-------------- e-mail: romain.serra@strath.ac.uk ------------------
+*/
+
 #ifndef SMARTMATH_RKF45_H
 #define SMARTMATH_RKF45_H
 
@@ -25,6 +34,9 @@ namespace smartmath
             double m_minstep_events;
 
         public:
+
+            using base_integrator<T>::integrate;
+            
             /**
              * @brief rkf45 constructor
              *
@@ -134,31 +146,6 @@ namespace smartmath
 
 	            integrate(t0,tf,n,x,x_history,t_history,dummy_event);
 	
-	            return 0;
-            }
-
-            /**
-             * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size
-             *
-             * The method implements the RKF4(5) scheme to integrate with given initial time,
-             * final time, initial state condition and initial guess for step-size
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps initial guess for number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of intemrediate states
-             * @param[out] t_history vector of intermediate times
-             * @return
-             */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-
-	            std::vector<std::vector<T> > x_history;
-	            std::vector<double> t_history;
-
-	            integrate(ti, tend, nsteps, x0, x_history, t_history);
-
-	            xfinal=x_history.back();
-
 	            return 0;
             }
 
