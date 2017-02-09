@@ -6,6 +6,7 @@
 #ifndef SMART_SMARTMATH_H
 #define SMART_SMARTMATH_H
 
+#include "EigenMultivariateNormal.h"
 
 #endif /* SMART_SMARTMATH_H */
 
