@@ -35,7 +35,7 @@ namespace smartmath
             /**
              * @brief Adam Bashforth Moulton constructor
              *
-             * The integrator is initialized with the super class constructor. No additional parameters are set.
+             * The integrator is initialized with the super class constructor. 
              * @param dyn
              * @param order_max maximum order for predictor-corrector
              * @param order_min minimum order for predictor-corrector
@@ -152,7 +152,6 @@ namespace smartmath
 	            std::vector<T> x(x0),xp(x0),dx(x0);
 	            std::vector<std::vector<T> > f_max, f, Df;
 	            T er;
-	            integrator::AB<T> predictor(m_dyn, m_order_max);	
 	            int m=m_order_min, mold=m_order_min;
 	            double t=ti, h = (tend-ti)/nsteps;
 	            double value;
@@ -160,14 +159,14 @@ namespace smartmath
 	            std::vector<int> events=g(x0,ti), events2=events;
 	            int q=events.size();
 
-	            predictor.initialize(m_order_max,ti,h,x0,f_max);
+	            initialize(m_order_max,ti,h,x0,f_max);
 
 	            int k=0;
                 while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
 
 		            if(sqrt(pow(tend-t,2))<sqrt(h*h)){
 			            h=tend-t;
-			            predictor.initialize(m_order_max,t,h,x,f_max);	
+			            initialize(m_order_max,t,h,x,f_max);	
 		            }
 			
 		            f.clear();
@@ -187,7 +186,7 @@ namespace smartmath
 			            }
 			            else{				
 				            h*=0.9*factor;			
-				            predictor.initialize(m_order_max,t,h,x,f_max);
+				            initialize(m_order_max,t,h,x,f_max);
 				            //std::cout << "decreasing time-step" << std::endl;	
 			            }
 		            }
@@ -208,7 +207,7 @@ namespace smartmath
 			            if(check==1){
 				            if(sqrt(h*h)>m_minstep_events){
 					            h*=0.5;
-					            predictor.initialize(m_order_max,t,h,x,f_max);
+					            initialize(m_order_max,t,h,x,f_max);
 					            //std::cout << "decreasing time-step for event detection" << std::endl;
 				            }
 				            else{
@@ -242,7 +241,7 @@ namespace smartmath
 						            factor=m_multiplier;
 					            }	
 					            h*=factor; // updating step-size
-					            predictor.initialize(m_order_max,t,h,x,f_max);
+					            initialize(m_order_max,t,h,x,f_max);
 					            //std::cout << "increasing time-step" << std::endl;
 				            }
 				            else{
@@ -333,6 +332,26 @@ namespace smartmath
 
 	            return 0;
             }
+
+            /**
+             * @brief initialize method to initialize integrator at initial time
+             *
+             * The method initializes via Adam Bashforth the Adam Bashforth Moulton scheme for an integration with step-size h starting at given initial time and condition 
+             * @param[in] m number of saved steps
+             * @param[in] ti initial time instant
+             * @param[in] h step size
+             * @param[in] x0 vector of initial states
+             * @param[out] f vector of saved state vectors for multistep scheme
+             * @return
+             */     
+            int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{
+
+                integrator::AB<T> predictor(m_dyn, m);    
+
+                predictor.initialize(m,ti,h,x0,f);
+
+                return 0;
+            }            
 
             static std::vector<int> dummy_event(std::vector<T> x, double d){
 

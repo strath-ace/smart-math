@@ -44,7 +44,7 @@ namespace smartmath
              * @brief rk87 constructor
              *
              * @param dyn
-             * @param tolerance for error estimarion in step-size control
+             * @param tolerance for error estimation in step-size control
              * @param max multiplier for step-size control
              * @param min time step for events detection
              */
@@ -473,15 +473,15 @@ namespace smartmath
             }
             #ifdef ENABLE_SMARTUQ
                 int error(const smartuq::polynomial::chebyshev_polynomial<double> &x, double &val) const{
-	                val=x.get_coeffs()[0];
+	                val=x.get_range()[1];
                 return 0;
                 }
                 int error(const smartuq::polynomial::chebyshev_polynomial<float> &x, double &val) const{
-	                val=x.get_coeffs()[0];
+	                val=x.get_range()[1];
                 return 0;
                 }
                 int error(const smartuq::polynomial::chebyshev_polynomial<long double> &x, double &val) const{
-	                val=x.get_coeffs()[0];
+	                val=x.get_range()[1];
                 return 0;
                 }                      
                 int error(const smartuq::polynomial::taylor_polynomial<double> &x, double &val) const{
