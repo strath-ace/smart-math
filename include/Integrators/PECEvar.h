@@ -10,7 +10,7 @@
 #ifndef SMARTMATH_PECEVAR_H
 #define SMARTMATH_PECEVAR_H
 
-#include "base_integrator.h"
+#include "base_stepsizecontrol.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -18,19 +18,25 @@ namespace smartmath
     namespace integrator {
 
         template < class T >
-        class PECEvar: public base_integrator<T>
+        class PECEvar: public base_stepsizecontrol<T>
         {
 
         private:
-            using base_integrator<T>::m_name;
-            using base_integrator<T>::m_dyn;
+            using base_stepsizecontrol<T>::m_name;
+            using base_stepsizecontrol<T>::m_dyn;
+            using base_stepsizecontrol<T>::m_tol;
+            using base_stepsizecontrol<T>::m_multiplier;
+            using base_stepsizecontrol<T>::m_minstep_events;
+            using base_stepsizecontrol<T>::m_maxstep_events;
             int m_order_max, m_order_min;
             std::vector<double> m_gamma;
-            double m_tol, m_multiplier, m_minstep_events;
 
         public:
 
-        	using base_integrator<T>::integrate;
+        	using base_stepsizecontrol<T>::integrate;
+            using base_stepsizecontrol<T>::dummy_event;
+            using base_stepsizecontrol<T>::error;
+
         	
             /**
              * @brief Adam Bashforth Moulton constructor
@@ -41,7 +47,7 @@ namespace smartmath
              * @param order_min minimum order for predictor-corrector
              * @param tol tolerance for estimated integration error             
              */
-            PECEvar(const dynamics::base_dynamics<T> *dyn, const int order_max=8, const int order_min=4, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4): base_integrator<T>("Adam Bashforth Moulton integration scheme with variable order", dyn), m_order_max(order_max), m_order_min(order_min), m_tol(tol), m_multiplier(multiplier), m_minstep_events(minstep_events)
+            PECEvar(const dynamics::base_dynamics<T> *dyn, const int order_max=8, const int order_min=4, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_stepsizecontrol<T>("Adam Bashforth Moulton integration scheme with variable order", dyn, tol, multiplier, minstep_events, maxstep_events), m_order_max(order_max), m_order_min(order_min)
             {
 
 	            if(order_min>order_max)
@@ -101,30 +107,6 @@ namespace smartmath
 	            return 0;
             }
             
-            
-            /**
-             * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
-             *
-             * The method implements the Adam Bashforth Moulton 6 scheme to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] x_history vector of intermediate state vector (including final one)
-             * @param[out] t_history vector of intermediate times (including final one)
-             * @return
-             */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history)  const{
-
-	            double t0=ti, tf=tend, n=nsteps;
-	            std::vector<T> x(x0);
-
-	            integrate(t0,tf,n,x,x_history,t_history,dummy_event);
-
-	            return 0;
-
-            }
 
             /**
              * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size while handling events
@@ -163,6 +145,15 @@ namespace smartmath
 
 	            int k=0;
                 while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
+
+                    if((h*h>m_maxstep_events*m_maxstep_events)&&(m_maxstep_events>0.0)){
+                        if(h>=0.0){
+                            h=m_maxstep_events;
+                        }
+                        else{
+                            h=-m_maxstep_events;
+                        }   
+                    }  
 
 		            if(sqrt(pow(tend-t,2))<sqrt(h*h)){
 			            h=tend-t;
@@ -220,13 +211,9 @@ namespace smartmath
 			            }
 			            else{
 				            k++; // counting the number of steps
-				            f=f_max;
-				            for(int j=0; j<m_order_max-1; j++)
-					            f_max[j]=f[j+1];
-	                		m_dyn->evaluate(t+h, xp, dx);
-	                		f_max[m_order_max-1]=dx;
 				            x=xp; // updating state
-				            t+=h; // updating current time			
+				            t+=h; // updating current time	
+                            update_saved_steps(m_order_max,t,x,f_max);	
 				            events=events2;				
 				            x_history.push_back(x);
 				            t_history.push_back(t);	
@@ -251,32 +238,6 @@ namespace smartmath
 			            }	
 		            }	
 	            }
-
-	            return 0;
-            }
-            
-            /**
-             * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size while handling events
-             *
-             * The method implements the ABM scheme to integrate with given initial time,
-             * final time, initial state condition and initial guess for step-size
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps initial guess for number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of intemrediate states
-             * @param[out] t_history vector of intermediate times
-             * @param[in] event function             
-             * @return
-             */
-            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal, std::vector<int> (*g)(std::vector<T> x, double d)) const{
-
-	            std::vector<std::vector<T> > x_history;
-	            std::vector<double> t_history;
-
-	            integrate(ti, tend, nsteps, x0, x_history, t_history, *g);
-
-	            xfinal=x_history.back();
 
 	            return 0;
             }
@@ -308,7 +269,19 @@ namespace smartmath
 	            return 0;
             }
             
-
+            /**
+             * @brief integration_step method to perform one step of integration
+             *
+             * The method implements one step of the Adam Bashforth Moulton scheme 
+             * @param[in] t initial time for integration step 
+             * @param[in] m order
+             * @param[in] h step-size
+             * @param[in] x0 vector of initial states
+             * @param[in] f vector of saved state vectors for multistep scheme             
+             * @param[out] xfinal vector of final states
+             * @param[out] er estimated error
+             * @return
+             */
             int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const{
                 	
 	            if(f.size()!=m)
@@ -335,6 +308,32 @@ namespace smartmath
             }
 
             /**
+             * @brief update_saved_steps method to update saved integration steps
+             *
+             * The method updates the saved steps
+             * @param[in] m number of saved steps
+             * @param[in] t time of last state to save
+             * @param[in] x vector of states at time t
+             * @param[out] f vector of saved state vectors for multistep scheme
+             * @return
+             */     
+            int update_saved_steps(const int &m, const double &t, const std::vector<T> &x, std::vector<std::vector<T> > &f) const{
+
+                if(f[0].size()!=x.size())
+                    smartmath_throw("wrong number of previously saved states in multistep integration"); 
+
+                std::vector<T> dx=x;
+                std::vector<std::vector<T> > fp=f;
+                for(int j=0; j<m-1; j++){
+                    f[j]=fp[j+1];
+                }
+                m_dyn->evaluate(t, x, dx);
+                f[m-1]=dx;
+
+                return 0;
+            }
+
+            /**
              * @brief initialize method to initialize integrator at initial time
              *
              * The method initializes via Adam Bashforth the Adam Bashforth Moulton scheme for an integration with step-size h starting at given initial time and condition 
@@ -353,60 +352,6 @@ namespace smartmath
 
                 return 0;
             }            
-
-            static std::vector<int> dummy_event(std::vector<T> x, double d){
-
-	            std::vector<int> output(1,0);
-
-	            return output;
-
-            }   
-
-            /**
-             * @brief returns a double equal to the input for real numbers and something meaningful for polynomials
-             *
-             * 
-             * @param[in] x estimated error
-             * @param[out] val double equal to x for real numbers and something else for polynomials
-             * @return
-             */
-       
-            int error(const T &x, T &val) const{
-	            val=x;
-            return 0;
-            }
-
-       #ifdef ENABLE_SMARTUQ
-            int error(const smartuq::polynomial::chebyshev_polynomial<double> &x, double &val) const{
-	            val=x.get_range()[1];
-            return 0;
-            }
-
-            int error(const smartuq::polynomial::chebyshev_polynomial<float> &x, double &val) const{
-	            val=x.get_range()[1];
-            return 0;
-            }
-
-            int error(const smartuq::polynomial::chebyshev_polynomial<long double> &x, double &val) const{
-	            val=x.get_range()[1];
-            return 0;
-            }
-
-            int error(const smartuq::polynomial::taylor_polynomial<double> &x, double &val) const{
-	            val=x.get_coeffs()[0];
-            return 0;
-            }
-
-            int error(const smartuq::polynomial::taylor_polynomial<float> &x, double &val) const{
-	            val=x.get_coeffs()[0];
-            return 0;
-            }
-
-            int error(const smartuq::polynomial::taylor_polynomial<long double> &x, double &val) const{
-	            val=x.get_coeffs()[0];
-            return 0;
-            }
-    #endif
       	
         };
 

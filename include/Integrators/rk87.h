@@ -10,7 +10,7 @@
 #ifndef SMARTMATH_RK87_H
 #define SMARTMATH_RK87_H
 
-#include "base_integrator.h"
+#include "base_stepsizecontrol.h"
 #include "../exception.h"
 #include "../Events/base_event.h"
 
@@ -24,21 +24,23 @@ namespace smartmath
          * The class model the Runge Kutta Felhberg integration scheme
          */
         template < class T >
-        class rk87: public base_integrator<T>
+        class rk87: public base_stepsizecontrol<T>
         {
 
         private:
-            using base_integrator<T>::m_name;
-            using base_integrator<T>::m_dyn;
-            double m_control;
-            double m_tol;
-            double m_multiplier;
-            double m_minstep_events;
-            double m_maxstep_events;
+            using base_stepsizecontrol<T>::m_name;
+            using base_stepsizecontrol<T>::m_dyn;
+            using base_stepsizecontrol<T>::m_tol;
+            using base_stepsizecontrol<T>::m_multiplier;            
+            using base_stepsizecontrol<T>::m_control;
+            using base_stepsizecontrol<T>::m_minstep_events;
+            using base_stepsizecontrol<T>::m_maxstep_events;
 
         public:
         	
-        	using base_integrator<T>::integrate;
+        	using base_stepsizecontrol<T>::integrate;
+            using base_stepsizecontrol<T>::dummy_event;
+            using base_stepsizecontrol<T>::error;
 
             /**
              * @brief rk87 constructor
@@ -48,7 +50,7 @@ namespace smartmath
              * @param max multiplier for step-size control
              * @param min time step for events detection
              */
-            rk87(const dynamics::base_dynamics<T> *dyn, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_integrator<T>("Runge Kutta 8-7 variable step time", dyn), m_tol(tol), m_multiplier(multiplier), m_minstep_events(minstep_events), m_maxstep_events(maxstep_events)
+            rk87(const dynamics::base_dynamics<T> *dyn, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_stepsizecontrol<T>("Runge Kutta 8-7 variable step time", dyn, tol, multiplier, minstep_events, maxstep_events)
             {
 	            /** sanity checks **/
 	            if(tol<=0.0)
@@ -183,155 +185,6 @@ namespace smartmath
 
             }
 
-            /*
-             * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
-             *
-             * The method implements the RK8(7)-13 scheme to integrate with given initial time,
-             * final time, initial state condition and initial guess for step-size
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &xfinal, std::vector<double> &t_history) const{
-
-	            xfinal.clear();
-	            t_history.clear();
-
-                std::vector<T> x(x0), xtemp(x0);
-	            double factor=1.0, value=0.0, t=ti, h = (tend-ti)/nsteps;
-	            T er=0.0*x0[0];
-
-	            int i=0;
-                while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
-
-		            if(sqrt(pow(tend-t,2))<sqrt(h*h))
-			            h=tend-t;
-
-		            integration_step(t,h,x,xtemp,er);
-
-		            /* Step-size control */
-		            error(er,value);
-		            factor=pow(m_tol/value,1.0/8.0);
-		            if(value>m_tol){ // unsuccessful step
-			            h*=0.9*factor; // correcting step	
-			            //std::cout << i << std::endl;	
-		            }
-		            else{ // successful step
-				            x=xtemp; // updating state	
-				            t+=h; // updating current time
-				            if(factor>m_multiplier)
-					            factor=m_multiplier;	
-				            i++; // counting number of integration steps	
-				            xfinal.push_back(x);		
-				            t_history.push_back(t);
-		            }
-	            }
-
-
-	            return 0;
-            }
-
-
-            /**
-             * @brief integrate method to integrate bewteen two given time steps, initial condition and initial guess for step-size
-             *
-             * The method implements the RK8(7)-13 scheme to integrate with given initial time,
-             * final time, initial state condition and initial guess for step-size
-             * @param[in] ti initial time instant
-             * @param[out] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @param[in] event function
-             * @return
-             */
-            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal, std::vector<int> (*g)(std::vector<T> x, double d)) const{
-
-	            xfinal.clear();
-
-                int n = x0.size();
-                int k;
-                int check=0;
-
-                std::vector<T> x(x0), xtemp(x0);
-
-	            double factor=1.0, value=0.0, t=ti, h = (tend-ti)/nsteps;
-	            T er=0.0*x0[0];
-
-	            std::vector<int> events=g(x0,ti), events2=events;
-	            int m=events.size();
-
-	            int i=0;
-
-	            if((h>m_maxstep_events)&&(m_maxstep_events>0.0)){
-			            h=m_maxstep_events;
-	            }
-
-                while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
-
-		            if(sqrt(pow(tend-t,2))<sqrt(h*h))
-			            h=tend-t;
-
-		            integration_step(t,h,x,xtemp,er);
-
-		            /* Step-size control */
-		            error(er,value);
-		            factor=pow(m_tol/value,1.0/(m_control+1.0));
-		            if(value>m_tol){ // unsucessful step
-			            h*=0.9*factor; 		
-		            }
-		            else{ // sucessful step
-			            /* Checking for the events */
-			            events2=g(xtemp,t+h);
-			            k=0;
-			            check=0;		
-			            while(k<m){
-				            if(events2[k]-events[k]!=0){
-					            check=1;
-					            k=m;
-				            }
-				            else{
-					            k++;
-				            }
-			            }
-
-			            if(check==1){
-				            if(sqrt(h*h)>m_minstep_events){
-					            h*=0.5;
-				            }
-				            else{
-					            tend=t+h; // saving the termination time			
-					            t=tend;
-					            std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << i << " steps" << std::endl;
-				            }
-			            }
-			            else{
-				            x=xtemp; // updating state
-				            t+=h; // updating current time			
-				            events=events2;					
-				            /* Step-size control */
-				            if(factor>m_multiplier){
-					            factor=m_multiplier;
-				            }	
-				            h*=factor; // updating step-size
-				            i++; // counting the number of steps
-				            if((m_maxstep_events>0.0)&&(h>m_maxstep_events)){
-						            h=m_maxstep_events;
-				            }											
-			            }				
-		
-		            }	
-		            //std::cout << "current step is " << i << " with relative size of " << h/(tend-ti) << " and estimated error of " << value << std::endl;	
-	            }
-
-	            for(int j=0; j<n; j++)
-	                xfinal.push_back(x[j]);
-
-	            return 0;
-            }
 
             /**
              * @brief integrate method to integrate bewteen two given time steps, initial condition and initial guess for step-size
@@ -368,12 +221,16 @@ namespace smartmath
 	            int m=events.size();
 
 	            int i=0;
-
-	            if((h>m_maxstep_events)&&(m_maxstep_events>0.0)){
-			            h=m_maxstep_events;
-	            }
-
                 while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
+
+                	if((h>m_maxstep_events)&&(m_maxstep_events>0.0)){
+			            if(h>=0.0){
+                            h=m_maxstep_events;
+                        }
+                        else{
+                            h=-m_maxstep_events;
+                        }  
+	            	}	
 
 		            if(sqrt(pow(tend-t,2))<sqrt(h*h))
 			            h=tend-t;
@@ -431,10 +288,7 @@ namespace smartmath
 					            factor=m_multiplier;
 				            }	
 				            h*=factor; // updating step-size
-				            i++; // counting the number of steps
-				            if((m_maxstep_events>0.0)&&(h>m_maxstep_events)){
-						            h=m_maxstep_events;
-				            }											
+				            i++; // counting the number of steps									
 			            }			
 		
 		            }	
@@ -458,45 +312,6 @@ namespace smartmath
 	            return 0;
             }
 
-
-            /**
-             * @brief returns a double equal to the input for real numbers and something meaningful for polynomials
-             *
-             * 
-             * @param[in] x estimated error
-             * @param[out] val double equal to x for real numbers and something else for polynomials
-             * @return
-             */
-            int error(const T &x, T &val) const{
-	            val=x;
-                return 0;
-            }
-            #ifdef ENABLE_SMARTUQ
-                int error(const smartuq::polynomial::chebyshev_polynomial<double> &x, double &val) const{
-	                val=x.get_range()[1];
-                return 0;
-                }
-                int error(const smartuq::polynomial::chebyshev_polynomial<float> &x, double &val) const{
-	                val=x.get_range()[1];
-                return 0;
-                }
-                int error(const smartuq::polynomial::chebyshev_polynomial<long double> &x, double &val) const{
-	                val=x.get_range()[1];
-                return 0;
-                }                      
-                int error(const smartuq::polynomial::taylor_polynomial<double> &x, double &val) const{
-	                val=x.get_coeffs()[0];
-                return 0;
-                }
-                int error(const smartuq::polynomial::taylor_polynomial<float> &x, double &val) const{
-	                val=x.get_coeffs()[0];
-                return 0;
-                }
-                int error(const smartuq::polynomial::taylor_polynomial<long double> &x, double &val) const{
-	                val=x.get_coeffs()[0];
-                return 0;
-                }            
-            #endif
 
         };
 
