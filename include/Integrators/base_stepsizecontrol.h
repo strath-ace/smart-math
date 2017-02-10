@@ -47,16 +47,28 @@ namespace smartmath
              * @param dyn pointer to a base_dynamics object
              * @param tol threshold used for acceptable estimated error
              * @param multiplier factor used to increase step-sized when judged necessary
+             * @param m_minstep_events minimum step-size to detect an event
+             * @param m_maxstep_events maximum step-size
              */
-            base_stepsizecontrol(const std::string &name, const dynamics::base_dynamics<T> *dyn, const double &tol, const double &multiplier, const double &minstep_events, const double &maxstep_events) : base_integrator<T>(name, dyn), m_tol(tol), m_multiplier(multiplier), m_minstep_events(minstep_events), m_maxstep_events(maxstep_events){}
+            base_stepsizecontrol(const std::string &name, const dynamics::base_dynamics<T> *dyn, const double &tol, const double &multiplier, const double &minstep_events, const double &maxstep_events) : base_integrator<T>(name, dyn), m_tol(tol), m_multiplier(multiplier), m_minstep_events(minstep_events), m_maxstep_events(maxstep_events){
+                
+                /** sanity checks **/
+                if(tol<=0.0)
+                   smartmath_throw("tolerance for estimated error must be non negative");
+                if((multiplier>5.0)||(multiplier<2.0))
+                   smartmath_throw("maximum step-multiplier must be between 2 and 5");
+                if(minstep_events<=0.0)
+                   smartmath_throw("minimum step-size for events must be non negative");
+
+            }
 
             /**
-             * @brief ~base_rungekutta deconstructor
+             * @brief ~base_stepsizecontrol deconstructor
              */
             virtual ~base_stepsizecontrol(){}
 
             /**
-             * @brief integration_step performs one integration step from the Runge-Kutta scheme
+             * @brief integration_step performs one integration step from the integration scheme
              *
              * The method implements one step of a variable step-size algorithm to integrate with given initial time,
              * final time, initial state condition(constant stepsize)

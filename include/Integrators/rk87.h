@@ -52,13 +52,6 @@ namespace smartmath
              */
             rk87(const dynamics::base_dynamics<T> *dyn, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_stepsizecontrol<T>("Runge Kutta 8-7 variable step time", dyn, tol, multiplier, minstep_events, maxstep_events)
             {
-	            /** sanity checks **/
-	            if(tol<=0.0)
-                   smartmath_throw("tolerance for estimated error must be non negative");
-                if((multiplier>5.0)||(multiplier<2.0))
-                   smartmath_throw("maximum step-multiplier must be between 2 and 5");
-	            if(minstep_events<=0.0)
-                   smartmath_throw("minimum step for events must be non negative"); 
 
                m_control=8.0;
 
