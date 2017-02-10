@@ -10,7 +10,7 @@
 #ifndef SMARTMATH_AB_H
 #define SMARTMATH_AB_H
 
-#include "base_integrator.h"
+#include "base_multistep.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -18,18 +18,18 @@ namespace smartmath
     namespace integrator {
 
         template < class T >
-        class AB: public base_integrator<T>
+        class AB: public base_multistep<T>
         {
 
         private:
-            using base_integrator<T>::m_name;
-            using base_integrator<T>::m_dyn;
-            int m_order;
+            using base_multistep<T>::m_name;
+            using base_multistep<T>::m_dyn;
+            using base_multistep<T>::m_order;
             std::vector<double> m_gamma;
 
         public:
 
-            using base_integrator<T>::integrate;    
+            using base_multistep<T>::integrate;
 
             /**
              * @brief Adam Bashforth constructor
@@ -38,7 +38,7 @@ namespace smartmath
              * @param dyn
              * @param order chosen order for Adam Bashforth method
              */
-            AB(const dynamics::base_dynamics<T> *dyn, const int order=6): base_integrator<T>("Adam Bashford integration scheme with user-defined order", dyn), m_order(order)
+            AB(const dynamics::base_dynamics<T> *dyn, const int order=6): base_multistep<T>("Adam Bashford integration scheme with user-defined order", dyn, order)
             {
 
 	            if((order<1)||(order>8))
@@ -159,7 +159,7 @@ namespace smartmath
             }
             
             /**
-             * @brief initialize method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
+             * @brief initialize method to initialize integrator at initial time
              *
              * The method initializes via RK4 the Adam Bashforth scheme for an integration with step-size h starting at given initial time and condition 
              * @param[in] m number of saved steps

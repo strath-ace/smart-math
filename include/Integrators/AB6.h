@@ -10,7 +10,7 @@
 #ifndef SMARTMATH_AB6_H
 #define SMARTMATH_AB6_H
 
-#include "base_integrator.h"
+#include "base_multistep.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -18,18 +18,18 @@ namespace smartmath
     namespace integrator {
 
         template < class T >
-        class AB6: public base_integrator<T>
+        class AB6: public base_multistep<T>
         {
 
         private:
-            using base_integrator<T>::m_name;
-            using base_integrator<T>::m_dyn;
-            int m_order;
+            using base_multistep<T>::m_name;
+            using base_multistep<T>::m_dyn;
+            using base_multistep<T>::m_order;
             std::vector<double> m_beta;
 
         public:
 
-            using base_integrator<T>::integrate;
+            using base_multistep<T>::integrate;
             
             /**
              * @brief Adam Bashforth 6 constructor
@@ -37,10 +37,9 @@ namespace smartmath
              * The integrator is initialized with the super class constructor. No additional parameters are set.
              * @param dyn
              */
-            AB6(const dynamics::base_dynamics<T> *dyn): base_integrator<T>("Adam Bashforth 6 integration scheme", dyn)
+            AB6(const dynamics::base_dynamics<T> *dyn): base_multistep<T>("Adam Bashforth 6 integration scheme", dyn, 6)
             {
-	            m_order=6;
-
+                
 	            double prebeta[6]={-475.0,2877.0,-7298.0,9982.0,-7923.0,4277.0};
 	            for(int i=0; i<m_order; i++){
 		            m_beta.push_back(prebeta[i]/1440.0);
@@ -66,6 +65,9 @@ namespace smartmath
              * @return
              */
             int integration_step(const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
+
+                if(f.size()!=m_order)
+                    smartmath_throw("wrong number of saved states in multistep integration"); 
 
 	            xfinal=x0;
 	            for(int i=0; i<x0.size(); i++){
@@ -101,7 +103,7 @@ namespace smartmath
 
 	            double t=ti, h = (tend-ti)/nsteps;
 
-	            initialize(ti,h,x0,f);
+	            initialize(m_order,ti,h,x0,f);
 
                 for(int k=0; k<nsteps; k++){
                 	integration_step(h,x,f,xp);
@@ -134,30 +136,29 @@ namespace smartmath
              * @param[out] f vector of saved state vectors for multistep scheme
              * @return
              */    
-            int initialize(const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{
+            int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{
 
 	            f.clear();
 
 	            std::vector<T> dx(x0), x(x0), xp(x0);
 	            std::vector< std::vector<T> > fp;
-
 	            integrator::rk4<T> RK(m_dyn); // Runge kutta schemed used for initialization (here RK4)
-
-	            /* Computing the initial saved steps */
+	            
+                /* Computing the initial saved steps */
 	            m_dyn->evaluate(ti,x,dx);
 	            fp.push_back(dx);
 	            double t=ti;
-	            for(int j=0; j<m_order-1; j++){
+	            for(int j=0; j<m-1; j++){
 		            RK.integration_step(t,-h,x,xp);
 		            t-=h;
 		            x=xp;
 		            m_dyn->evaluate(t,x,dx);
 		            fp.push_back(dx);
 	            }
-
+                
 	            /* Putting the saved steps in the right order */
-	            for(int j=0; j<m_order; j++){
-		            f.push_back(fp[m_order-j-1]);
+	            for(int j=0; j<m; j++){
+		            f.push_back(fp[m-j-1]);
 	            }
 
 	            return 0;

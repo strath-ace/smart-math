@@ -13,12 +13,14 @@
 #define SMARTMATH_INTEGRATORS_H
 
 #include "base_integrator.h"
+#include "base_rungekutta.h"
 #include "euler.h"
 #include "heun.h"
 #include "rk3.h"
 #include "rk4.h"
 #include "rkf45.h"
 #include "rk87.h"
+#include "base_multistep.h"
 #include "AB6.h"
 #include "ABM6.h"
 #include "AB.h"

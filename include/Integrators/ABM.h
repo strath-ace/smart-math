@@ -10,7 +10,7 @@
 #ifndef SMARTMATH_ABM_H
 #define SMARTMATH_ABM_H
 
-#include "base_integrator.h"
+#include "base_multistep.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -18,18 +18,18 @@ namespace smartmath
     namespace integrator {
 
         template < class T >
-        class ABM: public base_integrator<T>
+        class ABM: public base_multistep<T>
         {
 
         private:
-            using base_integrator<T>::m_name;
-            using base_integrator<T>::m_dyn;
-            int m_order;
+            using base_multistep<T>::m_name;
+            using base_multistep<T>::m_dyn;
+            using base_multistep<T>::m_order;
             std::vector<double> m_gamma;
 
         public:
 
-        using base_integrator<T>::integrate;
+            using base_multistep<T>::integrate;
 
             /**
              * @brief Adam Bashforth Moulton constructor
@@ -38,7 +38,7 @@ namespace smartmath
              * @param dyn
              * @param order order for Adam Bashforth Moulton scheme        
              */
-            ABM(const dynamics::base_dynamics<T> *dyn, const int order=6): base_integrator<T>("Adam Bashforth Moulton integration scheme with user-defined order", dyn), m_order(order)
+            ABM(const dynamics::base_dynamics<T> *dyn, const int order=6): base_multistep<T>("Adam Bashforth Moulton integration scheme with user-defined order", dyn, order)
             {
 
 	            if((order<1)||(order>8))
@@ -108,11 +108,10 @@ namespace smartmath
 	            x_history.clear();
 
 	            std::vector<T> x(x0),xp(x0),dx(x0);
-	            std::vector<std::vector<T> > f, fp, Df;
-	            integrator::AB<T> predictor(m_dyn, m_order);	
+	            std::vector<std::vector<T> > f, fp, Df;	
 	            double t=ti, h = (tend-ti)/nsteps;
 
-	            predictor.initialize(m_order,ti,h,x0,f); // initializing predictor-corrector by initializing predictor
+	            initialize(m_order, ti, h, x0, f);
 
                 for(int k=0; k<nsteps; k++){
 
@@ -196,6 +195,27 @@ namespace smartmath
 	            correction(m,h,x0,Df,xfinal);	
 
 	            return 0;
+            }
+
+
+            /**
+             * @brief initialize method to initialize integrator at initial time
+             *
+             * The method initializes via Adam Bashforth the Adam Bashforth Moulton scheme for an integration with step-size h starting at given initial time and condition 
+             * @param[in] m number of saved steps
+             * @param[in] ti initial time instant
+             * @param[in] h step size
+             * @param[in] x0 vector of initial states
+             * @param[out] f vector of saved state vectors for multistep scheme
+             * @return
+             */     
+            int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{
+
+                integrator::AB<T> predictor(m_dyn, m);    
+
+                predictor.initialize(m,ti,h,x0,f);
+
+                return 0;
             }
              	
         };
