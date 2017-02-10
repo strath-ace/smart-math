@@ -57,75 +57,30 @@ namespace smartmath
              *
              * The method implements one step of the Adam Bashforth 6 scheme to integrate with given initial time,
              * final time, initial state condition(constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] h time step
+             * @param[in] t initial time for integration step 
+             * @param[in] m order
+             * @param[in] h step-size
              * @param[in] x0 vector of initial states
              * @param[in] f vector of saved state vectors for multistep scheme             
              * @param[out] xfinal vector of final states
              * @return
              */
-            int integration_step(const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
+            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
 
-                if(f.size()!=m_order)
+                if(f.size()!=m)
                     smartmath_throw("wrong number of saved states in multistep integration"); 
 
 	            xfinal=x0;
 	            for(int i=0; i<x0.size(); i++){
-		            for(int j=0; j<m_order; j++){
+		            for(int j=0; j<m; j++){
 			            xfinal[i]+=h*m_beta[j]*f[j][i];
 	                }
 	            }
 
 	            return 0;
             }
-            
-	       
-            /**
-             * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
-             *
-             * The method implements the Adam Bashforth 6 scheme to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] x_history vector of intermediate state vector (including final one)
-             * @param[out] t_history vector of intermediate times (including final one)
-             * @return
-             */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
+  
 
-	            t_history.clear();
-	            x_history.clear();
-
-	            std::vector<T> x(x0), xp(x0), dx(x0);
-	            std::vector<std::vector<T> > f, fp;
-
-	            double t=ti, h = (tend-ti)/nsteps;
-
-	            initialize(m_order,ti,h,x0,f);
-
-                for(int k=0; k<nsteps; k++){
-                	integration_step(h,x,f,xp);
-                	x=xp;
-                	t+=h;
-
-                	/* Updating saved steps */
-                	fp=f;
-		            for(int j=0; j<m_order-1; j++){
-			            f[j]=fp[j+1];
-	                }
-	                m_dyn->evaluate(t, x, dx);
-	                f[m_order-1]=dx;
-	                
-	                /* Saving states */
-	                t_history.push_back(t);
-	                x_history.push_back(x);
-	            }
-
-	            return 0;
-            }
-    
             /**
              * @brief initialize method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *

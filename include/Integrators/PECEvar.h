@@ -292,7 +292,10 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            int correction(const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &Df, std::vector<T> &xfinal) const{
+            int correction(const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
+
+                std::vector<std::vector<T> > Df;
+                backward_differences(f,m,Df);
 
 	            xfinal=x0;
 	            for(int i=0; i<x0.size(); i++){
@@ -314,15 +317,12 @@ namespace smartmath
 	            std::vector<T> x(x0), dx(x0);
 	            std::vector<std::vector<T> > Df;
 
-                predictor.backward_differences(f,m,Df);
-                predictor.integration_step(m,h,x0,Df,x);
+                predictor.integration_step(t,m,h,x0,f,x);
+
                	std::vector<std::vector<T> > fp=f;
-	            for(int j=0; j<m-1; j++)
-		            fp[j]=f[j+1];
-               	m_dyn->evaluate(t+h, x, dx);
-	            fp[m-1]=dx;
-	            backward_differences(fp,m,Df);
-	            correction(m,h,x0,Df,xfinal);
+                predictor.update_saved_steps(m,t+h,xfinal,fp);
+                
+	            correction(m,h,x0,fp,xfinal);
 
 	            unsigned int l=x.size();
 	            er=0.0;
