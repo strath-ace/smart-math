@@ -41,6 +41,7 @@ namespace smartmath
              * The constructor initialize the name of the integrator and a pointer to the dynamical system to be integrated
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
+             * @param order number of saved steps
              */
             base_multistep(const std::string &name, const dynamics::base_dynamics<T> *dyn, const int &order) : base_integrator<T>(name, dyn), m_order(order){}
 
@@ -118,9 +119,9 @@ namespace smartmath
             virtual  int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const = 0;
 
             /**
-             * @brief initialize method to initialize integrator at initial time
+             * @brief update_saved_steps method to update saved integration steps
              *
-             * The method initializes the multistep scheme for an integration with step-size h starting at given initial time and condition 
+             * The method updates the saved steps
              * @param[in] m number of saved steps
              * @param[in] t time of last state to save
              * @param[in] x vector of states at time t

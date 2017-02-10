@@ -254,6 +254,7 @@ namespace smartmath
 
 	            return 0;
             }
+            
             /**
              * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size while handling events
              *
@@ -321,7 +322,7 @@ namespace smartmath
 
                	std::vector<std::vector<T> > fp=f;
                 predictor.update_saved_steps(m,t+h,xfinal,fp);
-                
+
 	            correction(m,h,x0,fp,xfinal);
 
 	            unsigned int l=x.size();
