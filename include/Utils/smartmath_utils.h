@@ -11,5 +11,7 @@
 #define SMARTMATH_UTILS_H
 
 #include "mixed_functions.h"
+#include "chebyshev_inequality.h"
+#include "rtnorm.h"
 
 #endif // SMARTMATH_UTILS_H

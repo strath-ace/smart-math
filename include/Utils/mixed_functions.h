@@ -42,7 +42,12 @@ double bisection_method(fun f, double lb, double ub, double prec);
 double Legendre(int l, int m, double x);
 double Legendre_derivative(int l, int m, double x);
 
-
+int sample_truncated_normal_distribution(const double &lower_bound,
+                                                         const double &upper_bound,
+                                                         const double &mean,
+                                                         const double &sd,
+                                                         const unsigned int &N_samples,
+                                                         std::vector<double> &result);
 
 }
 

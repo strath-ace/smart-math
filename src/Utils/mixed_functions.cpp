@@ -116,3 +116,37 @@ double smartmath::Legendre_derivative(int l, int m, double x)
 
     return (double(l)*x*smartmath::Legendre(l,m,x)-double(l+m)*smartmath::Legendre(l-1,m,x))/(x*x-1.0); 
 }
+
+int smartmath::sample_truncated_normal_distribution(const double &lower_bound,
+                                                         const double &upper_bound,
+                                                         const double &mean,
+                                                         const double &sd,
+                                                         const unsigned int &N_samples,
+                                                         std::vector<double> &result)
+{
+    //Sanity checks
+    if (lower_bound >= upper_bound)
+        smartmath_throw("Lower bound must be less than Upper bound");
+    if (N_samples < 0)
+        smartmath_throw("N_samples must be positive");
+    if (result.size() != N_samples)
+        smartmath_throw("The size of the result vector must be N samples");
+
+    std::default_random_engine generator;
+    std::normal_distribution<double> distribution(mean,sd);
+
+    //While loop until reaching the desired number of samples
+    unsigned int valid_samples_counter = 0;
+    while (valid_samples_counter <= N_samples)
+    {
+        double sample = distribution(generator);
+
+        if (sample >= lower_bound && sample <= upper_bound)
+        {
+            result[valid_samples_counter] = sample;
+            valid_samples_counter++;
+        }
+    }
+
+    return 0;
+}
