@@ -88,52 +88,6 @@ namespace smartmath
 	            return 0;
             }
 
-            
-            /**
-             * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
-             *
-             * The method implements the Adam Bashforth Moulton 6 scheme to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] x_history vector of intermediate state vector (including final one)
-             * @param[out] t_history vector of intermediate times (including final one)
-             * @return
-             */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
-
-	            t_history.clear();
-	            x_history.clear();
-
-	            std::vector<T> x(x0),xp(x0),dx(x0);
-	            std::vector<std::vector<T> > f, fp, Df;	
-	            double t=ti, h = (tend-ti)/nsteps;
-
-	            initialize(m_order, ti, h, x0, f);
-
-                for(int k=0; k<nsteps; k++){
-
-                	integration_step(t,m_order,h,x,f,xp);
-		            x=xp;
-
-		            /* Updating the saved steps */
-		            fp=f;
-		            for(int j=0; j<m_order-1; j++)
-			            f[j]=fp[j+1];
-               		m_dyn->evaluate(t+h, xp, dx);
-               		f[m_order-1]=dx;
-
-               		/* Saving states */
-		            t+=h;
-		            t_history.push_back(t);
-               		x_history.push_back(x);
-	            }
-
-	            return 0;
-            }
-
 
              /**
              * @brief correction method to integrate between two given time steps, initial condition and number of steps
@@ -146,7 +100,10 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            int correction(const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &Df, std::vector<T> &xfinal) const{
+            int correction(const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
+
+                std::vector<std::vector<T> > Df;
+                backward_differences(f,m,Df);
 
 	            xfinal=x0;
 	            for(int i=0; i<x0.size(); i++){
@@ -162,12 +119,12 @@ namespace smartmath
              * @brief integration_step method to perform one step of integration
              *
              * The method implements one step of the Adam Bashforth Moulton scheme 
-             * @param[in] ti initial time instant
+             * @param[in] t initial time for integration step 
              * @param[in] m order
              * @param[in] h step-size
              * @param[in] x0 vector of initial states
              * @param[in] f vector of saved state vectors for multistep scheme             
-             * @param[out] xfinal vector of final states 
+             * @param[out] xfinal vector of final states
              * @return
              */
             int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
@@ -176,23 +133,17 @@ namespace smartmath
                 	smartmath_throw("wrong number of saved states in multistep integration"); 
 
 	            integrator::AB<T> predictor(m_dyn, m);	    	
-	            std::vector<T> x(x0), dx(x0);
-	            std::vector<std::vector<T> > Df;
+	            std::vector<T> dx(x0);
 
 	            /* Prediction */
-                predictor.backward_differences(f,m,Df);
-                predictor.integration_step(m,h,x0,Df,x);
+                predictor.integration_step(t,m,h,x0,f,xfinal);
 
 	            /* Updating the saved steps */
                	std::vector<std::vector<T> > fp=f;
-	            for(int j=0; j<m-1; j++)
-		            fp[j]=f[j+1];
-               	m_dyn->evaluate(t+h, x, dx);
-	            fp[m-1]=dx;
+	            predictor.update_saved_steps(m,t+h,xfinal,fp);
 
 	            /* Correction */
-	            backward_differences(fp,m,Df);
-	            correction(m,h,x0,Df,xfinal);	
+	            correction(m,h,x0,fp,xfinal);	
 
 	            return 0;
             }
