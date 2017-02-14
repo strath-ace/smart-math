@@ -115,7 +115,7 @@ namespace smartmath
                 while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
 
                     if((h*h>m_maxstep_events*m_maxstep_events)&&(m_maxstep_events>0.0)){
-                        if(h>=0.0){
+                        if(h>0.0){
                             h=m_maxstep_events;
                         }
                         else{
@@ -127,7 +127,7 @@ namespace smartmath
                         h=tend-t;
 
                     integration_step(t,m_control,h,x,xtemp,er);
-
+                    
                     /* Step-size control */
                     error(er,value);
                     factor=pow(m_tol/value,1.0/(m_control+1.0));

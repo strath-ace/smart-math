@@ -78,6 +78,7 @@ namespace smartmath
 		        int n = x0.size();
 		        std::vector<T> k1(x0), k2(x0), k3(x0), k4(x0), k5(x0), k6(x0), xbar(x0), xtemp(x0);
 		        double t1, t2, t3, t4, t5, t6;
+                xfinal=x0;
 
 		        t1 = ti;
 		        t2 = t1 + h/4.0;
@@ -117,9 +118,9 @@ namespace smartmath
 		        //* Return x(t+h) computed from fourth-order Runge Kutta.
 		        er=0.0*x0[0];
 		        for(int j=0; j<n; j++){
-		            xbar[j] = x0[j]+ (k1[j]*16.0/135.0+k3[j]*6656.0/12825.0+k4[j]*28561.0/56430.0-k5[j]*9.0/50.0+k6[j]*2.0/55.0)*h;
-		            xtemp[j] = x0[j] + (k1[j]*25.0/216.0+k3[j]*1408.0/2565.0+k4[j]*2197.0/4104.0-k5[j]/5.0)*h;
-		            er+=pow(xbar[j]-xtemp[j],2);
+		            xbar[j] += (k1[j]*16.0/135.0+k3[j]*6656.0/12825.0+k4[j]*28561.0/56430.0-k5[j]*9.0/50.0+k6[j]*2.0/55.0)*h;
+		            xfinal[j] += (k1[j]*25.0/216.0+k3[j]*1408.0/2565.0+k4[j]*2197.0/4104.0-k5[j]/5.0)*h;
+		            er+=pow(xbar[j]-xfinal[j],2);
 		        }
 		        er=sqrt(er);
 
