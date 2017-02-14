@@ -66,13 +66,15 @@ namespace smartmath
              *
              * The method implements the RK8(7) scheme to perform one integration step
              * @param[in] ti initial time
+             * @param[in] m method order
              * @param[in] h step size
              * @param[in] x0 vector of initial states
+             * @param[in] f vector of saved state vectors (for multistep scheme only) 
              * @param[out] xfinal vector of final states
              * @param[out] er estimated error 
              * @return
              */
-            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x, std::vector<T> &xfinal, T &er) const{
+            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const{
 		
 		        int n = x.size();
 		        std::vector<T> xtemp(x), xbar(x), k1(x), k2(x), k3(x), k4(x), k5(x), k6(x), k7(x), k8(x), k9(x), k10(x), k11(x), k12(x), k13(x);
@@ -202,6 +204,7 @@ namespace smartmath
                 int check=0;
 
                 std::vector<T> x(x0), xtemp(x0);
+                std::vector<std::vector<T> > f;
 
 	            double factor=1.0, value=0.0, t=ti, h = (tend-ti)/nsteps;
 	            T er=0.0*x0[0];
@@ -229,7 +232,7 @@ namespace smartmath
 		            if(sqrt(pow(tend-t,2))<sqrt(h*h))
 			            h=tend-t;
 
-		            integration_step(t,m_control,h,x,xtemp,er);
+		            integration_step(t,m_control,h,x,f,xtemp,er);
 
 		            /* Step-size control */
 		            error(er,value);

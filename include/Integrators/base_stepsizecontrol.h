@@ -74,13 +74,15 @@ namespace smartmath
              * The method implements one step of a variable step-size algorithm to integrate with given initial time,
              * final time, initial state condition(constant stepsize)
              * @param[in] ti initial time instant
+             * @param[in] m method order
              * @param[in] h time step
              * @param[in] x0 vector of initial states
+             * @param[in] f vector of saved state vectors (for multistep scheme only) 
              * @param[out] xfinal vector of final states
              * @param[out] estimated error
              * @return
              */
-            virtual int integration_step(const double &ti, const int &m, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal, T &er) const = 0;
+            virtual int integration_step(const double &ti, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const = 0;
 
             /**
              * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size while handling events
@@ -91,7 +93,7 @@ namespace smartmath
              * @param[in] tend final time instant
              * @param[in] nsteps initial guess for number of integration steps
              * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of intemrediate states
+             * @param[out] xfinal vector of intermediate states
              * @param[out] t_history vector of intermediate times
              * @param[in] event function             
              * @return
@@ -104,6 +106,7 @@ namespace smartmath
                 int k;
                 int check=0;
                 std::vector<T> x(x0), xtemp(x0);
+                std::vector<std::vector<T> > f;
 
                 double factor=1.0, value=0.0, t=ti, h = (tend-ti)/nsteps;
                 T er=0.0*x0[0];
@@ -126,7 +129,7 @@ namespace smartmath
                     if(sqrt(pow(tend-t,2))<sqrt(h*h))
                         h=tend-t;
 
-                    integration_step(t,m_control,h,x,xtemp,er);
+                    integration_step(t,m_control,h,x,f,xtemp,er);
                     
                     /* Step-size control */
                     error(er,value);
@@ -252,7 +255,7 @@ namespace smartmath
              * @param[out] val double equal to x for real numbers and something else for polynomials
              * @return
              */
-            int error(const T &x, T &val) const{
+            int error(const T &x, double &val) const{
                 val=x;  
                 return 0;
             }
