@@ -12,6 +12,7 @@
 
 #include "base_integrator.h"
 #include "../exception.h"
+#include <type_traits>
 
 namespace smartmath
 {
@@ -79,7 +80,7 @@ namespace smartmath
              * @param[out] estimated error
              * @return
              */
-            virtual int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal, T &er) const = 0;
+            virtual int integration_step(const double &ti, const int &m, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal, T &er) const = 0;
 
             /**
              * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size while handling events
@@ -125,7 +126,7 @@ namespace smartmath
                     if(sqrt(pow(tend-t,2))<sqrt(h*h))
                         h=tend-t;
 
-                    integration_step(t,h,x,xtemp,er);
+                    integration_step(t,m_control,h,x,xtemp,er);
 
                     /* Step-size control */
                     error(er,value);
@@ -252,34 +253,34 @@ namespace smartmath
              * @return
              */
             int error(const T &x, T &val) const{
-                val=x;
+                val=x;  
                 return 0;
             }
 
             #ifdef ENABLE_SMARTUQ
                 int error(const smartuq::polynomial::chebyshev_polynomial<double> &x, double &val) const{
                     val=x.get_range()[1];
-                return 0;
+                    return 0;
                 }
                 int error(const smartuq::polynomial::chebyshev_polynomial<float> &x, double &val) const{
                     val=x.get_range()[1];
-                return 0;
+                    return 0;
                 }
                 int error(const smartuq::polynomial::chebyshev_polynomial<long double> &x, double &val) const{
                     val=x.get_range()[1];
-                return 0;
+                    return 0;
                 }                        
                 int error(const smartuq::polynomial::taylor_polynomial<double> &x, double &val) const{
                     val=x.get_coeffs()[0];
-                return 0;
+                    return 0;
                 }
                 int error(const smartuq::polynomial::taylor_polynomial<float> &x, double &val) const{
                     val=x.get_coeffs()[0];
-                return 0;
+                    return 0;
                 }
                 int error(const smartuq::polynomial::taylor_polynomial<long double> &x, double &val) const{
                     val=x.get_coeffs()[0];
-                return 0;
+                    return 0;
                 }            
             #endif            
 	

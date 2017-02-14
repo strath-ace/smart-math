@@ -73,7 +73,7 @@ namespace smartmath
              * @param[out] er estimated error 
              * @return
              */
-            int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal, T &er) const{
+            int integration_step(const double &ti, const int &m, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal, T &er) const{
 		
 		        int n = x0.size();
 		        std::vector<T> k1(x0), k2(x0), k3(x0), k4(x0), k5(x0), k6(x0), xbar(x0), xtemp(x0);

@@ -19,7 +19,9 @@ namespace smartmath
 
         template < class T >
         class PECEvar: public base_integrator<T>
-        {
+        { 
+
+        friend class base_stepsizecontrol<T>;
 
         private:
             using base_integrator<T>::m_name;
@@ -40,10 +42,8 @@ namespace smartmath
              * @brief Adam Bashforth Moulton constructor
              *
              * The integrator is initialized with the super class constructor. 
-             * @param dyn
              * @param order_max maximum order for predictor-corrector
-             * @param order_min minimum order for predictor-corrector
-             * @param tol tolerance for estimated integration error             
+             * @param order_min minimum order for predictor-corrector         
              */
             PECEvar(const dynamics::base_dynamics<T> *dyn, const int order_max=8, const int order_min=4, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_integrator <T>("Adam Bashforth Moulton integration scheme with variable order", dyn), m_tol(tol), m_multiplier(multiplier), m_minstep_events(minstep_events), m_maxstep_events(maxstep_events), m_order_max(order_max), m_order_min(order_min)
             {
@@ -72,39 +72,7 @@ namespace smartmath
               */
             ~PECEvar(){}
 
-            /**
-             * @brief computes backward differences 
-             *
-             * The method computes the backward differences for the Adam Moulton scheme
-             * @param[in] f vector of saved state vectors for multistep scheme
-             * @param[in] m order
-             * @param[out] Df vector of backward differences
-             * @return
-             */ 
-            int backward_differences(const std::vector<std::vector<T> > &f, const int &m, std::vector<std::vector<T> > &Df) const{
 
-	            if(f.size()!=m)
-                	smartmath_throw("wrong number of saved states in multistep integration"); 
-
-	            Df.clear();
-	            Df.push_back(f[m-1]);
-
-	            if(m>1){
-		            std::vector<std::vector<T> > fp,Dfp;
-		            for(int j=0; j<m-1; j++)
-			            fp.push_back(f[j]);
-		            backward_differences(fp,m-1,Dfp);
-		            for(int j=1; j<m; j++){
-			            Df.push_back(Df[j-1]);
-			            for(int i=0; i<f[0].size(); i++){
-				            Df[j][i]-=Dfp[j-1][i];
-			            }
-		            }
-	            }
-
-	            return 0;
-            }
-            
 
             /**
              * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size while handling events
@@ -129,6 +97,7 @@ namespace smartmath
                 int check=0;
                 double factor;	
 
+                integrator::AB<T> predictor(m_dyn,m_order_max); 
 	            std::vector<T> x(x0),xp(x0),dx(x0);
 	            std::vector<std::vector<T> > f_max, f, Df;
 	            T er;
@@ -139,7 +108,7 @@ namespace smartmath
 	            std::vector<int> events=g(x0,ti), events2=events;
 	            int q=events.size();
 
-	            initialize(m_order_max,ti,h,x0,f_max);
+	            predictor.initialize(m_order_max,ti,h,x0,f_max);
 
 	            int k=0;
                 while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
@@ -155,7 +124,7 @@ namespace smartmath
 
 		            if(sqrt(pow(tend-t,2))<sqrt(h*h)){
 			            h=tend-t;
-			            initialize(m_order_max,t,h,x,f_max);	
+			            predictor.initialize(m_order_max,t,h,x,f_max);	
 		            }
 			
 		            f.clear();
@@ -175,7 +144,7 @@ namespace smartmath
 			            }
 			            else{				
 				            h*=0.9*factor;			
-				            initialize(m_order_max,t,h,x,f_max);
+				            predictor.initialize(m_order_max,t,h,x,f_max);
 				            //std::cout << "decreasing time-step" << std::endl;	
 			            }
 		            }
@@ -196,7 +165,7 @@ namespace smartmath
 			            if(check==1){
 				            if(sqrt(h*h)>m_minstep_events){
 					            h*=0.5;
-					            initialize(m_order_max,t,h,x,f_max);
+					            predictor.initialize(m_order_max,t,h,x,f_max);
 					            //std::cout << "decreasing time-step for event detection" << std::endl;
 				            }
 				            else{
@@ -211,7 +180,7 @@ namespace smartmath
 				            k++; // counting the number of steps
 				            x=xp; // updating state
 				            t+=h; // updating current time	
-                            update_saved_steps(m_order_max,t,x,f_max);	
+                            predictor.update_saved_steps(m_order_max,t,x,f_max);	
 				            events=events2;				
 				            x_history.push_back(x);
 				            t_history.push_back(t);	
@@ -226,7 +195,7 @@ namespace smartmath
 						            factor=m_multiplier;
 					            }	
 					            h*=factor; // updating step-size
-					            initialize(m_order_max,t,h,x,f_max);
+					            predictor.initialize(m_order_max,t,h,x,f_max);
 					            //std::cout << "increasing time-step" << std::endl;
 				            }
 				            else{
@@ -289,31 +258,6 @@ namespace smartmath
                 return 0;
             }
 
-             /**
-             * @brief integrate method to integrate between two given time steps, initial condition and number of steps
-             *
-             * The method implements the correction step in the Adam Bashforth Moulton scheme 
-             * @param[in] m order
-             * @param[in] h step-size
-             * @param[in] x0 vector of initial states
-             * @param[in] Df vector of finite differences vectors            
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int correction(const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
-
-                std::vector<std::vector<T> > Df;
-                backward_differences(f,m,Df);
-
-	            xfinal=x0;
-	            for(int i=0; i<x0.size(); i++){
-		            for(int j=0; j<m; j++){		
-			            xfinal[i]+=h*m_gamma[j]*Df[j][i];
-	                }
-	            }
-
-	            return 0;
-            }
             
             /**
              * @brief integration_step method to perform one step of integration
@@ -354,51 +298,7 @@ namespace smartmath
 	            return 0;
             }
 
-            /**
-             * @brief update_saved_steps method to update saved integration steps
-             *
-             * The method updates the saved steps
-             * @param[in] m number of saved steps
-             * @param[in] t time of last state to save
-             * @param[in] x vector of states at time t
-             * @param[out] f vector of saved state vectors for multistep scheme
-             * @return
-             */     
-            int update_saved_steps(const int &m, const double &t, const std::vector<T> &x, std::vector<std::vector<T> > &f) const{
 
-                if(f[0].size()!=x.size())
-                    smartmath_throw("wrong number of previously saved states in multistep integration"); 
-
-                std::vector<T> dx=x;
-                std::vector<std::vector<T> > fp=f;
-                for(int j=0; j<m-1; j++){
-                    f[j]=fp[j+1];
-                }
-                m_dyn->evaluate(t, x, dx);
-                f[m-1]=dx;
-
-                return 0;
-            }
-
-            /**
-             * @brief initialize method to initialize integrator at initial time
-             *
-             * The method initializes via Adam Bashforth the Adam Bashforth Moulton scheme for an integration with step-size h starting at given initial time and condition 
-             * @param[in] m number of saved steps
-             * @param[in] ti initial time instant
-             * @param[in] h step size
-             * @param[in] x0 vector of initial states
-             * @param[out] f vector of saved state vectors for multistep scheme
-             * @return
-             */     
-            int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{
-
-                integrator::AB<T> predictor(m_dyn, m);    
-
-                predictor.initialize(m,ti,h,x0,f);
-
-                return 0;
-            }
 
 
             /**

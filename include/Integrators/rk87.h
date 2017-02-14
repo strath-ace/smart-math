@@ -72,7 +72,7 @@ namespace smartmath
              * @param[out] er estimated error 
              * @return
              */
-            int integration_step(const double &t, const double &h, const std::vector<T> &x, std::vector<T> &xfinal, T &er) const{
+            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x, std::vector<T> &xfinal, T &er) const{
 		
 		        int n = x.size();
 		        std::vector<T> xtemp(x), xbar(x), k1(x), k2(x), k3(x), k4(x), k5(x), k6(x), k7(x), k8(x), k9(x), k10(x), k11(x), k12(x), k13(x);
@@ -192,7 +192,7 @@ namespace smartmath
              * @param[in] event function
              * @return
              */
-            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal, std::vector<T> &t_history, std::vector<events::base_event<T>*> &event_list) const{
+            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &xfinal, std::vector<T> &t_history, std::vector<events::base_event<T>*> &event_list) const{
 
 	            xfinal.clear();
 	            t_history.clear();
@@ -228,7 +228,7 @@ namespace smartmath
 		            if(sqrt(pow(tend-t,2))<sqrt(h*h))
 			            h=tend-t;
 
-		            integration_step(t,h,x,xtemp,er);
+		            integration_step(t,m_control,h,x,xtemp,er);
 
 		            /* Step-size control */
 		            error(er,value);

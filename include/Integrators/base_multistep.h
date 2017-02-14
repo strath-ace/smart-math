@@ -144,6 +144,39 @@ namespace smartmath
                 return 0;
             }
 
+            /**
+             * @brief backward_differences computes backward differences  
+             *
+             * The method computes the backward differences for the Adam scheme
+             * @param[in] f vector of saved state vectors for multistep scheme
+             * @param[in] m number of saved steps
+             * @param[out] Df vector of backward differences
+             * @return
+             */ 
+            int backward_differences(const std::vector<std::vector<T> > &f, const int &m, std::vector<std::vector<T> > &Df) const{
+
+                if(f.size()!=m)
+                    smartmath_throw("wrong number of saved states in multistep integration"); 
+
+                Df.clear();
+                Df.push_back(f[m-1]);
+
+                if(m>1){
+                    std::vector<std::vector<T> > fp,Dfp;
+                    for(int j=0; j<m-1; j++)
+                        fp.push_back(f[j]);
+                    backward_differences(fp,m-1,Dfp); // recursive call
+                    for(int j=1; j<m; j++){
+                        Df.push_back(Df[j-1]);
+                        for(int i=0; i<f[0].size(); i++){
+                            Df[j][i]-=Dfp[j-1][i];
+                        }
+                    }
+                }
+
+                return 0;
+            }
+
         };
 
     }
