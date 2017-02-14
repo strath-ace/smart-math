@@ -19,8 +19,6 @@
 #include "rk3.h"
 #include "rk4.h"
 #include "base_multistep.h"
-#include "AB6.h"
-#include "ABM6.h"
 #include "AB.h"
 #include "ABM.h"
 #include "base_integrationwevent.h"

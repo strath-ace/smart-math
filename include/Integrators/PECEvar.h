@@ -29,7 +29,7 @@ namespace smartmath
             double m_tol;
             double m_multiplier;
             int m_order_max, m_order_min;
-            std::vector<double> m_gamma;
+            std::vector<double> m_gamma_Bashforth, m_gamma_Moulton;
 
         public:
 
@@ -58,9 +58,13 @@ namespace smartmath
                 if(order_min>order_max)
                     smartmath_throw("minimum order must be smaller or equal to maximum order");                
 
-	            double gamma[9]={1.0,-1.0/2.0,-1.0/12.0,-1.0/24.0,-19.0/720.0,-3.0/160.0,-863.0/60480.0,-275.0/24192.0,-33953.0/3628800.0};
+	            double gamma_Bashforth[9]={1.0,-1.0/2.0,-1.0/12.0,-1.0/24.0,-19.0/720.0,-3.0/160.0,-863.0/60480.0,-275.0/24192.0,-33953.0/3628800.0};
 	            for(int i=0; i<=m_order_max; i++)
-		            m_gamma.push_back(gamma[i]);
+		            m_gamma_Bashforth.push_back(gamma_Bashforth[i]);
+
+                double gamma_Moulton[9]={1.0,-1.0/2.0,-1.0/12.0,-1.0/24.0,-19.0/720.0,-3.0/160.0,-863.0/60480.0,-275.0/24192.0,-33953.0/3628800.0};
+                for(int i=0; i<=m_order_max; i++)
+                    m_gamma_Moulton.push_back(gamma_Moulton[i]);
 
             }
 
@@ -128,7 +132,6 @@ namespace smartmath
 		            for(int j=0; j<m; j++)
 			            f.push_back(f_max[m_order_max-m+j]);  	
 
-                    std::cout << m << std::endl;
                 	integration_step(t,m,h,x,f,xp,er);
 		
 		            /* Step-size and order control */
@@ -225,17 +228,19 @@ namespace smartmath
                 	
 	            if(f.size()!=m)
                 	smartmath_throw("wrong number of saved states in multistep integration"); 
+     	
+	            std::vector<T> x(x0), dx(x0);
 
-	            integrator::AB<T> predictor(m_dyn,m);	
-                integrator::ABM<T> corrector(m_dyn,m);      	
-	            std::vector<T> x(x0);
+                half_step(m,h,x0,f,m_gamma_Bashforth,x); // prediction
 
-                predictor.integration_step(t,m,h,x0,f,x);
+                std::vector<std::vector<T> > fp=f;
+                for(int j=0; j<m-1; j++){
+                    fp[j]=f[j+1];
+                }
+                m_dyn->evaluate(t+h, x, dx);
+                fp[m-1]=dx;
 
-               	std::vector<std::vector<T> > fp=f;
-                predictor.update_saved_steps(m,t+h,x,fp);
-
-	            corrector.correction(m,h,x0,fp,xfinal);
+	            half_step(m,h,x0,fp,m_gamma_Moulton,xfinal); // correction
 
 	            unsigned int l=x.size();
 	            er=0.0;
@@ -244,7 +249,71 @@ namespace smartmath
 	            er=sqrt(er);	
 
 	            return 0;
-            }                                             
+            }    
+
+
+            /**
+             * @brief backward_differences computes backward differences  
+             *
+             * The method computes the backward differences for the Adam scheme
+             * @param[in] f vector of saved state vectors for multistep scheme
+             * @param[in] m number of saved steps
+             * @param[out] Df vector of backward differences
+             * @return
+             */ 
+            int backward_differences(const std::vector<std::vector<T> > &f, const int &m, std::vector<std::vector<T> > &Df) const{
+
+                if(f.size()!=m)
+                    smartmath_throw("wrong number of saved states in multistep integration"); 
+
+                Df.clear();
+                Df.push_back(f[m-1]);
+
+                if(m>1){
+                    std::vector<std::vector<T> > fp,Dfp;
+                    for(int j=0; j<m-1; j++)
+                        fp.push_back(f[j]);
+                    backward_differences(fp,m-1,Dfp); // recursive call
+                    for(int j=1; j<m; j++){
+                        Df.push_back(Df[j-1]);
+                        for(int i=0; i<f[0].size(); i++){
+                            Df[j][i]-=Dfp[j-1][i];
+                        }
+                    }
+                }
+
+                return 0;
+            }                                                     
+
+
+             /**
+             * @brief correction method to integrate between two given time steps, initial condition and number of steps
+             *
+             * The method implements the correction step in the Adam Bashforth Moulton scheme 
+             * @param[in] m order
+             * @param[in] h step-size
+             * @param[in] x0 vector of initial states
+             * @param[in] Df vector of finite differences vectors            
+             * @param[out] xfinal vector of final states
+             * @return
+             */
+            int half_step(const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, const std::vector<double> &gamma, std::vector<T> &xfinal) const{
+
+                if(f.size()!=m)
+                    smartmath_throw("wrong number of previously saved states in multistep integration");  
+
+                std::vector<std::vector<T> > Df;
+                backward_differences(f,m,Df);
+
+                xfinal=x0;
+                for(int i=0; i<x0.size(); i++){
+                    for(int j=0; j<m; j++){     
+                        xfinal[i]+=h*gamma[j]*Df[j][i];
+                    }
+                }
+
+                return 0;
+            }
       	
         };
 
