@@ -10,7 +10,7 @@
 #ifndef SMARTMATH_PECEVAR_H
 #define SMARTMATH_PECEVAR_H
 
-#include "base_stepsizecontrol.h"
+#include "base_integrationwevent.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -18,40 +18,45 @@ namespace smartmath
     namespace integrator {
 
         template < class T >
-        class PECEvar: public base_stepsizecontrol<T>
+        class PECEvar: public base_integrationwevent<T>
         { 
 
         private:
-            using base_stepsizecontrol<T>::m_name;
-            using base_stepsizecontrol<T>::m_dyn;
-            using base_stepsizecontrol<T>:: m_tol;
-            using base_stepsizecontrol<T>:: m_multiplier;
-            using base_stepsizecontrol<T>:: m_control;
-            using base_stepsizecontrol<T>::m_minstep_events;
-            using base_stepsizecontrol<T>::m_maxstep_events;
+            using base_integrationwevent<T>::m_name;
+            using base_integrationwevent<T>::m_dyn;
+            using base_integrationwevent<T>::m_minstep_events;
+            using base_integrationwevent<T>::m_maxstep_events;            
+            double m_tol;
+            double m_multiplier;
             int m_order_max, m_order_min;
             std::vector<double> m_gamma;
 
         public:
 
-            using base_stepsizecontrol<T>::integrate;
+            using base_integrationwevent<T>::integrate;
+            using base_integrationwevent<T>::error;
         	
             /**
              * @brief Adam Bashforth Moulton constructor
              *
-             * The integrator is initialized with the super class constructor. 
+             * The constructor specifically initializes a tolerance for integration error, a maximum multiplier to increase the stepsize as well as a minimum and maximum order  
+             * @param dyn pointer to a base_dynamics object
              * @param order_max maximum order for predictor-corrector
-             * @param order_min minimum order for predictor-corrector         
+             * @param order_min minimum order for predictor-corrector               
+             * @param tol threshold used for acceptable estimated error
+             * @param multiplier factor used to increase step-sized when judged necessary            
+             * @param m_minstep_events minimum step-size to detect an event
+             * @param m_maxstep_events maximum step-size     
              */
-            PECEvar(const dynamics::base_dynamics<T> *dyn, const int order_max=8, const int order_min=4, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_stepsizecontrol <T>("Adam Bashforth Moulton integration scheme with variable order", dyn, tol, multiplier, minstep_events, maxstep_events), m_order_max(order_max), m_order_min(order_min)
+            PECEvar(const dynamics::base_dynamics<T> *dyn, const int order_min=4, const int order_max=8, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_integrationwevent <T>("Adam Bashforth Moulton integration scheme with variable order", dyn, minstep_events, maxstep_events), m_tol(tol), m_multiplier(multiplier), m_order_max(order_max), m_order_min(order_min)
             {
 
-	            if(order_min>order_max)
-                	smartmath_throw("minimum order must be smaller or equal to maximum order");
 	            if((order_min<1)||(order_min>8))
                 	smartmath_throw("minimum order must be between 1 and 8");    
 	            if((order_max<1)||(order_max>8))
                 	smartmath_throw("maximum order must be between 1 and 8");
+                if(order_min>order_max)
+                    smartmath_throw("minimum order must be smaller or equal to maximum order");                
 
 	            double gamma[9]={1.0,-1.0/2.0,-1.0/12.0,-1.0/24.0,-19.0/720.0,-3.0/160.0,-863.0/60480.0,-275.0/24192.0,-33953.0/3628800.0};
 	            for(int i=0; i<=m_order_max; i++)
@@ -87,10 +92,10 @@ namespace smartmath
                 int i;
                 int check=0;
                 double factor;	
-
+                
                 integrator::AB<T> predictor(m_dyn,m_order_max); 
-	            std::vector<T> x(x0),xp(x0),dx(x0);
-	            std::vector<std::vector<T> > f_max, f, Df;
+	            std::vector<T> x(x0),xp(x0);
+	            std::vector<std::vector<T> > f_max, f;
 	            T er;
 	            int m=m_order_min, mold=m_order_min;
 	            double t=ti, h = (tend-ti)/nsteps;
@@ -98,7 +103,7 @@ namespace smartmath
 
 	            std::vector<int> events=g(x0,ti), events2=events;
 	            int q=events.size();
-
+                
 	            predictor.initialize(m_order_max,ti,h,x0,f_max);
 
 	            int k=0;
@@ -123,6 +128,7 @@ namespace smartmath
 		            for(int j=0; j<m; j++)
 			            f.push_back(f_max[m_order_max-m+j]);  	
 
+                    std::cout << m << std::endl;
                 	integration_step(t,m,h,x,f,xp,er);
 		
 		            /* Step-size and order control */
@@ -220,8 +226,8 @@ namespace smartmath
 	            if(f.size()!=m)
                 	smartmath_throw("wrong number of saved states in multistep integration"); 
 
-	            integrator::AB<T> predictor(m_dyn, m);	
-                integrator::ABM<T> corrector(m_dyn, m);      	
+	            integrator::AB<T> predictor(m_dyn,m);	
+                integrator::ABM<T> corrector(m_dyn,m);      	
 	            std::vector<T> x(x0);
 
                 predictor.integration_step(t,m,h,x0,f,x);

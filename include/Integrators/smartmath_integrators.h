@@ -23,9 +23,10 @@
 #include "ABM6.h"
 #include "AB.h"
 #include "ABM.h"
+#include "base_integrationwevent.h"
+#include "PECEvar.h"
 #include "base_stepsizecontrol.h"
 #include "rkf45.h"
 #include "rk87.h"
-#include "PECEvar.h"
 
 #endif // SMARTMATH_INTEGRATORS_H
