@@ -30,6 +30,7 @@ namespace smartmath
             double m_multiplier;
             int m_order_max, m_order_min;
             std::vector<double> m_gamma_Bashforth, m_gamma_Moulton;
+            integrator::AB<T> *m_initializer;
 
         public:
 
@@ -66,6 +67,8 @@ namespace smartmath
                 for(int i=0; i<=m_order_max; i++)
                     m_gamma_Moulton.push_back(gamma_Moulton[i]);
 
+                m_initializer = new integrator::AB<T>(m_dyn,m_order_max);
+
             }
 
             /**
@@ -97,7 +100,6 @@ namespace smartmath
                 int check=0;
                 double factor;	
                 
-                integrator::AB<T> predictor(m_dyn,m_order_max); 
 	            std::vector<T> x(x0),xp(x0);
 	            std::vector<std::vector<T> > f_max, f;
 	            T er;
@@ -108,7 +110,7 @@ namespace smartmath
 	            std::vector<int> events=g(x0,ti), events2=events;
 	            int q=events.size();
                 
-	            predictor.initialize(m_order_max,ti,h,x0,f_max);
+	            m_initializer->initialize(m_order_max,ti,h,x0,f_max);
 
 	            int k=0;
                 while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
@@ -120,12 +122,12 @@ namespace smartmath
                         else{
                             h=-m_maxstep_events;  
                         }   
-                        predictor.initialize(m_order_max,t,h,x,f_max);
+                        m_initializer->initialize(m_order_max,t,h,x,f_max);
                     }  
 
 		            if(sqrt(pow(tend-t,2))<sqrt(h*h)){
 			            h=tend-t;
-			            predictor.initialize(m_order_max,t,h,x,f_max);	
+			            m_initializer->initialize(m_order_max,t,h,x,f_max);	
 		            }
 			
 		            f.clear();
@@ -145,7 +147,7 @@ namespace smartmath
 			            }
 			            else{				
 				            h*=0.9*factor;			
-				            predictor.initialize(m_order_max,t,h,x,f_max);
+				            m_initializer->initialize(m_order_max,t,h,x,f_max);
 				            //std::cout << "decreasing time-step" << std::endl;	
 			            }
 		            }
@@ -166,7 +168,7 @@ namespace smartmath
 			            if(check==1){
 				            if(sqrt(h*h)>m_minstep_events){
 					            h*=0.5;
-					            predictor.initialize(m_order_max,t,h,x,f_max);
+					            m_initializer->initialize(m_order_max,t,h,x,f_max);
 					            //std::cout << "decreasing time-step for event detection" << std::endl;
 				            }
 				            else{
@@ -181,7 +183,7 @@ namespace smartmath
 				            k++; // counting the number of steps
 				            x=xp; // updating state
 				            t+=h; // updating current time	
-                            predictor.update_saved_steps(m_order_max,t,x,f_max);	
+                            m_initializer->update_saved_steps(m_order_max,t,x,f_max);	
 				            events=events2;				
 				            x_history.push_back(x);
 				            t_history.push_back(t);	
@@ -196,7 +198,7 @@ namespace smartmath
 						            factor=m_multiplier;
 					            }	
 					            h*=factor; // updating step-size
-					            predictor.initialize(m_order_max,t,h,x,f_max);
+					            m_initializer->initialize(m_order_max,t,h,x,f_max);
 					            //std::cout << "increasing time-step" << std::endl;
 				            }
 				            else{

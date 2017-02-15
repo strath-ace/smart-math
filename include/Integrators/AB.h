@@ -26,6 +26,7 @@ namespace smartmath
             using base_multistep<T>::m_dyn;
             using base_multistep<T>::m_order;
             std::vector<double> m_beta;
+            integrator::rk4<T> *m_initializer;
 
         public:
 
@@ -56,6 +57,8 @@ namespace smartmath
 	            for(int i=0; i<m_order; i++){
 		            m_beta.push_back(prebeta[m_order-1][i]);
 	            }
+
+                m_initializer = new integrator::rk4<T>(m_dyn);
 
             }
 
@@ -109,14 +112,13 @@ namespace smartmath
 
 	            std::vector<T> dx(x0), x(x0), xp(x0);
 	            std::vector< std::vector<T> > fp;
-	            integrator::rk4<T> RK(m_dyn); // Runge kutta schemed used for initialization (here RK4)
 	            
                 /* Computing the initial saved steps */
 	            m_dyn->evaluate(ti,x,dx);
 	            fp.push_back(dx);
 	            double t=ti;
 	            for(int j=0; j<m-1; j++){
-		            RK.integration_step(t,-h,x,xp);
+		            m_initializer->integration_step(t,-h,x,xp);
 		            t-=h;
 		            x=xp;
 		            m_dyn->evaluate(t,x,dx);

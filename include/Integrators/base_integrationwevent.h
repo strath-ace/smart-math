@@ -153,32 +153,16 @@ namespace smartmath
                 return 0;
             }
 
-            #ifdef ENABLE_SMARTUQ
-                int error(const smartuq::polynomial::chebyshev_polynomial<double> &x, double &val) const{
-                    val=x.get_range()[1];
-                    return 0;
-                }
-                int error(const smartuq::polynomial::chebyshev_polynomial<float> &x, double &val) const{
-                    val=x.get_range()[1];
-                    return 0;
-                }
-                int error(const smartuq::polynomial::chebyshev_polynomial<long double> &x, double &val) const{
-                    val=x.get_range()[1];
-                    return 0;
-                }                        
-                int error(const smartuq::polynomial::taylor_polynomial<double> &x, double &val) const{
-                    val=x.get_coeffs()[0];
-                    return 0;
-                }
-                int error(const smartuq::polynomial::taylor_polynomial<float> &x, double &val) const{
-                    val=x.get_coeffs()[0];
-                    return 0;
-                }
-                int error(const smartuq::polynomial::taylor_polynomial<long double> &x, double &val) const{
-                    val=x.get_coeffs()[0];
-                    return 0;
-                }            
-            #endif       
+            // #ifdef ENABLE_SMARTUQ
+            //     int error(const smartuq::polynomial::chebyshev_polynomial &x, double &val) const{
+            //         val=x.get_range()[1];
+            //         return 0;
+            //     }                 
+            //     int error(const smartuq::polynomial::taylor_polynomial &x, double &val) const{
+            //         val=x.get_coeffs()[0];
+            //         return 0;
+            //     }      
+            // #endif       
 	
         };
 

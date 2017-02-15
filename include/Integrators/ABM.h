@@ -27,6 +27,7 @@ namespace smartmath
             using base_multistep<T>::m_dyn;
             using base_multistep<T>::m_order;
             std::vector<double> m_beta_Moulton;
+            integrator::AB<T> *m_predictor;
 
         public:
 
@@ -57,6 +58,8 @@ namespace smartmath
                     m_beta_Moulton.push_back(prebeta[m_order-2][i]);
                 }
 
+                m_predictor = new integrator::AB<T>(m_dyn,m_order);
+
             }
 
             /**
@@ -83,13 +86,12 @@ namespace smartmath
                     smartmath_throw("wrong number of saved states in multistep integration"); 
 
                 std::vector<T> dx=x0;    
-                integrator::AB<T> predictor(m_dyn,m_order);
 
-                predictor.integration_step(t,m,h,x0,f,xfinal); // prediction 
+                m_predictor->integration_step(t,m,h,x0,f,xfinal); // prediction 
 
                 /* Updating the saved steps */
                 std::vector<std::vector<T> > fp=f;
-                predictor.update_saved_steps(m,t+h,xfinal,fp);
+                m_predictor->update_saved_steps(m,t+h,xfinal,fp);
 
                 correction(h,x0,fp,xfinal); 
 
@@ -129,11 +131,9 @@ namespace smartmath
              * @param[out] f vector of saved state vectors for multistep scheme
              * @return
              */     
-            int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{
+            int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{  
 
-                integrator::AB<T> predictor(m_dyn,m_order);    
-
-                predictor.initialize(m_order,ti,h,x0,f);
+                m_predictor->initialize(m,ti,h,x0,f);
 
                 return 0;
             }            
