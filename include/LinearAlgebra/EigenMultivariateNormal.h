@@ -107,7 +107,7 @@ namespace Eigen {
 	  // the covariance matrix is symmetric, pos-definite.
 	  // But a covariance matrix might be pos-semi-definite.
 	  // In that case, we'll go to an EigenSolver
-	  if (cholSolver.info()==Eigen::Success)
+	  if (cholSolver.info()==Success)
 	    {
 	      // Use cholesky solver
 	      _transform = cholSolver.matrixL();
