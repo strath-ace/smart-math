@@ -15,7 +15,11 @@
 #include <cmath>
 #include <iostream>
 #include "../LinearAlgebra/Eigen/Eigen"
+#include "../LinearAlgebra/Eigen/Core"
+#include "../LinearAlgebra/EigenMultivariateNormal.h"
 #include "../exception.h"
+#include "chebyshev_inequality.h"
+#include <time.h>
 
 namespace smartmath{
 
@@ -48,6 +52,22 @@ int sample_truncated_normal_distribution(const double &lower_bound,
                                                          const double &sd,
                                                          const unsigned int &N_samples,
                                                          std::vector<double> &result);
+
+Eigen::MatrixXd sample_multivariate_normal_distribution(const Eigen::VectorXd &mean,
+                                                        const Eigen::MatrixXd &covar,
+                                                        const int &N_samples);
+
+Eigen::MatrixXd sample_truncated_multivariate_normal_distribution(const Eigen::VectorXd &lower_bounds,
+                                                         const Eigen::VectorXd &upper_bounds,
+                                                         const Eigen::VectorXd &mean,
+                                                         const Eigen::MatrixXd &covar,
+                                                         const unsigned int &N_samples, double &proportion_valid_samples);
+
+Eigen::MatrixXd sample_truncated_multivariate_normal_distribution(const Eigen::VectorXd &mean,
+                                                                  const Eigen::MatrixXd &covar,
+                                                                  const double &min_pr_valid_samples,
+                                                                  const unsigned int &N_samples,
+                                                                  double &pr_valid_samples);
 
 }
 

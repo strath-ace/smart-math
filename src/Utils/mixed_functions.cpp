@@ -137,7 +137,7 @@ int smartmath::sample_truncated_normal_distribution(const double &lower_bound,
 
     //While loop until reaching the desired number of samples
     unsigned int valid_samples_counter = 0;
-    while (valid_samples_counter <= N_samples)
+    while (valid_samples_counter < N_samples)
     {
         double sample = distribution(generator);
 
@@ -149,4 +149,94 @@ int smartmath::sample_truncated_normal_distribution(const double &lower_bound,
     }
 
     return 0;
+}
+
+Eigen::MatrixXd smartmath::sample_multivariate_normal_distribution(const Eigen::VectorXd &mean,
+                                                        const Eigen::MatrixXd &covar,
+                                                        const int &N_samples)
+{
+    Eigen::EigenMultivariateNormal<double> sampler(mean,covar,false,time(NULL));
+    return sampler.samples(N_samples);
+}
+
+Eigen::MatrixXd smartmath::sample_truncated_multivariate_normal_distribution(const Eigen::VectorXd &lower_bounds,
+                                                         const Eigen::VectorXd &upper_bounds,
+                                                         const Eigen::VectorXd &mean,
+                                                         const Eigen::MatrixXd &covar,
+                                                         const unsigned int &N_samples,
+                                                            double &proportion_valid_samples)
+{
+    Eigen::MatrixXd result = Eigen::MatrixXd::Zero(mean.size(),N_samples);
+    Eigen::EigenMultivariateNormal<double> sampler(mean,covar, false, time(NULL));
+
+    unsigned int valid_samples_counter = 0;
+    unsigned int wrong_samples_counter = 0;
+    while (valid_samples_counter < N_samples)
+    {
+        Eigen::MatrixXd sample = sampler.samples(1);
+        bool valid_sample = true;
+        for (std::size_t i = 0, max = sample.rows(); i != max; ++i)
+        {
+            if (sample(i,0) < lower_bounds(i) || sample(i,0) > upper_bounds(i))
+                valid_sample = false;
+        }
+        if (valid_sample) {
+            result.col(valid_samples_counter) = sample.col(0);
+            valid_samples_counter++;
+        } else {
+            wrong_samples_counter++;
+        }
+
+        /*if ((valid_samples_counter != 0) && (valid_samples_counter % 100) == 0)
+            std::cout << "Reached " << valid_samples_counter << " valid samples" << std::endl;
+        */
+    }
+    std::cout << "Proportion of valid samples: " << (double) valid_samples_counter/(wrong_samples_counter+valid_samples_counter) << std::endl;
+
+    proportion_valid_samples = (double) valid_samples_counter/(wrong_samples_counter+valid_samples_counter);
+    return result;
+}
+
+Eigen::MatrixXd smartmath::sample_truncated_multivariate_normal_distribution(const Eigen::VectorXd &mean,
+                                                                  const Eigen::MatrixXd &covar,
+                                                                  const double &min_pr_valid_samples,
+                                                                  const unsigned int &N_samples,
+                                                                  double &pr_valid_samples)
+{
+    int d = mean.size(); //Number of dimensions
+
+    //Step 1: Diagonalize the covariance matrix
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver(covar);
+    Eigen::VectorXd eigenvalues = eigensolver.eigenvalues();
+    Eigen::MatrixXd eigenvectors = eigensolver.eigenvectors();
+
+    //Step 2: Calculate the range for acceptance in the eigenspace, using the chebyshev inequality
+    // for independent variables
+    double k = smartmath::chebyshev_inequality::get_k_for_independent_variables(
+                d,
+                min_pr_valid_samples);
+
+    //Step 3: Transform mean and covariance to the eigenspace
+    Eigen::VectorXd mean_eigenspace = (eigenvectors.transpose())*mean;
+    Eigen::MatrixXd covar_eigenspace = eigenvalues.asDiagonal();
+
+    // Step 4: Get the lowe and upper bounds in the eigen space
+    Eigen::VectorXd sd_eigenspace = eigenvalues.array().sqrt();
+    Eigen::VectorXd lower_bounds = mean_eigenspace - k*sd_eigenspace;
+    Eigen::VectorXd upper_bounds = mean_eigenspace + k*sd_eigenspace;
+
+    //Step 5: Truncated Sampling in the eigenspace
+    Eigen::EigenMultivariateNormal<double> sampler(mean_eigenspace,
+                                                   covar_eigenspace,
+                                                   false,
+                                                   time(NULL));
+    Eigen::MatrixXd samples_eigenspace = sampler.samples_truncated(lower_bounds,
+                              upper_bounds,
+                              N_samples,
+                              pr_valid_samples);
+
+    //Step 6: Rotate the samples back to the original space
+    Eigen::MatrixXd samples = (eigenvectors)*samples_eigenspace;
+
+    return samples;
 }

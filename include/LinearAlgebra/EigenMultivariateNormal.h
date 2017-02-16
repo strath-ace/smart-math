@@ -130,6 +130,45 @@ namespace Eigen {
       {
 	return (_transform * Matrix<Scalar,Dynamic,-1>::NullaryExpr(_covar.rows(),nn,randN)).colwise() + _mean;
       }
+
+    /**
+     * @brief samples_truncated
+     * @param lower_bounds
+     * @param upper_bounds
+     * @param nn
+     * @param proportion_valid_samples
+     * @return
+     */
+    Eigen::MatrixXd samples_truncated(const Eigen::VectorXd &lower_bounds,
+                                                const Eigen::VectorXd &upper_bounds,
+                                                int nn,
+                                                double &proportion_valid_samples)
+    {
+        Eigen::MatrixXd result = Eigen::MatrixXd::Zero(_mean.size(),nn);
+
+        unsigned int valid_samples_counter = 0;
+        unsigned int wrong_samples_counter = 0;
+        while (valid_samples_counter < nn)
+        {
+            Eigen::MatrixXd sample = samples(1);
+            bool valid_sample = true;
+            for (std::size_t i = 0, max = sample.rows(); i != max; ++i)
+            {
+                if (sample(i,0) < lower_bounds(i) || sample(i,0) > upper_bounds(i))
+                    valid_sample = false;
+            }
+            if (valid_sample) {
+                result.col(valid_samples_counter) = sample.col(0);
+                valid_samples_counter++;
+            } else {
+                wrong_samples_counter++;
+            }
+
+        }
+        proportion_valid_samples = (double) valid_samples_counter/(wrong_samples_counter+valid_samples_counter);
+        return result;
+    }
+
   }; // end class EigenMultivariateNormal
 } // end namespace Eigen
 #endif
