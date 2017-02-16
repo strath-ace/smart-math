@@ -1,7 +1,7 @@
 #include "../../include/Utils/mixed_functions.h"
 
-using namespace std;
-using namespace smartmath;
+// using namespace std;
+// using namespace smartmath;
 
 int smartmath::factorial(int n)
 {

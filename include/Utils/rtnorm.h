@@ -31,12 +31,19 @@
 
 #include <vector>
 #include <random>
+#include <cmath>
+#include <iostream>
+#include <chrono>
+#include <time.h>
 #include "rtnorm_constants.h"
 
+#ifdef _OPENMP
+#include<omp.h>
+#endif
 
 
+namespace smartmath{
 
-namespace Rtnorm{
 //------------------------------------------------------------
 // Class for Pseudorandom numbers from a truncated Gaussian distribution
 // rntorm.sample()->
@@ -163,5 +170,7 @@ class rtnorm_multi{
 		int Nthreads;
 		
 };
+
+
 }
 #endif //__RTNORNM_HPP

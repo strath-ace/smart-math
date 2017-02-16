@@ -66,17 +66,20 @@ namespace smartmath
              *
              * The method implements the RK8(7) scheme to perform one integration step
              * @param[in] ti initial time
+             * @param[in] m method order
              * @param[in] h step size
              * @param[in] x0 vector of initial states
+             * @param[in] f vector of saved state vectors (for multistep scheme only) 
              * @param[out] xfinal vector of final states
              * @param[out] er estimated error 
              * @return
              */
-            int integration_step(const double &t, const double &h, const std::vector<T> &x, std::vector<T> &xfinal, T &er) const{
+            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const{
 		
 		        int n = x.size();
 		        std::vector<T> xtemp(x), xbar(x), k1(x), k2(x), k3(x), k4(x), k5(x), k6(x), k7(x), k8(x), k9(x), k10(x), k11(x), k12(x), k13(x);
 		        double t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13;
+		        xfinal=x;
 
 		        t1 = t;
 		        t2 = t + h/18.0;
@@ -166,11 +169,11 @@ namespace smartmath
 		        //* Return x(t+h) computed from Runge Kutta.
 		        er=0.0;
 		        for(int j=0; j<n; j++){
-		            xbar[j] = x[j]+ (k1[j]*14005451.0/335480064.0 -k6[j]*59238493.0/1068277825.0 +k7[j]*181606767.0/758867731.0 +k8[j]* 561292985.0/797845732.0
+		            xbar[j] +=  (k1[j]*14005451.0/335480064.0 -k6[j]*59238493.0/1068277825.0 +k7[j]*181606767.0/758867731.0 +k8[j]* 561292985.0/797845732.0
 		             -k9[j]*1041891430.0/1371343529.0 +k10[j]*760417239.0/1151165299.0  +k11[j]*118820643.0/751138087.0 -k12[j]*528747749.0/2220607170.0 + k13[j]/4.0)*h;
-		            xtemp[j] = x[j] + (k1[j]*13451932.0/455176623.0 -k6[j]*808719846.0/976000145.0 +k7[j]*1757004468.0/5645159321.0 +k8[j]*656045339.0/265891186.0
+		            xfinal[j] +=  (k1[j]*13451932.0/455176623.0 -k6[j]*808719846.0/976000145.0 +k7[j]*1757004468.0/5645159321.0 +k8[j]*656045339.0/265891186.0
 		             -k9[j]*3867574721.0/1518517206.0 +k10[j]*465885868.0/322736535.0  +k11[j]*53011238.0/667516719.0 +k12[j]*2.0/45.0)*h;
-		              er+=pow(xbar[j]-xtemp[j],2);
+		            er+=pow(xbar[j]-xfinal[j],2);
 		        }
 		        er=sqrt(er);
 
@@ -192,7 +195,7 @@ namespace smartmath
              * @param[in] event function
              * @return
              */
-            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal, std::vector<T> &t_history, std::vector<events::base_event<T>*> &event_list) const{
+            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &xfinal, std::vector<T> &t_history, std::vector<events::base_event<T>*> &event_list) const{
 
 	            xfinal.clear();
 	            t_history.clear();
@@ -201,6 +204,7 @@ namespace smartmath
                 int check=0;
 
                 std::vector<T> x(x0), xtemp(x0);
+                std::vector<std::vector<T> > f;
 
 	            double factor=1.0, value=0.0, t=ti, h = (tend-ti)/nsteps;
 	            T er=0.0*x0[0];
@@ -228,7 +232,7 @@ namespace smartmath
 		            if(sqrt(pow(tend-t,2))<sqrt(h*h))
 			            h=tend-t;
 
-		            integration_step(t,h,x,xtemp,er);
+		            integration_step(t,m_control,h,x,f,xtemp,er);
 
 		            /* Step-size control */
 		            error(er,value);

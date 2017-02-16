@@ -18,7 +18,7 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_multistep class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method integration_step()
+         * @brief The base_multistep class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method integration_step() as well as initialize()
          *
          * The base_multistep class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state 
          */

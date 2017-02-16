@@ -28,17 +28,10 @@
 //  Depends: c++11
 //  OS: Unix based system
 
-
-#include <cmath>
-#include <iostream>
-#include <chrono>
 #include "../../include/Utils/rtnorm.h"
 
-#ifdef _OPENMP
-#include<omp.h>
-#endif
+using namespace smartmath;
 
-using namespace Rtnorm;
 //------------------------------------------------------------
 // Rejection algorithm with a truncated exponential proposal
 double rtexp(std::mt19937_64 *gen_,std::uniform_real_distribution<double> *U01 , double a, double b)
@@ -207,10 +200,6 @@ double rtnorm::sample_xmin_xmax(double a, double b)
 
 
 
-
-
-
-#include <time.h>
 
 
 void rtnorm_multi::sample(const int n, 

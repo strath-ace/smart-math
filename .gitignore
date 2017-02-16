@@ -2,4 +2,6 @@
 /docs/
 /.project
 /build/
+CMakeCache.txt
+cmake.check_cache
 *~

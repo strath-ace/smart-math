@@ -18,6 +18,11 @@ int main(){
 
     cout << "Welcome to SMART-MATH!" << endl;
 
+    int n = 5;
+    int k = 3;
+
+    std::cout << "\nCombination: " << smartmath::combination(n,k) << std::endl;
+
 }
 
 

@@ -12,6 +12,7 @@
 
 #include "base_integrator.h"
 #include "../exception.h"
+#include <type_traits>
 
 namespace smartmath
 {
@@ -23,26 +24,28 @@ namespace smartmath
          * The base_stepsizecontrol class is a template abstract class. Any variable step-size algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state 
          */
         template < class T >
-        class base_stepsizecontrol: public base_integrator<T>
+        class base_stepsizecontrol: public base_integrationwevent<T>
         {
 
         protected:
-            using base_integrator<T>::m_name;
-            using base_integrator<T>::m_dyn;
+            using base_integrationwevent<T>::m_name;
+            using base_integrationwevent<T>::m_dyn;
+            using base_integrationwevent<T>::m_minstep_events;
+            using base_integrationwevent<T>::m_maxstep_events;            
             double m_tol;
             double m_multiplier;
             double m_control;
-            double m_minstep_events;
-            double m_maxstep_events;
+
 
         public:
 
-            using base_integrator<T>::integrate;
+            using base_integrationwevent<T>::integrate;
+            using base_integrationwevent<T>::error;
 
             /**
              * @brief base_stepsizecontrol constructor
              *
-             * The constructor initialize the name of the integrator and a pointer to the dynamical system to be integrated
+             * The constructor specifically initializes a tolerance for integration error and a maximum multiplier to increase the stepsize
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              * @param tol threshold used for acceptable estimated error
@@ -50,15 +53,13 @@ namespace smartmath
              * @param m_minstep_events minimum step-size to detect an event
              * @param m_maxstep_events maximum step-size
              */
-            base_stepsizecontrol(const std::string &name, const dynamics::base_dynamics<T> *dyn, const double &tol, const double &multiplier, const double &minstep_events, const double &maxstep_events) : base_integrator<T>(name, dyn), m_tol(tol), m_multiplier(multiplier), m_minstep_events(minstep_events), m_maxstep_events(maxstep_events){
+            base_stepsizecontrol(const std::string &name, const dynamics::base_dynamics<T> *dyn, const double &tol, const double &multiplier, const double &minstep_events, const double &maxstep_events) : base_integrationwevent<T>(name, dyn, minstep_events, maxstep_events), m_tol(tol), m_multiplier(multiplier){
                 
                 /** sanity checks **/
                 if(tol<=0.0)
                    smartmath_throw("tolerance for estimated error must be non negative");
                 if((multiplier>5.0)||(multiplier<2.0))
                    smartmath_throw("maximum step-multiplier must be between 2 and 5");
-                if(minstep_events<=0.0)
-                   smartmath_throw("minimum step-size for events must be non negative");
 
             }
 
@@ -73,13 +74,15 @@ namespace smartmath
              * The method implements one step of a variable step-size algorithm to integrate with given initial time,
              * final time, initial state condition(constant stepsize)
              * @param[in] ti initial time instant
+             * @param[in] m method order
              * @param[in] h time step
              * @param[in] x0 vector of initial states
+             * @param[in] f vector of saved state vectors (for multistep scheme only) 
              * @param[out] xfinal vector of final states
              * @param[out] estimated error
              * @return
              */
-            virtual int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal, T &er) const = 0;
+            virtual int integration_step(const double &ti, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const = 0;
 
             /**
              * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size while handling events
@@ -90,7 +93,7 @@ namespace smartmath
              * @param[in] tend final time instant
              * @param[in] nsteps initial guess for number of integration steps
              * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of intemrediate states
+             * @param[out] xfinal vector of intermediate states
              * @param[out] t_history vector of intermediate times
              * @param[in] event function             
              * @return
@@ -103,6 +106,7 @@ namespace smartmath
                 int k;
                 int check=0;
                 std::vector<T> x(x0), xtemp(x0);
+                std::vector<std::vector<T> > f;
 
                 double factor=1.0, value=0.0, t=ti, h = (tend-ti)/nsteps;
                 T er=0.0*x0[0];
@@ -114,7 +118,7 @@ namespace smartmath
                 while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
 
                     if((h*h>m_maxstep_events*m_maxstep_events)&&(m_maxstep_events>0.0)){
-                        if(h>=0.0){
+                        if(h>0.0){
                             h=m_maxstep_events;
                         }
                         else{
@@ -125,8 +129,8 @@ namespace smartmath
                     if(sqrt(pow(tend-t,2))<sqrt(h*h))
                         h=tend-t;
 
-                    integration_step(t,h,x,xtemp,er);
-
+                    integration_step(t,m_control,h,x,f,xtemp,er);
+                    
                     /* Step-size control */
                     error(er,value);
                     factor=pow(m_tol/value,1.0/(m_control+1.0));
@@ -179,109 +183,7 @@ namespace smartmath
 
                 return 0;
             }
-
-            /**
-             * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size
-             *
-             * The method implements a variable step-size scheme to integrate with given initial time,
-             * final time, initial state condition and initial guess for step-size
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps initial guess for number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
-
-                double t0=ti, tf=tend, n=nsteps;
-                std::vector<T> x(x0);
-
-                integrate(t0,tf,n,x,x_history,t_history,dummy_event);
-    
-                return 0;
-            }
-
-
-            /**
-             * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size while handling events
-             *
-             * The method implements a variable step-size scheme to integrate with given initial time,
-             * final time, initial state condition and initial guess for step-size
-             * @param[in] ti initial time instant
-             * @param[out] tend final time instant
-             * @param[in] nsteps initial guess for number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @param[in] event function
-             * @return
-             */
-            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal, std::vector<int> (*g)(std::vector<T> x, double d)) const{
-
-                std::vector<std::vector<T> > x_history;
-                std::vector<double> t_history;
-
-                integrate(ti, tend, nsteps, x0, x_history, t_history, *g);
-
-                xfinal=x_history.back();
-
-                return 0;
-            }
-
-            /**
-             * @brief returns a vector with one component equal to integer 0
-             *
-             * @param[in] x state vector
-             * @param[in] d time
-             * @param[out] vector with one 0
-             * @return
-             */
-            static std::vector<int> dummy_event(std::vector<T> x, double d){
-
-                std::vector<int> output(1,0);
-
-                return output;
-
-            }
-
-            /**
-             * @brief returns a double equal to the input for real numbers and something meaningful for polynomials
-             *
-             * @param[in] x estimated error
-             * @param[out] val double equal to x for real numbers and something else for polynomials
-             * @return
-             */
-            int error(const T &x, T &val) const{
-                val=x;
-                return 0;
-            }
-
-            #ifdef ENABLE_SMARTUQ
-                int error(const smartuq::polynomial::chebyshev_polynomial<double> &x, double &val) const{
-                    val=x.get_range()[1];
-                return 0;
-                }
-                int error(const smartuq::polynomial::chebyshev_polynomial<float> &x, double &val) const{
-                    val=x.get_range()[1];
-                return 0;
-                }
-                int error(const smartuq::polynomial::chebyshev_polynomial<long double> &x, double &val) const{
-                    val=x.get_range()[1];
-                return 0;
-                }                        
-                int error(const smartuq::polynomial::taylor_polynomial<double> &x, double &val) const{
-                    val=x.get_coeffs()[0];
-                return 0;
-                }
-                int error(const smartuq::polynomial::taylor_polynomial<float> &x, double &val) const{
-                    val=x.get_coeffs()[0];
-                return 0;
-                }
-                int error(const smartuq::polynomial::taylor_polynomial<long double> &x, double &val) const{
-                    val=x.get_coeffs()[0];
-                return 0;
-                }            
-            #endif            
+          
 	
         };
 
