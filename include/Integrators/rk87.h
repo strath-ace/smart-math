@@ -40,7 +40,7 @@ namespace smartmath
         	
         	using base_stepsizecontrol<T>::integrate;
             using base_stepsizecontrol<T>::dummy_event;
-            using base_stepsizecontrol<T>::error;
+            using base_stepsizecontrol<T>::evaluate_squarerootintegrationerror;
 
             /**
              * @brief rk87 constructor
@@ -235,7 +235,7 @@ namespace smartmath
 		            integration_step(t,m_control,h,x,f,xtemp,er);
 
 		            /* Step-size control */
-		            error(er,value);
+		            value=evaluate_squarerootintegrationerror(er);
 		            factor=pow(m_tol/value,1.0/(m_control+1.0));
 		            if(value>m_tol){ // unsucessful step
 			            h*=0.9*factor; 		
