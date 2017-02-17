@@ -146,8 +146,8 @@ namespace Eigen {
     {
         Eigen::MatrixXd result = Eigen::MatrixXd::Zero(_mean.size(),nn);
 
-        unsigned int valid_samples_counter = 0;
-        unsigned int wrong_samples_counter = 0;
+        int valid_samples_counter = 0;
+        int wrong_samples_counter = 0;
         while (valid_samples_counter < nn)
         {
             Eigen::MatrixXd sample = samples(1);

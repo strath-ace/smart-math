@@ -46,23 +46,55 @@ double bisection_method(fun f, double lb, double ub, double prec);
 double Legendre(int l, int m, double x);
 double Legendre_derivative(int l, int m, double x);
 
-int sample_truncated_normal_distribution(const double &lower_bound,
-                                                         const double &upper_bound,
-                                                         const double &mean,
-                                                         const double &sd,
-                                                         const unsigned int &N_samples,
-                                                         std::vector<double> &result);
-
+/**
+ * @brief sample_multivariate_normal_distribution Sampling method for multivariate
+ * normal distributions of any dimensionality
+ * @param mean Vector containing the mean of the distribution
+ * @param covar Covariance Matrix
+ * @param N_samples Number of samples needed
+ * @return Matrix with N_samples columns. Each column represents a sample
+ */
 Eigen::MatrixXd sample_multivariate_normal_distribution(const Eigen::VectorXd &mean,
                                                         const Eigen::MatrixXd &covar,
                                                         const int &N_samples);
 
+/**
+ * @brief sample_truncated_multivariate_normal_distribution Create samples (x1,x2,...xd)
+ * of a multivariate normal distribution, bounded to a given multidimensional
+ * rectangular region, such as (a1<=x1<=b1, a2<=x2<=b2,...,ad<=xd<=bd)
+ * @param lower_bounds Vector of lower bounds (a1,a2,...,ad)
+ * @param upper_bounds Vector of upper bounds (b1,b2,...,bd)
+ * @param mean Vector containing the mean of the distribution
+ * @param covar Covariance Matrix
+ * @param N_samples Number of samples needed
+ * @param pr_valid_samples Output argument. Gives the probability that a sample has been marked as
+ * valid during the sampling.
+ * @return Matrix with N_samples columns. Each column represents a sample
+ */
 Eigen::MatrixXd sample_truncated_multivariate_normal_distribution(const Eigen::VectorXd &lower_bounds,
                                                          const Eigen::VectorXd &upper_bounds,
                                                          const Eigen::VectorXd &mean,
                                                          const Eigen::MatrixXd &covar,
-                                                         const unsigned int &N_samples, double &proportion_valid_samples);
+                                                         const unsigned int &N_samples,
+                                                        double &pr_valid_samples);
 
+/**
+ * @brief sample_truncated_multivariate_normal_distribution Create samples (x1,x2,...xd)
+ * of a multivariate normal distribution, bounded to a multidimensional
+ * rectangular region, such as (a1<=x1<=b1, a2<=x2<=b2,...,ad<=xd<=bd). This rectangular region
+ * is not given a priori, but it is automatically computed based on the parameter min_pr_valid_samples,
+ * which sets the minimum probability that a sample is valid (not rejected) during the sampling process.
+ * The higher is this probability, the broader will be the rectangular bounds. Internally, this method
+ * creates the samples in the eigenspace corresponding to the given covariance matrix, so that the variables
+ * there are independent and we can easily compute the bounds for each dimension independently using the
+ * Chebyshev inequality
+ * @param mean Vector containing the mean of the distribution
+ * @param covar Covariance Matrix
+ * @param min_pr_valid_samples Minimum probability that a sample is valid (not rejected) during the sampling process
+ * @param N_samples Number of samples needed
+ * @param pr_valid_samples Output argument. Actual probability that a sample was valid during the sampling process
+ * @return Matrix with N_samples columns. Each column represents a sample
+ */
 Eigen::MatrixXd sample_truncated_multivariate_normal_distribution(const Eigen::VectorXd &mean,
                                                                   const Eigen::MatrixXd &covar,
                                                                   const double &min_pr_valid_samples,
