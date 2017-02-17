@@ -130,8 +130,7 @@ namespace smartmath
              *
              * @param[in] x state vector
              * @param[in] d time
-             * @param[out] vector with one 0
-             * @return
+             * @return vector with one 0
              */
             static std::vector<int> dummy_event(std::vector<T> x, double d){
 
@@ -145,24 +144,17 @@ namespace smartmath
              * @brief returns a double equal to the input for real numbers and something meaningful for polynomials
              *
              * @param[in] x estimated error
-             * @param[out] val double equal to x for real numbers and something else for polynomials
-             * @return
+             * @return double equal to x for real numbers and something else for polynomials in smartuq
              */
-            int error(const T &x, double &val) const{
-                val=x;  
-                return 0;
+            double evaluate_squarerootintegrationerror(const float &x) const{
+                return x;
             }
-
-            // #ifdef ENABLE_SMARTUQ
-            //     int error(const smartuq::polynomial::chebyshev_polynomial &x, double &val) const{
-            //         val=x.get_range()[1];
-            //         return 0;
-            //     }                 
-            //     int error(const smartuq::polynomial::taylor_polynomial &x, double &val) const{
-            //         val=x.get_coeffs()[0];
-            //         return 0;
-            //     }      
-            // #endif       
+            double evaluate_squarerootintegrationerror(const double &x) const{
+                return x;
+            }
+            double evaluate_squarerootintegrationerror(const long double &x) const{
+                return x;
+            }    
 	
         };
 

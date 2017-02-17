@@ -35,7 +35,7 @@ namespace smartmath
         public:
 
             using base_integrationwevent<T>::integrate;
-            using base_integrationwevent<T>::error;
+            using base_integrationwevent<T>::evaluate_squarerootintegrationerror;
         	
             /**
              * @brief Adam Bashforth Moulton constructor
@@ -137,7 +137,7 @@ namespace smartmath
                 	integration_step(t,m,h,x,f,xp,er);
 		
 		            /* Step-size and order control */
-		            error(er,value);
+		            value=evaluate_squarerootintegrationerror(er);
 		            factor=pow(m_tol/value,1.0/(double(m)+1.0));
 		            if(value>m_tol){ // unsucessful step
 			            if(m<m_order_max){

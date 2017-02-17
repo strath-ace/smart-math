@@ -35,12 +35,12 @@ namespace smartmath
             double m_tol;
             double m_multiplier;
             double m_control;
-
+            std::vector<events::base_event<T>*> m_event_list;
 
         public:
 
             using base_integrationwevent<T>::integrate;
-            using base_integrationwevent<T>::error;
+            using base_integrationwevent<T>::evaluate_squarerootintegrationerror;
 
             /**
              * @brief base_stepsizecontrol constructor
@@ -132,7 +132,7 @@ namespace smartmath
                     integration_step(t,m_control,h,x,f,xtemp,er);
                     
                     /* Step-size control */
-                    error(er,value);
+                    value = evaluate_squarerootintegrationerror(er);
                     factor=pow(m_tol/value,1.0/(m_control+1.0));
                     if(value>m_tol){ // unsucessful step
                         h*=0.9*factor;  
@@ -183,7 +183,13 @@ namespace smartmath
 
                 return 0;
             }
-          
+
+            int set_event_list(std::vector<events::base_event<T>*> &event_list){
+
+                m_event_list=event_list;
+
+                return 0;
+            }
 	
         };
 
