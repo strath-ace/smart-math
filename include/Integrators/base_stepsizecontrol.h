@@ -35,7 +35,7 @@ namespace smartmath
             double m_tol;
             double m_multiplier;
             double m_control;
-            std::vector<events::base_event<T>*> m_event_list;
+            //std::vector<events::base_event<T>*> m_event_list;
 
         public:
 
@@ -184,12 +184,12 @@ namespace smartmath
                 return 0;
             }
 
-            int set_event_list(std::vector<events::base_event<T>*> &event_list){
+            //int set_event_list(std::vector<events::base_event<T>*> &event_list){
 
-                m_event_list=event_list;
+                //m_event_list=event_list;
 
-                return 0;
-            }
+                //return 0;
+            //}
 	
         };
 
