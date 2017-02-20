@@ -39,7 +39,7 @@ namespace smartmath
              * The integrator is initialized with the super class constructor. No additional parameters are set.
              * @param dyn
              */
-            ABM(const dynamics::base_dynamics<T> *dyn, const int order=6): base_multistep<T>("Adam Bashforth Moulton algorithm", dyn, order)
+            ABM(const dynamics::base_dynamics<T> *dyn, const int order=8): base_multistep<T>("Adam Bashforth Moulton algorithm", dyn, order)
             {
 
                 if((order<2)||(order>8))
