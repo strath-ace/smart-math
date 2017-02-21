@@ -42,7 +42,6 @@ namespace smartmath
         public:
 
             using base_integrationwevent<T>::integrate;
-            using base_integrationwevent<T>::dummy_event;
             using base_integrationwevent<T>::set_event_list;
             using base_integrationwevent<T>::evaluate_squarerootintegrationerror;
 

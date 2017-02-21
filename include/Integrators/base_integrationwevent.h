@@ -141,6 +141,11 @@ namespace smartmath
                 return output;
             }
 
+            /**
+             * @brief assings a list of events to the integrators if the events are handled via this approach (other way is using a function as dummy_event)
+             *
+             * @param[in] list of events
+             */
             void set_event_list(std::vector<events::base_event<T>*> &event_list){
 
                 m_event_list=event_list;
