@@ -32,15 +32,18 @@ namespace smartmath
             using base_integrationwevent<T>::m_name;
             using base_integrationwevent<T>::m_dyn;
             using base_integrationwevent<T>::m_minstep_events;
-            using base_integrationwevent<T>::m_maxstep_events;            
+            using base_integrationwevent<T>::m_maxstep_events;     
+            using base_integrationwevent<T>::m_event_list;
             double m_tol;
             double m_multiplier;
             double m_control;
-            //std::vector<events::base_event<T>*> m_event_list;
+            
 
         public:
 
             using base_integrationwevent<T>::integrate;
+            using base_integrationwevent<T>::dummy_event;
+            using base_integrationwevent<T>::set_event_list;
             using base_integrationwevent<T>::evaluate_squarerootintegrationerror;
 
             /**
@@ -112,8 +115,20 @@ namespace smartmath
                 double factor=1.0, value=0.0, t=ti, h = (tend-ti)/nsteps;
                 T er=0.0*x0[0];
 
-                std::vector<int> events=g(x0,ti), events2=events;
-                int m=events.size();             
+                std::vector<int> events, events2;
+                if(m_event_list.size()==0)
+                {
+                    events=g(x0,ti);
+                }
+                else{
+                    events=std::vector<int>(m_event_list.size(),0);
+                    for(unsigned int index = 0; index < m_event_list.size(); ++index)
+                    {   
+                        events[index] = m_event_list[index]->evaluate(ti, x0);
+                    }
+                }
+                events2=events;
+                int m=events.size();           
 
                 int i=0;
                 while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
@@ -140,7 +155,16 @@ namespace smartmath
                     }
                     else{ // sucessful step
                         /* Checking for the events */
-                        events2=g(xtemp,t+h);
+                        if(m_event_list.size()==0)
+                        {
+                            events2=g(xtemp,t+h);
+                        }
+                        else{
+                            for(unsigned int index = 0; index < m; ++index)
+                            {
+                                events2[index] = m_event_list[index]->evaluate(t+h, xtemp);
+                            }
+                        }
                         k=0;
                         check=0;        
                         while(k<m){
@@ -162,13 +186,21 @@ namespace smartmath
                                 t=tend; // trick to get out of the while loop   
                                 x_history.push_back(xtemp);
                                 t_history.push_back(t);
+                                if(m_event_list.size()!=0)
+                                {
+                                    for(unsigned int index = 0; index < m; ++index)
+                                    {
+                                        if(events2[index]-events[index]!=0)
+                                            m_event_list[index]->switch_trigger_on(t_history.back());
+                                    }
+                                } 
                                 std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << i << " steps" << std::endl;
                             }
                         }
                         else{
                             x=xtemp; // updating state
-                            t+=h; // updating current time          
-                            events=events2;             
+                            t+=h; // updating current time  
+                            events=events2; 
                             x_history.push_back(x);
                             t_history.push_back(t); 
                             /* Step-size control */
@@ -198,119 +230,119 @@ namespace smartmath
              * @param[in] event function
              * @return
              */
-            int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &xfinal, std::vector<T> &t_history, std::vector<events::base_event<T>*> &event_list) const{
+        //     int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &xfinal, std::vector<T> &t_history, std::vector<events::base_event<T>*> &event_list) const{
 
-                xfinal.clear();
-                t_history.clear();
+        //         xfinal.clear();
+        //         t_history.clear();
 
-                int k;
-                int check=0;
+        //         int k;
+        //         int check=0;
 
-                std::vector<T> x(x0), xtemp(x0);
-                std::vector<std::vector<T> > f;
+        //         std::vector<T> x(x0), xtemp(x0);
+        //         std::vector<std::vector<T> > f;
 
-                double factor=1.0, value=0.0, t=ti, h = (tend-ti)/nsteps;
-                T er=0.0*x0[0];
+        //         double factor=1.0, value=0.0, t=ti, h = (tend-ti)/nsteps;
+        //         T er=0.0*x0[0];
 
-                std::vector<int> events(event_list.size(), 0);
-                for(unsigned int index = 0; index < events.size(); ++index)
-                {
-                    events[index] = event_list[index]->evaluate(ti, x0);
-                }
-                std::vector<int> events2 = events;
-                int m=events.size();
+        //         std::vector<int> events(m_event_list.size(), 0);
+        //         for(unsigned int index = 0; index < events.size(); ++index)
+        //         {
+        //             events[index] = event_list[index]->evaluate(ti, x0);
+        //         }
+        //         std::vector<int> events2 = events;
+        //         int m=events.size();
 
-                int i=0;
-                while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
+        //         int i=0;
+        //         while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
 
-                    if((h>m_maxstep_events)&&(m_maxstep_events>0.0)){
-                        if(h>=0.0){
-                            h=m_maxstep_events;
-                        }
-                        else{
-                            h=-m_maxstep_events;
-                        }  
-                    }   
+        //             if((h>m_maxstep_events)&&(m_maxstep_events>0.0)){
+        //                 if(h>=0.0){
+        //                     h=m_maxstep_events;
+        //                 }
+        //                 else{
+        //                     h=-m_maxstep_events;
+        //                 }  
+        //             }   
 
-                    if(sqrt(pow(tend-t,2))<sqrt(h*h))
-                        h=tend-t;
+        //             if(sqrt(pow(tend-t,2))<sqrt(h*h))
+        //                 h=tend-t;
 
-                    integration_step(t,m_control,h,x,f,xtemp,er);
+        //             integration_step(t,m_control,h,x,f,xtemp,er);
 
-                    /* Step-size control */
-                    value=evaluate_squarerootintegrationerror(er);
-                    factor=pow(m_tol/value,1.0/(m_control+1.0));
-                    if(value>m_tol){ // unsucessful step
-                        h*=0.9*factor;      
-                    }
-                    else{ // sucessful step
-                        /* Checking for the events */
-                        for(unsigned int index = 0; index < event_list.size(); ++index)
-                        {
-                            events2[index] = event_list[index]->evaluate(t+h, xtemp);
-                        }
-                        k=0;
-                        check=0;        
-                        while(k<m){
-                            if(events2[k]-events[k]!=0){
-                                check=1;
-                                k=m;
-                            }
-                            else{
-                                k++;
-                            }
-                        }
+        //             /* Step-size control */
+        //             value=evaluate_squarerootintegrationerror(er);
+        //             factor=pow(m_tol/value,1.0/(m_control+1.0));
+        //             if(value>m_tol){ // unsucessful step
+        //                 h*=0.9*factor;      
+        //             }
+        //             else{ // sucessful step
+        //                 /* Checking for the events */
+        //                 for(unsigned int index = 0; index < event_list.size(); ++index)
+        //                 {
+        //                     events2[index] = event_list[index]->evaluate(t+h, xtemp);
+        //                 }
+        //                 k=0;
+        //                 check=0;        
+        //                 while(k<m){
+        //                     if(events2[k]-events[k]!=0){
+        //                         check=1;
+        //                         k=m;
+        //                     }
+        //                     else{
+        //                         k++;
+        //                     }
+        //                 }
 
-                        if(check==1){
-                            if(sqrt(h*h)>m_minstep_events){
-                                h*=0.5;
-                            }
-                            else{
-                                t_history.push_back(t+h); // saving the termination time                    
-                                t=tend; // trick to get out of the while loop
-                                xfinal.push_back(x);                
-                                for(unsigned int index = 0; index < m; ++index)
-                                {
-                                    if(events2[index]-events[index]!=0)
-                                        event_list[index]->switch_trigger_on(t_history.back());
-                                }
-                                // std::cout << "Propagation interrupted by terminal event at time " << t_history.back() << " after " << i << " steps" << std::endl;
-                            }
-                        }
-                        else{
-                            x=xtemp; // updating state
-                            xfinal.push_back(x);
-                            t+=h; // updating current time  
-                            t_history.push_back(t);     
-                            events=events2;                 
-                            /* Step-size control */
-                            if(factor>m_multiplier){
-                                factor=m_multiplier;
-                            }   
-                            h*=factor; // updating step-size
-                            i++; // counting the number of steps                                    
-                        }           
+        //                 if(check==1){
+        //                     if(sqrt(h*h)>m_minstep_events){
+        //                         h*=0.5;
+        //                     }
+        //                     else{
+        //                         t_history.push_back(t+h); // saving the termination time                    
+        //                         t=tend; // trick to get out of the while loop
+        //                         xfinal.push_back(x);                
+        //                         for(unsigned int index = 0; index < m; ++index)
+        //                         {
+        //                             if(events2[index]-events[index]!=0)
+        //                                 event_list[index]->switch_trigger_on(t_history.back());
+        //                         }
+        //                         // std::cout << "Propagation interrupted by terminal event at time " << t_history.back() << " after " << i << " steps" << std::endl;
+        //                     }
+        //                 }
+        //                 else{
+        //                     x=xtemp; // updating state
+        //                     xfinal.push_back(x);
+        //                     t+=h; // updating current time  
+        //                     t_history.push_back(t);     
+        //                     events=events2;                 
+        //                     /* Step-size control */
+        //                     if(factor>m_multiplier){
+        //                         factor=m_multiplier;
+        //                     }   
+        //                     h*=factor; // updating step-size
+        //                     i++; // counting the number of steps                                    
+        //                 }           
         
-                    }   
-                     //std::cout << "current step is " << i << " with relative size of " << h/(tend-ti) << " and estimated error of " << value << std::endl;    
-                }
+        //             }   
+        //              //std::cout << "current step is " << i << " with relative size of " << h/(tend-ti) << " and estimated error of " << value << std::endl;    
+        //         }
 
-                return 0;
-            }
+        //         return 0;
+        //     }
 
 
-             int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal, std::vector<events::base_event<T>*> &event_list) const{
+        //      int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal, std::vector<events::base_event<T>*> &event_list) const{
 
-                std::vector<std::vector<T> > xf;
-                std::vector<double> t;
+        //         std::vector<std::vector<T> > xf;
+        //         std::vector<double> t;
 
-                integrate(ti, tend, nsteps, x0, xf, t, event_list);
+        //         integrate(ti, tend, nsteps, x0, xf, t, event_list);
 
-                xfinal=xf.back();
-                tend=t.back();
+        //         xfinal=xf.back();
+        //         tend=t.back();
 
-                return 0;
-            }
+        //         return 0;
+        //     }
 
 	
         };
