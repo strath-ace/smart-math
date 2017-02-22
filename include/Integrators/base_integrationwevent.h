@@ -12,6 +12,7 @@
 
 #include "base_integrator.h"
 #include "../exception.h"
+#include "../Events/base_event.h"
 #include <type_traits>
 
 namespace smartmath
@@ -32,6 +33,7 @@ namespace smartmath
             using base_integrator<T>::m_dyn;
             double m_minstep_events;
             double m_maxstep_events;
+            std::vector<events::base_event<T>*> m_event_list;
 
         public:
 
@@ -137,6 +139,16 @@ namespace smartmath
                 std::vector<int> output(1,0);
 
                 return output;
+            }
+
+            /**
+             * @brief assings a list of events to the integrators if the events are handled via this approach (other way is using a function as dummy_event)
+             *
+             * @param[in] list of events
+             */
+            void set_event_list(std::vector<events::base_event<T>*> &event_list){
+
+                m_event_list=event_list;
 
             }
 

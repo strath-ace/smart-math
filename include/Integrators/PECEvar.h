@@ -25,7 +25,8 @@ namespace smartmath
             using base_integrationwevent<T>::m_name;
             using base_integrationwevent<T>::m_dyn;
             using base_integrationwevent<T>::m_minstep_events;
-            using base_integrationwevent<T>::m_maxstep_events;            
+            using base_integrationwevent<T>::m_maxstep_events;  
+            using base_integrationwevent<T>::m_event_list;          
             double m_tol;
             double m_multiplier;
             int m_order_max, m_order_min;
@@ -35,10 +36,11 @@ namespace smartmath
         public:
 
             using base_integrationwevent<T>::integrate;
+            using base_integrationwevent<T>::set_event_list;
             using base_integrationwevent<T>::evaluate_squarerootintegrationerror;
         	
             /**
-             * @brief Adam Bashforth Moulton constructor
+             * @brief Adam Bashforth Moulton with variable order and stepsize constructor
              *
              * The constructor specifically initializes a tolerance for integration error, a maximum multiplier to increase the stepsize as well as a minimum and maximum order  
              * @param dyn pointer to a base_dynamics object
@@ -72,13 +74,13 @@ namespace smartmath
             }
 
             /**
-              * @brief ~ABM deconstructor
+              * @brief ~PECEvar deconstructor
               */
             ~PECEvar(){}
 
 
             /**
-             * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size while handling events
+             * @brief integrate method to integrate between two given time steps, with initial condition and initial guess for step-size while handling events
              *
              * The method implements the ABM scheme to integrate with given initial time,
              * final time, initial state condition and initial guess for step-size
@@ -107,8 +109,20 @@ namespace smartmath
 	            double t=ti, h = (tend-ti)/nsteps;
 	            double value;
 
-	            std::vector<int> events=g(x0,ti), events2=events;
-	            int q=events.size();
+                std::vector<int> events, events2;
+                if(m_event_list.size()==0)
+                {
+                    events=g(x0,ti);
+                }
+                else{
+                    events=std::vector<int>(m_event_list.size(),0);
+                    for(unsigned int index = 0; index < m_event_list.size(); ++index)
+                    {   
+                        events[index] = m_event_list[index]->evaluate(ti, x0);
+                    }
+                }
+                events2=events;
+                int q=events.size();  
                 
 	            m_initializer->initialize(m_order_max,ti,h,x0,f_max);
 
@@ -153,7 +167,16 @@ namespace smartmath
 		            }
 		            else{ // sucessful step
 			            /* Checking for the events */
-			            events2=g(xp,t+h);
+                        if(m_event_list.size()==0)
+                        {
+                            events2=g(xp,t+h);
+                        }
+                        else{
+                            for(unsigned int index = 0; index < q; ++index)
+                            {
+                                events2[index] = m_event_list[index]->evaluate(t+h, xp);
+                            }
+                        }			            
 			            i=0;
 			            check=0;		
 			            while(i<q){
@@ -187,6 +210,14 @@ namespace smartmath
 				            events=events2;				
 				            x_history.push_back(x);
 				            t_history.push_back(t);	
+                            if(m_event_list.size()!=0)
+                            {
+                                for(unsigned int index = 0; index < q; ++index)
+                                {
+                                    if(events2[index]-events[index]!=0)
+                                        m_event_list[index]->switch_trigger_on(t_history.back());
+                                }
+                            }                             
 				            /* Step-size and order control */
 				            if((m>m_order_min)&&(mold!=m-1)){
 					            mold=m;
@@ -291,7 +322,7 @@ namespace smartmath
              /**
              * @brief correction method to integrate between two given time steps, initial condition and number of steps
              *
-             * The method implements the correction step in the Adam Bashforth Moulton scheme 
+             * The method implements either the prediction or the correction step in the Adam Bashforth Moulton scheme 
              * @param[in] m order
              * @param[in] h step-size
              * @param[in] x0 vector of initial states

@@ -38,7 +38,7 @@ namespace smartmath
              * The integrator is initialized with the super class constructor. No additional parameters are set.
              * @param dyn
              */
-            AB(const dynamics::base_dynamics<T> *dyn, const int order=6): base_multistep<T>("Adam Bashforth integration scheme", dyn, order)
+            AB(const dynamics::base_dynamics<T> *dyn, const int order=8): base_multistep<T>("Adam Bashforth integration scheme", dyn, order)
             {
 
                 if((order<1)||(order>8))
