@@ -188,3 +188,33 @@ Eigen::MatrixXd smartmath::sample_truncated_multivariate_normal_distribution(con
 
     return samples;
 }
+
+int smartmath::find_PC_bounds_normal_distribution(const Eigen::VectorXd &mean,
+                                       const Eigen::MatrixXd &covar,
+                                       const double &min_pr_valid_samples,
+                                       Eigen::VectorXd &lower_bounds,
+                                       Eigen::VectorXd &upper_bounds)
+{
+    int d = mean.size(); //Number of dimensions
+
+    //Step 1: Diagonalize the covariance matrix
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> eigensolver(covar);
+    Eigen::VectorXd eigenvalues = eigensolver.eigenvalues();
+    Eigen::MatrixXd eigenvectors = eigensolver.eigenvectors();
+
+    //Step 2: Calculate the range for acceptance in the eigenspace, using the chebyshev inequality
+    // for independent variables
+    double k = smartmath::chebyshev_inequality::get_k_for_independent_variables(
+                d,
+                min_pr_valid_samples);
+
+    //Step 3: Transform mean and covariance to the eigenspace
+    Eigen::VectorXd mean_eigenspace = (eigenvectors.transpose())*mean;
+
+    // Step 4: Get the lowe and upper bounds in the eigen space
+    Eigen::VectorXd sd_eigenspace = eigenvalues.array().sqrt();
+    lower_bounds = mean_eigenspace - k*sd_eigenspace;
+    upper_bounds = mean_eigenspace + k*sd_eigenspace;
+
+    return 0;
+}

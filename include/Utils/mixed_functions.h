@@ -46,6 +46,12 @@ double bisection_method(fun f, double lb, double ub, double prec);
 double Legendre(int l, int m, double x);
 double Legendre_derivative(int l, int m, double x);
 
+int find_PC_bounds_normal_distribution(const Eigen::VectorXd &mean,
+                                       const Eigen::MatrixXd &covar,
+                                       const double &min_pr_valid_samples,
+                                       Eigen::VectorXd &lower_bounds,
+                                       Eigen::VectorXd &upper_bounds);
+
 /**
  * @brief sample_multivariate_normal_distribution Sampling method for multivariate
  * normal distributions of any dimensionality
