@@ -77,7 +77,7 @@ namespace smartmath
              * @param[in] event function             
              * @return
              */
-            virtual int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> t_history, std::vector<int> (*g)(std::vector<T> x, double d)) const=0;
+            virtual int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history, std::vector<int> (*g)(std::vector<T> x, double d)) const=0;
 
             /**
              * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size
