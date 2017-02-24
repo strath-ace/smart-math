@@ -39,7 +39,6 @@ namespace smartmath
 
             using base_stepsizecontrol<T>::integrate;
             using base_stepsizecontrol<T>::dummy_event;
-            using base_stepsizecontrol<T>::evaluate_squarerootintegrationerror;
             
             /**
              * @brief rkf45 constructor
