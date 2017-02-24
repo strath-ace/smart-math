@@ -43,7 +43,7 @@ namespace smartmath
             {
 
                 if((order<2)||(order>8))
-                    smartmath_throw("order must be between 2 and 8"); 
+                    smartmath_throw("ABM: order must be between 2 and 8"); 
 
                 double prebeta[7][8]={
                 {1.0/2.0,1.0/2.0,0.0,0.0,0.0,0.0,0.0,0.0},
@@ -83,7 +83,7 @@ namespace smartmath
             int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
                 
                 if(f.size()!=m)
-                    smartmath_throw("wrong number of saved states in multistep integration"); 
+                    smartmath_throw("INTEGRATION_STEP: wrong number of saved states in multistep integration"); 
 
                 std::vector<T> dx=x0;    
 

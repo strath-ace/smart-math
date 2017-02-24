@@ -131,7 +131,7 @@ namespace smartmath
             int update_saved_steps(const int &m, const double &t, const std::vector<T> &x, std::vector<std::vector<T> > &f) const{
 
                 if(f[0].size()!=x.size())
-                    smartmath_throw("wrong number of previously saved states in multistep integration"); 
+                    smartmath_throw("UPDATE_SAVED_STEPS: wrong number of previously saved states for multistep integration"); 
 
                 std::vector<T> dx=x;
                 std::vector<std::vector<T> > fp=f;

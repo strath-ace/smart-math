@@ -60,9 +60,9 @@ namespace smartmath
                 
                 /** sanity checks **/
                 if(tol<=0.0)
-                   smartmath_throw("tolerance for estimated error must be non negative");
+                   smartmath_throw("BASE_STEPSIZECONTROL: tolerance for estimated error must be non negative");
                 if((multiplier>5.0)||(multiplier<2.0))
-                   smartmath_throw("maximum step-multiplier must be between 2 and 5");
+                   smartmath_throw("BASE_STEPSIZECONTROL: maximum step-multiplier must be between 2 and 5");
 
             }
 

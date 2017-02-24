@@ -51,9 +51,9 @@ namespace smartmath
             base_integrationwevent(const std::string &name, const dynamics::base_dynamics<T> *dyn, const double &minstep_events, const double &maxstep_events) : base_integrator<T>(name, dyn), m_minstep_events(minstep_events), m_maxstep_events(maxstep_events){
                 
                 if(minstep_events<=0.0)
-                   smartmath_throw("minimum step-size for events must be non negative");
+                   smartmath_throw("BASE_INTEGRATIONWEVENT: minimum step-size for events must be non negative");
                 if(maxstep_events<0.0)
-                   smartmath_throw("maximum step-size for events must be positive");
+                   smartmath_throw("BASE_INTEGRATIONWEVENT: maximum step-size for events must be positive");
 
             }
 

@@ -55,11 +55,11 @@ namespace smartmath
             {
 
 	            if((order_min<1)||(order_min>8))
-                	smartmath_throw("minimum order must be between 1 and 8");    
+                	smartmath_throw("PECEVAR: minimum order must be between 1 and 8");    
 	            if((order_max<1)||(order_max>8))
-                	smartmath_throw("maximum order must be between 1 and 8");
+                	smartmath_throw("PECEVAR: maximum order must be between 1 and 8");
                 if(order_min>order_max)
-                    smartmath_throw("minimum order must be smaller or equal to maximum order");                
+                    smartmath_throw("PECEVAR: minimum order must be smaller or equal to maximum order");                
 
 	            double gamma_Bashforth[9]={1.0,-1.0/2.0,-1.0/12.0,-1.0/24.0,-19.0/720.0,-3.0/160.0,-863.0/60480.0,-275.0/24192.0,-33953.0/3628800.0};
 	            for(int i=0; i<=m_order_max; i++)
@@ -260,7 +260,7 @@ namespace smartmath
             int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const{
                 	
 	            if(f.size()!=m)
-                	smartmath_throw("wrong number of saved states in multistep integration"); 
+                	smartmath_throw("INTEGRATION_STEP: wrong number of saved states for multistep integration"); 
      	
 	            std::vector<T> x(x0), dx(x0);
 
@@ -297,7 +297,7 @@ namespace smartmath
             int backward_differences(const std::vector<std::vector<T> > &f, const int &m, std::vector<std::vector<T> > &Df) const{
 
                 if(f.size()!=m)
-                    smartmath_throw("wrong number of saved states in multistep integration"); 
+                    smartmath_throw("BACKWARD_DIFFERENCES: wrong number of saved states for multistep integration"); 
 
                 Df.clear();
                 Df.push_back(f[m-1]);
@@ -333,7 +333,7 @@ namespace smartmath
             int half_step(const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, const std::vector<double> &gamma, std::vector<T> &xfinal) const{
 
                 if(f.size()!=m)
-                    smartmath_throw("wrong number of previously saved states in multistep integration");  
+                    smartmath_throw("HALF_STEP: wrong number of previously saved states for multistep integration");  
 
                 std::vector<std::vector<T> > Df;
                 backward_differences(f,m,Df);
