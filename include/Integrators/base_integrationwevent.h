@@ -151,24 +151,24 @@ namespace smartmath
                 m_event_list=event_list;
 
             }
-
-            /**
-             * @brief returns a double equal to the input for real numbers and something meaningful for polynomials
-             *
-             * @param[in] x estimated error
-             * @return double equal to x for real numbers and something else for polynomials in smartuq
-             */
-            double evaluate_squarerootintegrationerror(const float &x) const{
-                return x;
-            }
-            double evaluate_squarerootintegrationerror(const double &x) const{
-                return x;
-            }
-            double evaluate_squarerootintegrationerror(const long double &x) const{
-                return x;
-            }    
 	
         };
+
+        /**
+         * @brief returns a double equal to the input for real numbers and something meaningful for polynomials
+         *
+         * @param[in] x estimated error
+         * @return double equal to x for real numbers and something else for polynomials in smartuq
+         */
+        inline double evaluate_squarerootintegrationerror(const float &x){
+            return x;
+        }
+        inline double evaluate_squarerootintegrationerror(const double &x){
+            return x;
+        }
+        inline double evaluate_squarerootintegrationerror(const long double &x){
+            return x;
+        }    
 
     }
 }

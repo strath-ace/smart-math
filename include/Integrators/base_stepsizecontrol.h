@@ -43,7 +43,6 @@ namespace smartmath
 
             using base_integrationwevent<T>::integrate;
             using base_integrationwevent<T>::set_event_list;
-            using base_integrationwevent<T>::evaluate_squarerootintegrationerror;
 
             /**
              * @brief base_stepsizecontrol constructor
