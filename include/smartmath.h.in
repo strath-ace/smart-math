@@ -10,6 +10,10 @@
 #ifndef SMART_SMARTMATH_H
 #define SMART_SMARTMATH_H
 
+#define SMARTMATH_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define SMARTMATH_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define SMARTMATH_VERSION_PATCH @PROJECT_VERSION_PATCH@
+
 #include "LinearAlgebra/smartmath_la.h"
 #include "Dynamics/smartmath_dynamics.h"
 #include "Events/smartmath_events.h"
