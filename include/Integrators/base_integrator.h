@@ -92,6 +92,17 @@ namespace smartmath
              */
             std::string get_name() const {return m_name;}
 
+            /**
+             * @brief set_comments changes the flag for printing comments
+             *
+             * The method works as a toggle command for printing comments.
+             * @param[in] status new status for comments: true = ON, false = OFF
+             */
+            void set_comments(const bool &status)
+            {
+                m_comments = status;
+            }
+
 
         protected:
             /**
@@ -102,6 +113,10 @@ namespace smartmath
              * @brief m_dyn pointer to a base_dynamics system to be integrated
              */
             const dynamics::base_dynamics<T> *m_dyn;
+            /**
+             * @brief m_comments status for comment printing
+             */
+            bool m_comments = true;
         };
     }
 }

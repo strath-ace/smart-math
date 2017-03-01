@@ -191,8 +191,9 @@ namespace smartmath
                                         if(events2[index]-events[index]!=0)
                                             m_event_list[index]->switch_trigger_on(t_history.back());
                                     }
-                                } 
-                                std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << i << " steps" << std::endl;
+                                }
+                                if(this->m_comments)
+                                    std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << i << " steps" << std::endl;
                             }
                         }
                         else{
