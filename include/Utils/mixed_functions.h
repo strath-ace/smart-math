@@ -107,6 +107,28 @@ Eigen::MatrixXd sample_truncated_multivariate_normal_distribution(const Eigen::V
                                                                   const unsigned int &N_samples,
                                                                   double &pr_valid_samples);
 
+template <class T>
+inline T quantile(const T* d, const unsigned int size, const double q)
+{
+  if (size == 0) return T(0);
+  if (size == 1) return d[0];
+  if (q <= 0) return *std::min_element(d, d + size);
+  if (q >= 1) return *std::max_element(d, d + size);
+
+  double pos = (size - 1) * q;
+  unsigned int ind = static_cast<unsigned int>(pos);
+  double delta = pos - ind;
+  std::vector<T> w(size); std::copy(d, d + size, w.begin());
+  std::nth_element(w.begin(), w.begin() + ind, w.end());
+  T i1 = *(w.begin() + ind);
+  T i2 = *std::min_element(w.begin() + ind + 1, w.end());
+  return i1 * (1.0 - delta) + i2 * delta;
+}
+
+template <class T>
+inline T quantile(const std::vector<T>& v, const double q)
+  { return quantile(&v[0], v.size(), q); }
+
 }
 
 #endif // SMARTMATH_INLINEFUNCTIONS_H
