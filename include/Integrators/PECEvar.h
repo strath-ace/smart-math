@@ -198,7 +198,8 @@ namespace smartmath
 					            t=tend; // trick to get out of the while loop	
 					            x_history.push_back(xp);
 					            t_history.push_back(t);
-					            std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << k << " steps" << std::endl;
+                                if(this->m_comments)
+					                std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << k << " steps" << std::endl;
 				            }
 			            }
 			            else{
