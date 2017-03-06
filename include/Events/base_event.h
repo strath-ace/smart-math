@@ -57,7 +57,7 @@ namespace smartmath
             /**
              *
              */
-            void switch_trigger_off(){m_trigger = false;}
+            virtual void switch_trigger_off() = 0;
 
             /**
              *
