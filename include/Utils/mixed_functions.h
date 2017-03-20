@@ -46,6 +46,9 @@ double bisection_method(fun f, double lb, double ub, double prec);
 double Legendre(int l, int m, double x);
 double Legendre_derivative(int l, int m, double x);
 
+double Lagrange1d(std::vector<double> times, std::vector<double> values, double t);
+std::vector<double>  LagrangeNd(std::vector<double> times, std::vector<std::vector<double> > values, double t);
+
 int find_PC_bounds_normal_distribution(const Eigen::VectorXd &mean,
                                        const Eigen::MatrixXd &covar,
                                        const double &min_pr_valid_samples,

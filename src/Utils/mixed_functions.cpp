@@ -67,6 +67,60 @@ double smartmath::bisection_method(fun f, double lb, double ub, double prec){
 return smartmath::bisection_method(f, lb, ub, prec);
 }
 
+double smartmath::Lagrange1d(std::vector<double> times, std::vector<double> values, double t)
+{
+    if(times.size()!=values.size())
+        smartmath_throw("LAGRANGE1D: number of values must be equal to number of interpolation points");
+
+    double output = 0.0;
+    double prod1, prod2;
+
+    for(unsigned int i=0;i<times.size();i++){
+        prod1 = 1.0;
+        prod2 = 1.0;  
+        for(unsigned int j=0;j<times.size();j++){  
+            if(i!=j){
+                if(times[j]==times[i])
+                    smartmath_throw("LAGRANGE1D: interpolated points must be different");
+                prod1 *= t-times[j];
+                prod2 *= times[i]-times[j];
+            }
+        }
+        output += prod1*values[i]/prod2;
+    }
+
+    return output; 
+}
+
+std::vector<double>  smartmath::LagrangeNd(std::vector<double> times, std::vector<std::vector<double> > values, double t){
+
+    for(unsigned int k=0;k<values.size();k++){
+        if(values[k].size()!=values[0].size())
+            smartmath_throw("LAGRANGEND: function evaluations at interpolation points must have same number of components");
+    }
+
+    std::vector<double> outputs(values[0].size(),0.0);
+    double prod1, prod2;
+
+    for(unsigned int i=0;i<times.size();i++){
+        prod1 = 1.0;
+        prod2 = 1.0;  
+        for(unsigned int j=0;j<times.size();j++){  
+
+            if(i!=j){
+                if(times[j]==times[i])
+                   smartmath_throw("LAGRANGEND: interpolated points must be different");
+                prod1 *= t-times[j];
+                prod2 *= times[i]-times[j];
+            }
+        }
+        for(unsigned int k=0;k<values[0].size();k++)
+            outputs[k] += prod1*values[k][i]/prod2;
+
+    }
+    return outputs;
+}
+
 double smartmath::Legendre(int l, int m, double x)
 {
     if(x*x>1.0)
