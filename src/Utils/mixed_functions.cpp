@@ -117,7 +117,7 @@ std::vector<double>  smartmath::LagrangeNd(std::vector<double> times, std::vecto
             }
         }
         for(unsigned int k=0;k<values[0].size();k++)
-            outputs[k] += prod1*values[k][i]/prod2;
+            outputs[k] += prod1*values[i][k]/prod2;
 
     }
     return outputs;

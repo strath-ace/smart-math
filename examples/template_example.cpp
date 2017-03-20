@@ -32,13 +32,14 @@ int main(){
 
     std::vector<double> times(4), func1 = times;
     std::vector<double> func2 = func1;
-    std::vector< std::vector<double> > funcs(2);
+    std::vector< std::vector<double> > funcs(times.size());
     for(unsigned int k=0;k<times.size();k++){
     	times[k] = double(k+1);
 		func1[k] = pow(times[k],times.size()-1);
 		func2[k] = -pow(times[k],times.size()-1);
-    } 
-    funcs[0]=func1;funcs[1]=func2;    
+		funcs[k].push_back(func1[k]);
+		funcs[k].push_back(func2[k]);
+    }   
     double t = -2.0;
     std::cout << Lagrange1d(times, func1, t) << std::endl;
     std::vector<double> interpolated_vector = LagrangeNd(times, funcs, t);
