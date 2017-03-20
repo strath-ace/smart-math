@@ -94,6 +94,9 @@ double smartmath::Lagrange1d(std::vector<double> times, std::vector<double> valu
 
 std::vector<double>  smartmath::LagrangeNd(std::vector<double> times, std::vector<std::vector<double> > values, double t){
 
+    if(times.size()!=values.size())
+        smartmath_throw("LAGRANGEND: number of values must be equal to number of interpolation points");
+
     for(unsigned int k=0;k<values.size();k++){
         if(values[k].size()!=values[0].size())
             smartmath_throw("LAGRANGEND: function evaluations at interpolation points must have same number of components");
@@ -106,7 +109,6 @@ std::vector<double>  smartmath::LagrangeNd(std::vector<double> times, std::vecto
         prod1 = 1.0;
         prod2 = 1.0;  
         for(unsigned int j=0;j<times.size();j++){  
-
             if(i!=j){
                 if(times[j]==times[i])
                    smartmath_throw("LAGRANGEND: interpolated points must be different");

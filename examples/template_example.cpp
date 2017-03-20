@@ -30,14 +30,19 @@ int main(){
     //std::cout << 105.0*x*pow(1.0-x*x,1.5)/5040.0 << std::endl; // P(4,-3,x)
     //std::cout << Legendre_derivative(l,m,x) << std::endl;
 
-    std::vector<double> times(4);
-    std::vector<double> func1 = times;
+    std::vector<double> times(4), func1 = times;
+    std::vector<double> func2 = func1;
+    std::vector< std::vector<double> > funcs(2);
     for(unsigned int k=0;k<times.size();k++){
     	times[k] = double(k+1);
 		func1[k] = pow(times[k],times.size()-1);
-    }
+		func2[k] = -pow(times[k],times.size()-1);
+    } 
+    funcs[0]=func1;funcs[1]=func2;    
     double t = -2.0;
-   	std::cout << Lagrange1d(times, func1, t) << std::endl;
+    std::cout << Lagrange1d(times, func1, t) << std::endl;
+    std::vector<double> interpolated_vector = LagrangeNd(times, funcs, t);
+   	std::cout << interpolated_vector[0] << ", " << interpolated_vector[1] << std::endl;
 
 }
 
