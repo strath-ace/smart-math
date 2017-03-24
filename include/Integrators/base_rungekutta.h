@@ -20,7 +20,7 @@ namespace smartmath
         /**
          * @brief The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method integration_step()
          *
-         * The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state 
+         * The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state
          */
         template < class T >
         class base_rungekutta: public base_integrator<T>
@@ -60,7 +60,8 @@ namespace smartmath
              * @return
              */
             virtual int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal) const = 0;
-
+            virtual int integration_step(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const
+            { smartmath_throw("integrate_function using Eigen not implemented "); return 1; }
 
             /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
@@ -76,25 +77,45 @@ namespace smartmath
              * @return
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
-	
-	            t_history.clear();
-	            x_history.clear();
 
-	            std::vector<T> dx=x0, x=x0, x_temp=x0;
+                t_history.clear();
+                x_history.clear();
 
-	            double t=ti, h = (tend-ti)/nsteps;
+                std::vector<T> dx=x0, x=x0, x_temp=x0;
+
+                double t=ti, h = (tend-ti)/nsteps;
 
                 for(int i=0; i<nsteps; i++){
-		            integration_step(t,h,x,x_temp);
-		            t+=h;
-		            x=x_temp;
-		            t_history.push_back(t);
-		            x_history.push_back(x);
-	            }
+                    integration_step(t,h,x,x_temp);
+                    t+=h;
+                    x=x_temp;
+                    t_history.push_back(t);
+                    x_history.push_back(x);
+                }
 
-	            return 0;
+                return 0;
             }
-	
+
+            int integrate(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::MatrixXd> x_history, Eigen::Ref<Eigen::VectorXd> t_history) const{
+
+                t_history.setZero();
+                x_history.setZero();
+
+                Eigen::VectorXd x=x0, x_temp=x0;
+
+                double t=ti, h = (tend-ti)/nsteps;
+
+                for(int i=0; i<nsteps; i++){
+                    integration_step(t,h,x,x_temp);
+                    t+=h;
+                    x=x_temp;
+                    t_history(i) = t;
+                    x_history.col(i) = x;
+                }
+
+                return 0;
+            }
+
         };
 
     }

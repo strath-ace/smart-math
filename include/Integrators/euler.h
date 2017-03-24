@@ -24,7 +24,7 @@ namespace smartmath
         public:
 
             using base_rungekutta<T>::integrate;
-            
+
             /**
              * @brief euler constructor
              *
@@ -50,20 +50,35 @@ namespace smartmath
              * @return
              */
             int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-	
-	            std::vector<T> dx=x0;
-	            unsigned int l = x0.size();
 
-	            m_dyn->evaluate(ti, x0, dx);
+                std::vector<T> dx=x0;
+                unsigned int l = x0.size();
 
-	            xfinal=x0;	
-	            for(unsigned int j=0; j<l; j++){
-		            xfinal[j] += h*dx[j];
-	            }
+                m_dyn->evaluate(ti, x0, dx);
 
-	            return 0;
+                xfinal=x0;
+                for(unsigned int j=0; j<l; j++){
+                    xfinal[j] += h*dx[j];
+                }
+
+                return 0;
             }
-	
+
+
+            /**
+             * @brief integration_step, the same as above but for Eigen
+             */
+            int integration_step(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
+
+                Eigen::VectorXd dx=x0;
+
+                m_dyn->evaluate(ti, x0, dx);
+
+                xfinal = x0 + h*dx ;
+
+                return 0;
+            }
+
         };
 
     }

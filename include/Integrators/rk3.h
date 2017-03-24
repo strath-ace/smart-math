@@ -24,7 +24,7 @@ namespace smartmath
         public:
 
             using base_rungekutta<T>::integrate;
-            
+
             /**
              * @brief rk3 constructor
              *
@@ -50,37 +50,67 @@ namespace smartmath
              * @return
              */
             int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-	
-	            std::vector<T> dx=x0;
-	            std::vector<T> x_temp=x0, k1=x0, k2=x0, k3=x0;
-	            unsigned int l = x0.size();
-	            double t1, t2, t3;
 
-	            t1 = ti + h;
-	            t2 = t1 + h/2.0;
-	            t3 = t1 + h*3.0/4.0;
+                std::vector<T> dx=x0;
+                std::vector<T> x_temp=x0, k1=x0, k2=x0, k3=x0;
+                unsigned int l = x0.size();
+                double t1, t2, t3;
 
-	            //* Evaluate k1 = f(x).
-	            m_dyn->evaluate(t1, x0, k1);
+                t1 = ti + h;
+                t2 = t1 + h/2.0;
+                t3 = t1 + h*3.0/4.0;
 
-	            //* Evaluate k2 = f(x+h/2*k1),
-	            for(unsigned int j=0; j<l; j++)
-	                x_temp[j] = x0[j]+k1[j]*h/2.0;
-	            m_dyn->evaluate(t2, x_temp, k2);
+                //* Evaluate k1 = f(x).
+                m_dyn->evaluate(t1, x0, k1);
 
-	            //* Evaluate k3 = f(x+3/4*k2),
-	            for(unsigned int j=0; j<l; j++)
-	                x_temp[j] = x0[j]+k2[j]*h*3.0/4.0;
-	            m_dyn->evaluate(t3, x_temp, k3);
+                //* Evaluate k2 = f(x+h/2*k1),
+                for(unsigned int j=0; j<l; j++)
+                    x_temp[j] = x0[j]+k1[j]*h/2.0;
+                m_dyn->evaluate(t2, x_temp, k2);
 
-	            //* Return x(t+h) computed from third-order Runge Kutta.
-	            xfinal=x0;
-	            for(unsigned int j=0; j<l; j++)
-	                xfinal[j] += (2.0*k1[j]+3.0*k2[j]+4.0*k3[j])*h/9.0;
+                //* Evaluate k3 = f(x+3/4*k2),
+                for(unsigned int j=0; j<l; j++)
+                    x_temp[j] = x0[j]+k2[j]*h*3.0/4.0;
+                m_dyn->evaluate(t3, x_temp, k3);
 
-	            return 0;
+                //* Return x(t+h) computed from third-order Runge Kutta.
+                xfinal=x0;
+                for(unsigned int j=0; j<l; j++)
+                    xfinal[j] += (2.0*k1[j]+3.0*k2[j]+4.0*k3[j])*h/9.0;
+
+                return 0;
             }
-            
+
+            /**
+             * @brief integration_step, the same as above but for Eigen
+             */
+            int integration_step(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
+
+                Eigen::VectorXd x_temp=x0, k1=x0, k2=x0, k3=x0;
+
+                double t1, t2, t3;
+
+                t1 = ti + h;
+                t2 = t1 + h/2.0;
+                t3 = t1 + h*3.0/4.0;
+
+                //* Evaluate k1 = f(x).
+                m_dyn->evaluate(t1, x0, k1);
+
+                //* Evaluate k2 = f(x+h/2*k1),
+                x_temp = x0 + k1 * h / 2.0;
+                m_dyn->evaluate(t2, x_temp, k2);
+
+                //* Evaluate k3 = f(x+3/4*k2),
+                x_temp = x0 + k2 * h * 3.0 / 4.0;
+                m_dyn->evaluate(t3, x_temp, k3);
+
+                //* Return x(t+h) computed from third-order Runge Kutta.
+                xfinal = x0 + ( 2.0 * k1 + 3.0 * k2 + 4.0 * k3 ) * h / 9.0;
+
+                return 0;
+
+            }
 
         };
 
