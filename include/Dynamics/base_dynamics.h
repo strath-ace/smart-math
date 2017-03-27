@@ -56,7 +56,7 @@ namespace smartmath
              */
             virtual int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const = 0;
 
-            virtual int evaluate(const double &t, const Eigen::VectorXd &state, Eigen::Ref<Eigen::VectorXd> dstate) const
+            virtual int evaluate_eigen(const double &t, const Eigen::VectorXd &state, Eigen::Ref<Eigen::VectorXd> dstate) const
             { smartmath_throw("evaluate_function using Eigen not implemented "); return 1; }
 
             /**

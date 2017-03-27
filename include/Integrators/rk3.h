@@ -24,6 +24,7 @@ namespace smartmath
         public:
 
             using base_rungekutta<T>::integrate;
+            using base_rungekutta<T>::integrate_eigen;
 
             /**
              * @brief rk3 constructor
@@ -84,7 +85,7 @@ namespace smartmath
             /**
              * @brief integration_step, the same as above but for Eigen
              */
-            int integration_step(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
+            int integration_step_eigen(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
 
                 Eigen::VectorXd x_temp=x0, k1=x0, k2=x0, k3=x0;
 
@@ -95,15 +96,15 @@ namespace smartmath
                 t3 = t1 + h*3.0/4.0;
 
                 //* Evaluate k1 = f(x).
-                m_dyn->evaluate(t1, x0, k1);
+                m_dyn->evaluate_eigen(t1, x0, k1);
 
                 //* Evaluate k2 = f(x+h/2*k1),
                 x_temp = x0 + k1 * h / 2.0;
-                m_dyn->evaluate(t2, x_temp, k2);
+                m_dyn->evaluate_eigen(t2, x_temp, k2);
 
                 //* Evaluate k3 = f(x+3/4*k2),
                 x_temp = x0 + k2 * h * 3.0 / 4.0;
-                m_dyn->evaluate(t3, x_temp, k3);
+                m_dyn->evaluate_eigen(t3, x_temp, k3);
 
                 //* Return x(t+h) computed from third-order Runge Kutta.
                 xfinal = x0 + ( 2.0 * k1 + 3.0 * k2 + 4.0 * k3 ) * h / 9.0;

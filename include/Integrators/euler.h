@@ -24,6 +24,7 @@ namespace smartmath
         public:
 
             using base_rungekutta<T>::integrate;
+            using base_rungekutta<T>::integrate_eigen;
 
             /**
              * @brief euler constructor
@@ -68,11 +69,11 @@ namespace smartmath
             /**
              * @brief integration_step, the same as above but for Eigen
              */
-            int integration_step(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
+            int integration_step_eigen(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
 
                 Eigen::VectorXd dx=x0;
 
-                m_dyn->evaluate(ti, x0, dx);
+                m_dyn->evaluate_eigen(ti, x0, dx);
 
                 xfinal = x0 + h*dx ;
 

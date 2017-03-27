@@ -33,6 +33,7 @@ namespace smartmath
         public:
 
             using base_integrator<T>::integrate;
+            using base_integrator<T>::integrate_eigen;
 
             /**
              * @brief base_rungekutta constructor
@@ -60,7 +61,7 @@ namespace smartmath
              * @return
              */
             virtual int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal) const = 0;
-            virtual int integration_step(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const
+            virtual int integration_step_eigen(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const
             { smartmath_throw("integrate_function using Eigen not implemented "); return 1; }
 
             /**
@@ -96,7 +97,7 @@ namespace smartmath
                 return 0;
             }
 
-            int integrate(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::MatrixXd> x_history, Eigen::Ref<Eigen::VectorXd> t_history) const{
+            int integrate_eigen(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::MatrixXd> x_history, Eigen::Ref<Eigen::VectorXd> t_history) const{
 
                 t_history.setZero();
                 x_history.setZero();
@@ -106,7 +107,7 @@ namespace smartmath
                 double t=ti, h = (tend-ti)/nsteps;
 
                 for(int i=0; i<nsteps; i++){
-                    integration_step(t,h,x,x_temp);
+                    integration_step_eigen(t,h,x,x_temp);
                     t+=h;
                     x=x_temp;
                     t_history(i) = t;

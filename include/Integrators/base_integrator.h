@@ -61,7 +61,7 @@ namespace smartmath
              */
             virtual int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history)  const = 0;
 
-            virtual int integrate(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::MatrixXd> x_history, Eigen::Ref<Eigen::VectorXd> t_history)  const
+            virtual int integrate_eigen(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::MatrixXd> x_history, Eigen::Ref<Eigen::VectorXd> t_history)  const
             { smartmath_throw("integrate_function using Eigen not implemented "); return 1; }
 
             /**
@@ -88,12 +88,12 @@ namespace smartmath
                 return 0;
             }
 
-            int integrate(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
+            int integrate_eigen(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
 
                 Eigen::MatrixXd x_history = Eigen::MatrixXd::Zero(x0.size(),nsteps);
                 Eigen::VectorXd t_history = Eigen::VectorXd::Zero(nsteps);
 
-                integrate(ti,tend,nsteps,x0,x_history,t_history);
+                integrate_eigen(ti,tend,nsteps,x0,x_history,t_history);
 
                 xfinal=x_history.rightCols(1);
 
