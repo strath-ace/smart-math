@@ -118,7 +118,7 @@ namespace smartmath
 
 		        //* Evaluate k6
 		        for(int j=0; j<n; j++)
-		            xtemp[j] = x[j]+k1[j]*h*3.0/80.0+k4[j]*h*3.0/16.0+k4[j]*h*3.0/20.0;
+		            xtemp[j] = x[j]+k1[j]*h*3.0/80.0+k4[j]*h*3.0/16.0+k5[j]*h*3.0/20.0;
 		        m_dyn->evaluate(t6, xtemp, k6);
 
 		        //* Evaluate k7
@@ -161,7 +161,7 @@ namespace smartmath
 		        for(int j=0; j<n; j++)
 		            xtemp[j] = x[j]+k1[j]*h*403863854.0/491063109.0 -k4[j]*h*5068492393.0/434740067.0-k5[j]*h*411421997.0/543043805.0
 		             +k6[j]*h*652783627.0/914296604.0 +k7[j]*h*11173962825.0/925320556.0  -k8[j]*h*13158990841.0/6184727034.0 +k9[j]*h*3936647629.0/1978049680.0 -k10[j]*h*160528059.0/685178525.0 
-		             +k11[j]*h*248638103.0/1413531060.0 ;
+		             +k11[j]*h*248638103.0/1413531060.0;
 		        m_dyn->evaluate(t13, xtemp, k13);
 
 		        //* Return x(t+h) computed from Runge Kutta.

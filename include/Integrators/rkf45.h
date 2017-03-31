@@ -113,7 +113,7 @@ namespace smartmath
 
 		        //* Evaluate k6
 		        for(int j=0; j<n; j++)
-		            xtemp[j] = x0[j]-k1[j]*h*8.0/27.0+k2[j]*h*2.0-k3[j]*h*3544.0/2565.0+k4[j]*h*1859.0/4104.0-k4[j]*h*11.0/40.0;
+		            xtemp[j] = x0[j]-k1[j]*h*8.0/27.0+k2[j]*h*2.0-k3[j]*h*3544.0/2565.0+k4[j]*h*1859.0/4104.0-k5[j]*h*11.0/40.0;
 		        m_dyn->evaluate(t6, xtemp, k6);
 
 		        //* Return x(t+h) computed from fourth-order Runge Kutta.
