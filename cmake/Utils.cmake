@@ -6,7 +6,6 @@
 #   build_template("${INCLUDE_PATH}/header_file.h.in" "${INCLUDE_PATH}/header_file.h")
 macro(build_template TEMPLATE_FILE OUTPUT_FILE)
     configure_file(${TEMPLATE_FILE} "${OUTPUT_FILE}.temp")
-    get_filename_component(_cacheKeyPrefix ${OUTPUT_FILE} NAME_WE)
 
     if(EXISTS ${OUTPUT_FILE})
         file(SHA256 ${OUTPUT_FILE} _last_hash)
@@ -14,10 +13,11 @@ macro(build_template TEMPLATE_FILE OUTPUT_FILE)
         if(NOT _last_hash EQUAL _current_hash)
             file(RENAME "${OUTPUT_FILE}.temp" ${OUTPUT_FILE})
         endif()
-
         unset(_last_hash)
         unset(_current_hash)
     else()
         file(RENAME "${OUTPUT_FILE}.temp" ${OUTPUT_FILE})
     endif()
+
+    file(REMOVE "${OUTPUT_FILE}.temp")
 endmacro()
