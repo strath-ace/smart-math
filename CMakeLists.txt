@@ -40,10 +40,8 @@ option(BUILD_DOCS                              "Build docs"                     
 option(BUILD_TESTS                             "Build tests"                    OFF)
 option(BUILD_EXAMPLES                          "Build examples"                 OFF)
 
-configure_file (
-  "${INCLUDE_PATH}/smartmath.h.in"
-  "${INCLUDE_PATH}/smartmath.h"
-)
+include("cmake/Utils.cmake")
+build_template("${INCLUDE_PATH}/smartmath.h.in" "${INCLUDE_PATH}/smartmath.h")
 
 file(GLOB SRC
   "${SRC_PATH}/Utils/*.cpp"
