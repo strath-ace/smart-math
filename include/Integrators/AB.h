@@ -44,7 +44,7 @@ namespace smartmath
                 if((order<1)||(order>8))
                     smartmath_throw("AB: order must be between 1 and 8");  
 
-	            double prebeta[8][8]={
+                double prebeta[8][8]={
                 {1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
                 {-1.0/2.0,3.0/2.0,0.0,0.0,0.0,0.0,0.0,0.0},
                 {5.0/12.0,-16.0/12.0,23.0/12.0,0.0,0.0,0.0,0.0,0.0},
@@ -54,9 +54,9 @@ namespace smartmath
                 {19087.0/60480.0,-134472.0/60480.0,407139.0/60480.0,-688256.0/60480.0,705549.0/60480.0,-447288.0/60480.0,198721.0/60480.0,0.0},
                 {-36799.0/120960.0,295767.0/120960.0,-1041723.0/120960.0,2102243.0/120960.0,-2664477.0/120960.0,2183877.0/120960.0,-1152169.0/120960.0,434241.0/120960.0}
                 };        
-	            for(int i=0; i<m_order; i++){
-		            m_beta.push_back(prebeta[m_order-1][i]);
-	            }
+                for(int i=0; i<m_order; i++){
+                    m_beta.push_back(prebeta[m_order-1][i]);
+                }
 
                 m_initializer = new integrator::rk4<T>(m_dyn);
 
@@ -85,16 +85,16 @@ namespace smartmath
                 if(f.size()!=m)
                     smartmath_throw("INTEGRATION_STEP: wrong number of saved states for multistep integration"); 
 
-	            xfinal=x0;
-	            for(int i=0; i<x0.size(); i++){
-		            for(int j=0; j<m; j++){
-			            xfinal[i]+=h*m_beta[j]*f[j][i];
-	                }
-	            }
+                xfinal=x0;
+                for(int i=0; i<x0.size(); i++){
+                    for(int j=0; j<m; j++){
+                        xfinal[i]+=h*m_beta[j]*f[j][i];
+                    }
+                }
 
                 update_saved_steps(m,t+h,xfinal,f);
 
-	            return 0;
+                return 0;
             }
   
 
@@ -110,29 +110,29 @@ namespace smartmath
              */    
             int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{
 
-	            f.clear();
+                f.clear();
 
-	            std::vector<T> dx(x0), x(x0), xp(x0);
-	            std::vector< std::vector<T> > fp;
-	            
-                /* Computing the initial saved steps */
-	            m_dyn->evaluate(ti,x,dx);
-	            fp.push_back(dx);
-	            double t=ti;
-	            for(int j=0; j<m-1; j++){
-		            m_initializer->integration_step(t,-h,x,xp);
-		            t-=h;
-		            x=xp;
-		            m_dyn->evaluate(t,x,dx);
-		            fp.push_back(dx);
-	            }
+                std::vector<T> dx(x0), x(x0), xp(x0);
+                std::vector< std::vector<T> > fp;
                 
-	            /* Putting the saved steps in the right order */
-	            for(int j=0; j<m; j++){
-		            f.push_back(fp[m-j-1]);
-	            }
+                /* Computing the initial saved steps */
+                m_dyn->evaluate(ti,x,dx);
+                fp.push_back(dx);
+                double t=ti;
+                for(int j=0; j<m-1; j++){
+                    m_initializer->integration_step(t,-h,x,xp);
+                    t-=h;
+                    x=xp;
+                    m_dyn->evaluate(t,x,dx);
+                    fp.push_back(dx);
+                }
+                
+                /* Putting the saved steps in the right order */
+                for(int j=0; j<m; j++){
+                    f.push_back(fp[m-j-1]);
+                }
 
-	            return 0;
+                return 0;
             }
     
             /**

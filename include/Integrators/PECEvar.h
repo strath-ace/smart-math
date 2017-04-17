@@ -37,7 +37,7 @@ namespace smartmath
 
             using base_integrationwevent<T>::integrate;
             using base_integrationwevent<T>::set_event_list;
-        	
+            
             /**
              * @brief Adam Bashforth Moulton with variable order and stepsize constructor
              *
@@ -53,16 +53,16 @@ namespace smartmath
             PECEvar(const dynamics::base_dynamics<T> *dyn, const int order_min=4, const int order_max=8, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_integrationwevent <T>("Adam Bashforth Moulton integration scheme with variable order", dyn, minstep_events, maxstep_events), m_tol(tol), m_multiplier(multiplier), m_order_max(order_max), m_order_min(order_min)
             {
 
-	            if((order_min<1)||(order_min>8))
-                	smartmath_throw("PECEVAR: minimum order must be between 1 and 8");    
-	            if((order_max<1)||(order_max>8))
-                	smartmath_throw("PECEVAR: maximum order must be between 1 and 8");
+                if((order_min<1)||(order_min>8))
+                    smartmath_throw("PECEVAR: minimum order must be between 1 and 8");    
+                if((order_max<1)||(order_max>8))
+                    smartmath_throw("PECEVAR: maximum order must be between 1 and 8");
                 if(order_min>order_max)
                     smartmath_throw("PECEVAR: minimum order must be smaller or equal to maximum order");                
 
-	            double gamma_Bashforth[9]={1.0,-1.0/2.0,-1.0/12.0,-1.0/24.0,-19.0/720.0,-3.0/160.0,-863.0/60480.0,-275.0/24192.0,-33953.0/3628800.0};
-	            for(int i=0; i<=m_order_max; i++)
-		            m_gamma_Bashforth.push_back(gamma_Bashforth[i]);
+                double gamma_Bashforth[9]={1.0,-1.0/2.0,-1.0/12.0,-1.0/24.0,-19.0/720.0,-3.0/160.0,-863.0/60480.0,-275.0/24192.0,-33953.0/3628800.0};
+                for(int i=0; i<=m_order_max; i++)
+                    m_gamma_Bashforth.push_back(gamma_Bashforth[i]);
 
                 double gamma_Moulton[9]={1.0,-1.0/2.0,-1.0/12.0,-1.0/24.0,-19.0/720.0,-3.0/160.0,-863.0/60480.0,-275.0/24192.0,-33953.0/3628800.0};
                 for(int i=0; i<=m_order_max; i++)
@@ -94,19 +94,19 @@ namespace smartmath
              */
             int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history, std::vector<int> (*g)(std::vector<T> x, double d)) const{
 
-	            t_history.clear();
-	            x_history.clear();
+                t_history.clear();
+                x_history.clear();
 
                 int i;
                 int check=0;
-                double factor;	
+                double factor;  
                 
-	            std::vector<T> x(x0),xp(x0);
-	            std::vector<std::vector<T> > f_max, f;
-	            T er;
-	            int m=m_order_min, mold=m_order_min;
-	            double t=ti, h = (tend-ti)/nsteps;
-	            double value;
+                std::vector<T> x(x0),xp(x0);
+                std::vector<std::vector<T> > f_max, f;
+                T er;
+                int m=m_order_min, mold=m_order_min;
+                double t=ti, h = (tend-ti)/nsteps;
+                double value;
 
                 std::vector<int> events, events2;
                 if(m_event_list.size()==0)
@@ -123,9 +123,9 @@ namespace smartmath
                 events2=events;
                 int q=events.size();  
                 
-	            m_initializer->initialize(m_order_max,ti,h,x0,f_max);
+                m_initializer->initialize(m_order_max,ti,h,x0,f_max);
 
-	            int k=0;
+                int k=0;
                 while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
 
                     if((h*h>m_maxstep_events*m_maxstep_events)&&(m_maxstep_events>0.0)){
@@ -138,34 +138,34 @@ namespace smartmath
                         m_initializer->initialize(m_order_max,t,h,x,f_max);
                     }  
 
-		            if(sqrt(pow(tend-t,2))<sqrt(h*h)){
-			            h=tend-t;
-			            m_initializer->initialize(m_order_max,t,h,x,f_max);	
-		            }
-			
-		            f.clear();
-		            for(int j=0; j<m; j++)
-			            f.push_back(f_max[m_order_max-m+j]);  	
+                    if(sqrt(pow(tend-t,2))<sqrt(h*h)){
+                        h=tend-t;
+                        m_initializer->initialize(m_order_max,t,h,x,f_max); 
+                    }
+            
+                    f.clear();
+                    for(int j=0; j<m; j++)
+                        f.push_back(f_max[m_order_max-m+j]);    
 
-                	integration_step(t,m,h,x,f,xp,er);
-		
-		            /* Step-size and order control */
-		            value=evaluate_squarerootintegrationerror(er);
-		            factor=pow(m_tol/value,1.0/(double(m)+1.0));
-		            if(value>m_tol){ // unsucessful step
-			            if(m<m_order_max){
-				            mold=m;
-				            m++;
-				            //std::cout << "increasing order" << std::endl;
-			            }
-			            else{				
-				            h*=0.9*factor;			
-				            m_initializer->initialize(m_order_max,t,h,x,f_max);
-				            //std::cout << "decreasing time-step" << std::endl;	
-			            }
-		            }
-		            else{ // sucessful step
-			            /* Checking for the events */
+                    integration_step(t,m,h,x,f,xp,er);
+        
+                    /* Step-size and order control */
+                    value=evaluate_squarerootintegrationerror(er);
+                    factor=pow(m_tol/value,1.0/(double(m)+1.0));
+                    if(value>m_tol){ // unsucessful step
+                        if(m<m_order_max){
+                            mold=m;
+                            m++;
+                            //std::cout << "increasing order" << std::endl;
+                        }
+                        else{               
+                            h*=0.9*factor;          
+                            m_initializer->initialize(m_order_max,t,h,x,f_max);
+                            //std::cout << "decreasing time-step" << std::endl; 
+                        }
+                    }
+                    else{ // sucessful step
+                        /* Checking for the events */
                         if(m_event_list.size()==0)
                         {
                             events2=g(xp,t+h);
@@ -175,42 +175,42 @@ namespace smartmath
                             {
                                 events2[index] = m_event_list[index]->evaluate(t+h, xp);
                             }
-                        }			            
-			            i=0;
-			            check=0;		
-			            while(i<q){
-				            if(events2[i]-events[i]!=0){
-					            check=1;
-					            i=q;
-				            }
-				            else{
-					            i++;
-				            }
-			            }
-			            if(check==1){
-				            if(sqrt(h*h)>m_minstep_events){
-					            h*=0.5;
-					            m_initializer->initialize(m_order_max,t,h,x,f_max);
-					            //std::cout << "decreasing time-step for event detection" << std::endl;
-				            }
-				            else{
-					            tend=t+h; // saving the termination time	
-					            t=tend; // trick to get out of the while loop	
-					            x_history.push_back(xp);
-					            t_history.push_back(t);
+                        }                       
+                        i=0;
+                        check=0;        
+                        while(i<q){
+                            if(events2[i]-events[i]!=0){
+                                check=1;
+                                i=q;
+                            }
+                            else{
+                                i++;
+                            }
+                        }
+                        if(check==1){
+                            if(sqrt(h*h)>m_minstep_events){
+                                h*=0.5;
+                                m_initializer->initialize(m_order_max,t,h,x,f_max);
+                                //std::cout << "decreasing time-step for event detection" << std::endl;
+                            }
+                            else{
+                                tend=t+h; // saving the termination time    
+                                t=tend; // trick to get out of the while loop   
+                                x_history.push_back(xp);
+                                t_history.push_back(t);
                                 if(this->m_comments)
-					                std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << k << " steps" << std::endl;
-				            }
-			            }
-			            else{
-				            k++; // counting the number of steps
-				            x=xp; // updating state
-				            t+=h; // updating current time	
+                                    std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << k << " steps" << std::endl;
+                            }
+                        }
+                        else{
+                            k++; // counting the number of steps
+                            x=xp; // updating state
+                            t+=h; // updating current time  
                             m_dyn->evaluate(t, x, dx);
-                            f_max[m_order_max-1]=dx;	
-				            events=events2;				
-				            x_history.push_back(x);
-				            t_history.push_back(t);	
+                            f_max[m_order_max-1]=dx;    
+                            events=events2;             
+                            x_history.push_back(x);
+                            t_history.push_back(t); 
                             if(m_event_list.size()!=0)
                             {
                                 for(unsigned int index = 0; index < q; ++index)
@@ -219,29 +219,29 @@ namespace smartmath
                                         m_event_list[index]->switch_trigger_on(t_history.back());
                                 }
                             }                             
-				            /* Step-size and order control */
-				            if((m>m_order_min)&&(mold!=m-1)){
-					            mold=m;
-					            m--;
-					            //std::cout << "decreasing order" << std::endl;
-				            }
-				            else if((m==m_order_min)&&(factor>=2.0)){
-					            if(factor>m_multiplier){
-						            factor=m_multiplier;
-					            }	
-					            h*=factor; // updating step-size
-					            m_initializer->initialize(m_order_max,t,h,x,f_max);
-					            //std::cout << "increasing time-step" << std::endl;
-				            }
-				            else{
-					            //std::cout << "keeping both time-step and order constant" << std::endl;
-				            }
-				            //std::cout << k << std::endl;
-			            }	
-		            }	
-	            }
+                            /* Step-size and order control */
+                            if((m>m_order_min)&&(mold!=m-1)){
+                                mold=m;
+                                m--;
+                                //std::cout << "decreasing order" << std::endl;
+                            }
+                            else if((m==m_order_min)&&(factor>=2.0)){
+                                if(factor>m_multiplier){
+                                    factor=m_multiplier;
+                                }   
+                                h*=factor; // updating step-size
+                                m_initializer->initialize(m_order_max,t,h,x,f_max);
+                                //std::cout << "increasing time-step" << std::endl;
+                            }
+                            else{
+                                //std::cout << "keeping both time-step and order constant" << std::endl;
+                            }
+                            //std::cout << k << std::endl;
+                        }   
+                    }   
+                }
 
-	            return 0;
+                return 0;
             }
 
             
@@ -259,11 +259,11 @@ namespace smartmath
              * @return
              */
             int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const{
-                	
-	            if(f.size()!=m)
-                	smartmath_throw("INTEGRATION_STEP: wrong number of saved states for multistep integration"); 
-     	
-	            std::vector<T> x(x0), dx(x0);
+                    
+                if(f.size()!=m)
+                    smartmath_throw("INTEGRATION_STEP: wrong number of saved states for multistep integration"); 
+        
+                std::vector<T> x(x0), dx(x0);
 
                 half_step(m,h,x0,f,m_gamma_Bashforth,x); // prediction
 
@@ -274,15 +274,15 @@ namespace smartmath
                 m_dyn->evaluate(t+h, x, dx);
                 fp[m-1]=dx;
 
-	            half_step(m,h,x0,fp,m_gamma_Moulton,xfinal); // correction
+                half_step(m,h,x0,fp,m_gamma_Moulton,xfinal); // correction
 
-	            unsigned int l=x.size();
-	            er=0.0;
-	            for(unsigned int i=0; i<l; i++)
-			            er+=pow(xfinal[i]-x[i],2);
-	            er=sqrt(er);	
+                unsigned int l=x.size();
+                er=0.0;
+                for(unsigned int i=0; i<l; i++)
+                        er+=pow(xfinal[i]-x[i],2);
+                er=sqrt(er);    
 
-	            return 0;
+                return 0;
             }    
 
 
@@ -348,7 +348,7 @@ namespace smartmath
 
                 return 0;
             }
-      	
+        
         };
 
     }

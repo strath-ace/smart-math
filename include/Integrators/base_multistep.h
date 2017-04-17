@@ -63,7 +63,7 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            virtual int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const=0;
+            virtual int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const=0;
 
             /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
@@ -83,8 +83,8 @@ namespace smartmath
                 t_history.clear();
                 x_history.clear();
 
-                std::vector<T> x(x0),xp(x0),dx(x0);
-                std::vector<std::vector<T> > f, fp;
+                std::vector<T> x(x0),xp(x0);
+                std::vector<std::vector<T> > f;
                 double t=ti, h = (tend-ti)/nsteps;
 
                 initialize(m_order,ti,h,x0,f);
