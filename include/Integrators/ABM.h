@@ -89,7 +89,7 @@ namespace smartmath
 
                 m_predictor->integration_step(t,m,h,x0,f,xfinal); // prediction 
 
-                correction(h,x0,fp,xfinal); 
+                correction(h,x0,f,xfinal); 
 
                 m_dyn->evaluate(t, xfinal, dx);
                 f[m-1]=dx;
