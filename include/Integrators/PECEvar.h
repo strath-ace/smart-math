@@ -101,7 +101,7 @@ namespace smartmath
                 int check=0;
                 double factor;  
                 
-                std::vector<T> x(x0),xp(x0);
+                std::vector<T> x(x0),xp(x0),dx(x0);
                 std::vector<std::vector<T> > f_max, f;
                 T er;
                 int m=m_order_min, mold=m_order_min;
