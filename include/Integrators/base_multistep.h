@@ -98,7 +98,6 @@ namespace smartmath
                     x=xp;
                     t_history.push_back(t);
                     x_history.push_back(x);
-                    update_saved_steps(m_order,t,x,f);
 
                 }
 
@@ -117,32 +116,6 @@ namespace smartmath
              * @return
              */     
             virtual  int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const = 0;
-
-            /**
-             * @brief update_saved_steps method to update saved integration steps
-             *
-             * The method updates the saved steps
-             * @param[in] m number of saved steps
-             * @param[in] t time of last state to save
-             * @param[in] x vector of states at time t
-             * @param[out] f vector of saved state vectors for multistep scheme
-             * @return
-             */     
-            int update_saved_steps(const int &m, const double &t, const std::vector<T> &x, std::vector<std::vector<T> > &f) const{
-
-                if(f[0].size()!=x.size())
-                    smartmath_throw("UPDATE_SAVED_STEPS: wrong number of previously saved states for multistep integration"); 
-
-                std::vector<T> dx=x;
-                std::vector<std::vector<T> > fp=f;
-                for(int j=0; j<m-1; j++){
-                    f[j]=fp[j+1];
-                }
-                m_dyn->evaluate(t, x, dx);
-                f[m-1]=dx;
-
-                return 0;
-            }
 
         };
 

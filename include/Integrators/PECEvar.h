@@ -206,7 +206,8 @@ namespace smartmath
 				            k++; // counting the number of steps
 				            x=xp; // updating state
 				            t+=h; // updating current time	
-                            m_initializer->update_saved_steps(m_order_max,t,x,f_max);	
+                            m_dyn->evaluate(t, x, dx);
+                            f_max[m_order_max-1]=dx;	
 				            events=events2;				
 				            x_history.push_back(x);
 				            t_history.push_back(t);	

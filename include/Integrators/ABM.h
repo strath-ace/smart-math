@@ -80,7 +80,7 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
+            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
                 
                 if(f.size()!=m)
                     smartmath_throw("INTEGRATION_STEP: wrong number of saved states in multistep integration"); 
@@ -89,11 +89,10 @@ namespace smartmath
 
                 m_predictor->integration_step(t,m,h,x0,f,xfinal); // prediction 
 
-                /* Updating the saved steps */
-                std::vector<std::vector<T> > fp=f;
-                m_predictor->update_saved_steps(m,t+h,xfinal,fp);
-
                 correction(h,x0,fp,xfinal); 
+
+                m_dyn->evaluate(t, xfinal, dx);
+                f[m-1]=dx;
 
                 return 0;
             }            
