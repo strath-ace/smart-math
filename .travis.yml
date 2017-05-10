@@ -1,0 +1,17 @@
+language: cpp
+
+compiler:
+#  - clang
+  - gcc
+os:
+  - linux
+dist: trusty
+sudo: required
+
+before_install:
+  - sudo apt-get update
+
+script: ./build.sh
+
+notifications:
+  email: false
