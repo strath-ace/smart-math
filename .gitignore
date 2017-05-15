@@ -1,8 +1,10 @@
 # Files to be ignored by git
-/docs/
-/.project
-/build/
+build
+docs
+.idea
+.project
 CMakeCache.txt
 cmake.check_cache
-/include/smartmath.h
+cmake-build-debug
+include/smartmath.h
 *~
