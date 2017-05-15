@@ -7,6 +7,9 @@ project (
   LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_SYSTEM_FLAG_C "-isystem ")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 set(PROJECT_SUMMARY                            "Strathclyde Mechanical and Aerospace Researt Toolbox for Mathematics (SMART-MATH)")
 set(${PROJECT_NAME}_VENDOR_NAME                "spaceART")
@@ -86,9 +89,9 @@ else(WIN32)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g3 -fopenmp -std=c++11")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -fopenmp -std=c++11")
-    set(CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -std=c++11")
+    set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g3 -fopenmp")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -fopenmp")
+    set(CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
 
 include_directories(${EIGEN_INCLUDE_PATH})
@@ -145,10 +148,10 @@ install(TARGETS ${BIN_NAME} DESTINATION ${PROJECT_NAME}/bin)
 # Set up packager.
 if(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
   include(InstallRequiredSystemLibraries)
-  
+
   set(CPACK_SET_DESTDIR "on")
   set(CPACK_PACKAGING_INSTALL_PREFIX "/tmp")
-  
+
   set(CPACK_PACKAGE_DESCRIPTION "${PROJECT_NAME}")
   set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME}")
   set(CPACK_PACKAGE_VENDOR "${PROJECT_NAME}_VENDOR_NAME")
