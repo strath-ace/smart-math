@@ -22,13 +22,13 @@ namespace smartmath
         class base_hamiltonian: public base_dynamics<T>
         {
 
-        private:
+        protected:
             using base_dynamics<T>::m_name;
 			int m_dim;
 			bool m_separable;
 
         public:
-            base_hamiltonian(const std::string &name): base_dynamics<T>(name){}
+            base_hamiltonian(const std::string &name, const int &dim, const bool &separable): base_dynamics<T>(name), m_dim(dim), m_separable(separable){}
 
             ~base_hamiltonian(){}
 
@@ -64,11 +64,11 @@ namespace smartmath
             	return 0;
             }
 
-			virtual int Hamiltonian(const double t, const std::vector<T> &q, const std::vector<T> &p, T &H) const = 0;
+			virtual int Hamiltonian(const double &t, const std::vector<T> &q, const std::vector<T> &p, T &H) const = 0;
 
-			virtual int DHq(const double t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;
+			virtual int DHq(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;
 
-			virtual int DHp(const double t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;
+			virtual int DHp(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;
 
         };
 
