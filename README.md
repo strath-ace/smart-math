@@ -1,10 +1,6 @@
-#SMART-MATH
-(Strathclyde Mechanical and Aerospace Research Toolbox for Mathematics)
-  
-======================================================================
-
-[![Build Status](https://travis-ci.org/space-art/smart-math.svg?branch=master)](https://travis-ci.org/space-art/smart-math)
-
+# SMART-MATH [![Build Status](https://travis-ci.com/space-art/smart-math.svg?token=BGZD8zC9w6stvzyuFQhA&branch=master)](https://travis-ci.com/space-art/smart-math)
+Strathclyde Mechanical and Aerospace Research Toolbox for Mathematics
+------
 
 `SMART` is a collection of toolboxes developed and maintained since 2015 by the department of Mechanical and Aerospace Engineer of Strathclyde University. `SMART-MATH` in particular, is a collection of mathematical core routines.
 
@@ -92,10 +88,3 @@ Disclaimer
 ------
 
 The copyright holders are not liable for any damage(s) incurred due to improper use of `smart-math`.
-
-TODO
-------
-
-  - TODO 1
-  - TODO 2
-

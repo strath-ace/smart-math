@@ -4,10 +4,12 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project (
   smart-math
   VERSION 0.1.0
-  LANGUAGES CXX
-)
+  LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_SYSTEM_FLAG_C "-isystem ")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 set(PROJECT_SUMMARY                            "Strathclyde Mechanical and Aerospace Researt Toolbox for Mathematics (SMART-MATH)")
 set(${PROJECT_NAME}_VENDOR_NAME                "spaceART")
@@ -27,41 +29,30 @@ if(NOT DOCS_PATH)
 endif()
 set(LIB_PATH                                   "${PROJECT_BINARY_DIR}/lib")
 set(LIB_NAME                                   "smart-math")
+set(LIB_NAME_STATIC                            "smart-math-static")
 set(BIN_PATH                                   "${PROJECT_BINARY_DIR}/bin")
 set(MAIN_NAME                                  "main")
-set(TEST_PATH                                  "${PROJECT_BINARY_DIR}/test")
-set(TEST_NAME                                  "test")
 set(EXAMPLES_PATH                              "${PROJECT_BINARY_DIR}/examples")
 set(EXAMPLES_NAME                              "examples")
 
-option(BUILD_STATIC			       "Build static library"		OFF)
-option(BUILD_MAIN                              "Build main function"            ON)
 option(BUILD_DOCS                              "Build docs"                     OFF)
-option(BUILD_TESTS                             "Build tests"                    OFF)
-option(BUILD_EXAMPLES                          "Build examples"                 OFF)
+
 
 include("cmake/Utils.cmake")
 build_template("${INCLUDE_PATH}/smartmath.h.in" "${INCLUDE_PATH}/smartmath.h")
 
-file(GLOB SRC
-  "${SRC_PATH}/Utils/*.cpp"
-)
+file(GLOB SRC "${SRC_PATH}/Utils/*.cpp")
 
-set(MAIN_SRC
-  "${SRC_PATH}/main.cpp"
-)
+set(MAIN_SRC "${SRC_PATH}/main.cpp")
 
 file(GLOB TEST_SRC
   "${TEST_SRC_PATH}/LinearAlgebra/*.cpp"
   "${TEST_SRC_PATH}/Dynamics/*.cpp"
   "${TEST_SRC_PATH}/Events/*.cpp"
   "${TEST_SRC_PATH}/Integrators/*.cpp"
-  "${TEST_SRC_PATH}/Utils/*.cpp"
-)
+  "${TEST_SRC_PATH}/Utils/*.cpp")
 
-file(GLOB_RECURSE LibFiles
-    "${INCLUDE_PATH}/*.h"
-    )
+file(GLOB_RECURSE LibFiles "${INCLUDE_PATH}/*.h")
 add_custom_target(headers SOURCES ${LibFiles})
 
 # Set CMake build-type. If it not supplied by the user, the default built type is "Release".
@@ -98,31 +89,30 @@ else(WIN32)
 endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g3 -fopenmp -std=c++11")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -fopenmp -std=c++11")
-    set(CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage -std=c++11")
+    set(CMAKE_CXX_FLAGS_DEBUG   "-O0 -g3 -fopenmp")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3 -fopenmp")
+    set(CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
 
 include_directories(${EIGEN_INCLUDE_PATH})
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB_PATH})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB_PATH})
-if(BUILD_STATIC) 
-   add_library(${LIB_NAME} STATIC ${SRC})
-else()
-   add_library(${LIB_NAME} SHARED ${SRC})
-endif()
+
+add_library(${LIB_NAME} SHARED ${SRC})
+add_library(${LIB_NAME_STATIC} STATIC ${SRC})
 
 set_target_properties(${LIB_NAME} PROPERTIES
 	  VERSION ${PROJECT_VERSION}
-	  SOVERSION ${PROJECT_VERSION}
-)
+	  SOVERSION ${PROJECT_VERSION})
 
-if(BUILD_MAIN)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
-  add_executable(${MAIN_NAME} ${MAIN_SRC})
-  target_link_libraries(${MAIN_NAME} ${LIB_NAME} ${MANDATORY_LIBRARIES})
-endif()
+set_target_properties(${LIB_NAME_STATIC} PROPERTIES
+        VERSION ${PROJECT_VERSION}
+        SOVERSION ${PROJECT_VERSION}
+        OUTPUT_NAME ${LIB_NAME})
+
+add_executable(${MAIN_NAME} ${MAIN_SRC})
+target_link_libraries(${MAIN_NAME} ${LIB_NAME} ${MANDATORY_LIBRARIES})
 
 if(BUILD_DOCS)
   find_package(Doxygen)
@@ -143,20 +133,7 @@ if(BUILD_DOCS)
                     SOURCES ${PROJECT_BINARY_DIR}/Doxyfile)
 endif()
 
-if(BUILD_TESTS)
-  enable_testing()
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TEST_PATH})
-
-  add_executable(${TEST_NAME} ${TEST_SRC})
-  target_link_libraries(${TEST_NAME} ${LIB_NAME} ${MANDATORY_LIBRARIES})
-  add_test(NAME ${TEST_NAME} COMMAND "${TEST_PATH}/${TEST_NAME}")
-
-endif()
-
-if(BUILD_EXAMPLES)
-        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXAMPLES_PATH})
-	add_subdirectory("${PROJECT_PATH}/examples")
-endif()
+add_subdirectory("${PROJECT_PATH}/examples")
 
 # Install header files and library.
 # Destination is set by CMAKE_INSTALL_PREFIX and defaults to usual locations, unless overridden by
@@ -165,15 +142,16 @@ install(DIRECTORY ${INCLUDE_PATH}/
         DESTINATION ${PROJECT_NAME}/include)
 	#FILES_MATCHING PATTERN "*.h")
 install(TARGETS ${LIB_NAME} DESTINATION ${PROJECT_NAME}/lib)
+install(TARGETS ${LIB_NAME_STATIC} DESTINATION ${PROJECT_NAME}/lib)
 install(TARGETS ${BIN_NAME} DESTINATION ${PROJECT_NAME}/bin)
 
 # Set up packager.
 if(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
   include(InstallRequiredSystemLibraries)
-  
+
   set(CPACK_SET_DESTDIR "on")
   set(CPACK_PACKAGING_INSTALL_PREFIX "/tmp")
-  
+
   set(CPACK_PACKAGE_DESCRIPTION "${PROJECT_NAME}")
   set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_NAME}")
   set(CPACK_PACKAGE_VENDOR "${PROJECT_NAME}_VENDOR_NAME")
