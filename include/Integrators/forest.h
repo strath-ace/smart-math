@@ -43,7 +43,7 @@ namespace smartmath
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
-            forest(const std::string &name, const dynamics::base_hamiltonian<T> *dyn) : base_symplectic<T>(name, dyn), m_order(4){
+            forest(const dynamics::base_hamiltonian<T> *dyn) : base_symplectic<T>("Forest scheme", dyn), m_order(4){
 
                 /* sanity checks */
                 //if(dyn->m_separable != true)
