@@ -13,6 +13,7 @@
 #define SMARTMATH_DYNAMICS_H
 
 #include "base_dynamics.h"
+#include "base_hamiltonian.h"
 #include "lotkavolterra.h"
 #include "vanderpol.h"
 #include "twobody.h"

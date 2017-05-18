@@ -26,5 +26,7 @@
 #include "base_stepsizecontrol.h"
 #include "rkf45.h"
 #include "rk87.h"
+#include "base_symplectic.h"
+#include "forest.h"
 
 #endif // SMARTMATH_INTEGRATORS_H

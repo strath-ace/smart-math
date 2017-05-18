@@ -10,7 +10,7 @@
 #ifndef SMARTMATH_BASE_MULTISTEP_H
 #define SMARTMATH_BASE_MULTISTEP_H
 
-#include "base_multistep.h"
+#include "base_integrator.h"
 #include "../exception.h"
 
 namespace smartmath
