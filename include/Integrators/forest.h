@@ -87,27 +87,27 @@ namespace smartmath
 
                 std::vector<T> q0, p0;
                 int n = 3;//m_dyn->m_dim;
-                for(int i; i < n; i++){
+                for(int i = 0; i < n; i++){
                     q0.push_back(x0[i]);
                     p0.push_back(x0[i + n]);
                 }
                 std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
 
-                for(int j; j < m_order; j++){
-                    m_dyn.DHp(ti, q0, p0, dp);
-                    for(int i; i < n; i++)
+                for(int j = 0; j < m_order; j++){
+                    m_dyn->DHp(ti, q0, p0, dp);
+                    for(int i = 0; i < n; i++)
                         q[i] += m_c[j] * tau * dp[i];
-                    m_dyn.DHq(ti, q, p0, dq);
-                    for(int i; i < n; i++)
+                    m_dyn->DHq(ti, q, p0, dq);
+                    for(int i = 0; i < n; i++)
                         p[i] -= m_d[j] * tau * dq[i];
                     q0 = q;
                     p0 = p;
                 }
 
                 xfinal.clear();
-                for(int i; i < n; i++)
+                for(int i = 0; i < n; i++)
                     xfinal.push_back(q[i]);
-                for(int i; i < n; i++)
+                for(int i = 0; i < n; i++)
                     xfinal.push_back(p[i]);
                                
                 return 0;
@@ -131,14 +131,14 @@ namespace smartmath
                 t_history.clear();
                 x_history.clear();
 
-                std::vector<T> dx=x0, x=x0, x_temp=x0;
+                std::vector<T> dx = x0, x = x0, x_temp = x0;
 
-                double t=ti, h = (tend-ti)/nsteps;
+                double t = ti, h = (tend-ti) / nsteps;
 
-                for(int i=0; i<nsteps; i++){
-                    integration_step(t,h,x,x_temp);
-                    t+=h;
-                    x=x_temp;
+                for(int i = 0; i < nsteps; i++){
+                    integration_step(t, h, x, x_temp);
+                    t += h;
+                    x = x_temp;
                     t_history.push_back(t);
                     x_history.push_back(x);
                 }
