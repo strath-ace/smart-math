@@ -28,5 +28,6 @@
 #include "rk87.h"
 #include "base_symplectic.h"
 #include "forest.h"
+#include "leapfrog.h"
 
 #endif // SMARTMATH_INTEGRATORS_H
