@@ -32,6 +32,14 @@ namespace smartmath
 
             ~base_hamiltonian(){}
 
+            int get_dim() const{
+            	return m_dim;
+            }
+
+            bool is_separable() const{
+            	return m_separable;
+            }            
+
             int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
 
             	/* sanity checks */

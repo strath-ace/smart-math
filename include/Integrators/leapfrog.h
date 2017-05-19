@@ -46,6 +46,10 @@ namespace smartmath
              */
             leapfrog(const dynamics::base_hamiltonian<T> *dyn, const bool &flag) : base_symplectic<T>("leapfrog integrator", dyn), m_order(2), m_flag(flag){
                 
+                /* sanity checks */
+                if(dyn->is_separable() == false)
+                    smartmath_throw("LEAPFROG: symplectic integrator cannot operate on non-separable Hamiltonian");
+
                 std::vector<double> c(m_order), d(m_order);
 
                 if(flag){
@@ -84,7 +88,7 @@ namespace smartmath
             int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
 
                 std::vector<T> q0, p0;
-                int n = 3;//m_dyn->m_dim;
+                int n = m_dyn->get_dim();
                 for(int i = 0; i < n; i++){
                     q0.push_back(x0[i]);
                     p0.push_back(x0[i + n]);
@@ -108,39 +112,6 @@ namespace smartmath
                 for(int i = 0; i < n; i++)
                     xfinal.push_back(p[i]);
                                
-                return 0;
-            }
-
-            /**
-             * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
-             *
-             * The method implements a fixed-step Runge-Kutta scheme to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] x_history vector of intermediate state vector (including final one)
-             * @param[out] t_history vector of intermediate times (including final one)
-             * @return
-             */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
-
-                t_history.clear();
-                x_history.clear();
-
-                std::vector<T> dx = x0, x = x0, x_temp = x0;
-
-                double t = ti, h = (tend-ti) / nsteps;
-
-                for(int i = 0; i < nsteps; i++){
-                    integration_step(t, h, x, x_temp);
-                    t += h;
-                    x = x_temp;
-                    t_history.push_back(t);
-                    x_history.push_back(x);
-                }
-
                 return 0;
             }
 
