@@ -38,7 +38,7 @@ namespace smartmath
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
-            base_symplectic(const std::string &name, const dynamics::base_hamiltonian<T> *dyn):m_name(name),m_dyn(dyn){}
+            base_symplectic(const std::string &name, const dynamics::base_hamiltonian<T> *dyn, const int &order): m_name(name), m_dyn(dyn), m_order(order){}
 
             /**
              * @brief ~base_integrator deconstructor
@@ -56,9 +56,36 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            virtual int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const = 0;
+            int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
 
+                std::vector<T> q0, p0;
+                int n = m_dyn->get_dim();
+                for(int i = 0; i < n; i++){
+                    q0.push_back(x0[i]);
+                    p0.push_back(x0[i + n]);
+                }
+                std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
 
+                for(int j = 0; j < m_order; j++){
+                    m_dyn->DHp(ti, q0, p0, dp);
+                    for(int i = 0; i < n; i++)
+                        q[i] += m_c[j] * tau * dp[i];
+                    m_dyn->DHq(ti, q, p0, dq);
+                    for(int i = 0; i < n; i++)
+                        p[i] -= m_d[j] * tau * dq[i];
+                    q0 = q;
+                    p0 = p;
+                }
+
+                xfinal.clear();
+                for(int i = 0; i < n; i++)
+                    xfinal.push_back(q[i]);
+                for(int i = 0; i < n; i++)
+                    xfinal.push_back(p[i]);
+                               
+                return 0;
+            }
+            
             /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
@@ -120,6 +147,8 @@ namespace smartmath
 
             std::string m_name;
             const dynamics::base_hamiltonian<T> *m_dyn;
+            int m_order;
+            std::vector<double> m_c, m_d;
 
         };
     }

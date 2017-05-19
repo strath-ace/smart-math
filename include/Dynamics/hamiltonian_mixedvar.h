@@ -72,6 +72,10 @@ namespace smartmath
             	return 0;
             }
 
+            virtual int conversion(const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &q2, std::vector<T> &p2) const = 0; 
+
+            virtual int conversion2(const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &q, std::vector<T> &p) const = 0; 
+
         };
 
     }

@@ -27,15 +27,13 @@ namespace smartmath
         {
 
         protected:
-            using base_symplectic<T>::m_name;
             using base_symplectic<T>::m_dyn;
-            int m_order;
-            std::vector<double> m_c, m_d;
+            using base_symplectic<T>::m_order;
+            using base_symplectic<T>::m_c;
+            using base_symplectic<T>::m_d;
             bool m_flag;
 
         public:
-
-            using base_symplectic<T>::integrate;
 
             /**
              * @brief base_rungekutta constructor
@@ -44,7 +42,7 @@ namespace smartmath
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
-            leapfrog(const dynamics::base_hamiltonian<T> *dyn, const bool &flag) : base_symplectic<T>("leapfrog integrator", dyn), m_order(2), m_flag(flag){
+            leapfrog(const dynamics::base_hamiltonian<T> *dyn, const bool &flag) : base_symplectic<T>("leapfrog integrator", dyn, 2), m_flag(flag){
                 
                 /* sanity checks */
                 if(dyn->is_separable() == false)
@@ -73,47 +71,6 @@ namespace smartmath
              * @brief ~base_rungekutta deconstructor
              */
             ~leapfrog(){}
-
-            /**
-             * @brief integration_step performs one integration step from the Runge-Kutta scheme
-             *
-             * The method implements one step of a Runge-Kutta scheme to integrate with given initial time,
-             * final time, initial state condition(constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] h time step
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-
-                std::vector<T> q0, p0;
-                int n = m_dyn->get_dim();
-                for(int i = 0; i < n; i++){
-                    q0.push_back(x0[i]);
-                    p0.push_back(x0[i + n]);
-                }
-                std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
-
-                for(int j = 0; j < m_order; j++){
-                    m_dyn->DHp(ti, q0, p0, dp);
-                    for(int i = 0; i < n; i++)
-                        q[i] += m_c[j] * tau * dp[i];
-                    m_dyn->DHq(ti, q, p0, dq);
-                    for(int i = 0; i < n; i++)
-                        p[i] -= m_d[j] * tau * dq[i];
-                    q0 = q;
-                    p0 = p;
-                }
-
-                xfinal.clear();
-                for(int i = 0; i < n; i++)
-                    xfinal.push_back(q[i]);
-                for(int i = 0; i < n; i++)
-                    xfinal.push_back(p[i]);
-                               
-                return 0;
-            }
 
         };
 

@@ -30,5 +30,6 @@
 #include "forest.h"
 #include "leapfrog.h"
 #include "symplectic_mixedvar.h"
+#include "leapfrog_mixedvar.h"
 
 #endif // SMARTMATH_INTEGRATORS_H
