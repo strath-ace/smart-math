@@ -38,7 +38,7 @@ namespace smartmath
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
-            symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn, const int &order): m_name(name), m_dyn(dyn), m_order(order){}
+            symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn): m_name(name), m_dyn(dyn){}
 
             /**
              * @brief ~base_integrator deconstructor
@@ -119,8 +119,6 @@ namespace smartmath
 
             std::string m_name;
             const dynamics::hamiltonian_mixedvar<T> *m_dyn;
-            int m_order;
-            std::vector<T> m_c, m_d;
 
         };
     }
