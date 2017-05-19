@@ -14,6 +14,7 @@
 
 #include "base_dynamics.h"
 #include "base_hamiltonian.h"
+#include "hamiltonian_momentum.h"
 #include "lotkavolterra.h"
 #include "vanderpol.h"
 #include "twobody.h"

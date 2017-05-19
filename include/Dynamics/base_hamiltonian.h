@@ -72,7 +72,7 @@ namespace smartmath
             	return 0;
             }
 
-			virtual int Hamiltonian(const double &t, const std::vector<T> &q, const std::vector<T> &p, T &H) const = 0;
+			//virtual int Hamiltonian(const double &t, const std::vector<T> &q, const std::vector<T> &p, T &H) const = 0;
 
 			virtual int DHq(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;
 
