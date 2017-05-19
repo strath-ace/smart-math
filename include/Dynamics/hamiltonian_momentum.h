@@ -32,29 +32,12 @@ namespace smartmath
 
             using smartmath::dynamics::base_hamiltonian<T>::evaluate;
 
-            virtual int DHq(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;//{
-
-			//     /* sanity checks */
-			//     if(q.size() != m_dim)
-			//         smartmath_exception("DHQ: the position must have dimension 3");
-			//     if(p.size() != m_dim)
-			//         smartmath_exception("DHQ: the momentum must have dimension 3");   
-
-			//     dH.clear();
-			//     for(int i = 0; i < m_dim; i++)
-			//         dH.push_back(0.0 * q[i]); // dummy force
-
-			//     return 0;
-
-			// };
+            virtual int DHq(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;
 
 			int DHp(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const{
 
-			    /* sanity checks */
-			    if(q.size() != m_dim)
-			        smartmath_exception("DHP: the position must have dimension 3");
 			    if(p.size() != m_dim)
-			        smartmath_exception("DHP: the momentum must have dimension 3");   
+			        smartmath_exception("DHP: the momentum must have the correct dimension");
 
 			    dH.clear();
 			    for(int i = 0; i < m_dim; i++)
