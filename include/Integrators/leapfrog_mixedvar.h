@@ -31,7 +31,6 @@ namespace smartmath
             using symplectic_mixedvar<T>::m_order;
             using symplectic_mixedvar<T>::m_c;
             using symplectic_mixedvar<T>::m_d;
-            bool m_flag;
 
         public:
 
@@ -42,7 +41,7 @@ namespace smartmath
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
-            leapfrog_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn, const bool &flag) : symplectic_mixedvar<T>("leapfrog integrator with mixed variables", dyn, 2), m_flag(flag){
+            leapfrog_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("leapfrog integrator with mixed variables", dyn, 2){
                 
                 /* sanity checks */
                 if(dyn->is_separable() == false)
@@ -50,18 +49,10 @@ namespace smartmath
 
                 std::vector<double> c(m_order), d(m_order);
 
-                if(flag){
-                    c[0] = 1.0 / 2.0;
-                    c[1] = 1.0 / 2.0;
-                    d[0] = 1.0;
-                    d[1] = 0.0;
-                }
-                else{
-                    c[0] = 0.0;
-                    c[1] = 1.0;
-                    d[0] = 1.0 / 2.0;
-                    d[1] = 1.0 / 2.0; 
-                }
+                c[0] = 1.0 / 2.0;
+                c[1] = 1.0 / 2.0;
+                d[0] = 1.0;
+                d[1] = 0.0;
 
                 m_c = c;
                 m_d = d;
@@ -101,6 +92,8 @@ namespace smartmath
                 for(int i = 0; i < n; i++)
                     p[i] -= m_d[0] * tau * dq[i];
                 m_dyn->conversion(q, p, q0, p0);
+                q = q0;
+                p = p0;
                 
                 m_dyn->DHp2(ti, q0, p0, dp);
                 for(int i = 0; i < n; i++)
@@ -109,6 +102,8 @@ namespace smartmath
                 for(int i = 0; i < n; i++)
                     p[i] -= m_d[1] * tau * dq[i];
                 m_dyn->conversion2(q, p, q0, p0);
+                q = q0;
+                p = p0;                
 
                 xfinal.clear();
                 for(int i = 0; i < n; i++)
