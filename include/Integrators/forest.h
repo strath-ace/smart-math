@@ -37,7 +37,7 @@ namespace smartmath
             /**
              * @brief forest constructor
              *
-             * The constructor initialize a pointer to the dynamics to integrate
+             * The constructor initializes a pointer to the dynamics to integrate and precomputes the integration coefficients
              * @param dyn Hamiltonian system to integrate
              */
             forest(const dynamics::base_hamiltonian<T> *dyn) : base_symplectic<T>("Forest scheme", dyn, 4){

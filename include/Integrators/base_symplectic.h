@@ -59,6 +59,13 @@ namespace smartmath
              */
             int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
 
+                /* sanity checks */
+                if(x0.size() != 2 * m_dyn->get_dim())
+                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system");
+                if(xfinal.size() != x0.size())
+                    smartmath_throw("BASE_SYMPLECTIC: initial and final states must have same dimension");                
+
+                /* reconstituting the initial canonical variables from the state vector */
                 std::vector<T> q0, p0;
                 int n = m_dyn->get_dim();
                 for(int i = 0; i < n; i++){
@@ -67,6 +74,7 @@ namespace smartmath
                 }
                 std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
 
+                /* performing the integration step per se using the precomputed coefficients */
                 for(int j = 0; j < m_order; j++){
                     m_dyn->DHp(ti, q0, p0, dp);
                     for(int i = 0; i < n; i++)
@@ -78,6 +86,7 @@ namespace smartmath
                     p0 = p;
                 }
 
+                /* reconstituting the final state vector from the propagated canonical variables */
                 xfinal.clear();
                 for(int i = 0; i < n; i++)
                     xfinal.push_back(q[i]);
@@ -102,6 +111,10 @@ namespace smartmath
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
 
+                /* sanity checks */
+                if(x0.size() != 2 * m_dyn->get_dim())
+                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system"); 
+
                 t_history.clear();
                 x_history.clear();
 
@@ -123,7 +136,7 @@ namespace smartmath
             /**
              * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
              *
-             * The method implements the corresponding integration scheme with given initial time,
+             * The method implements the symplectic integration scheme with given initial time,
              * final time, initial state condition and number of steps (constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] tend final time instant
@@ -133,6 +146,12 @@ namespace smartmath
              * @return
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+
+                /* sanity checks */
+                if(x0.size() != 2 * m_dyn->get_dim())
+                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system");
+                if(xfinal.size() != x0.size())
+                    smartmath_throw("BASE_SYMPLECTIC: initial and final states must have same dimension"); 
 
                 std::vector<std::vector<T> > x_history;
                 std::vector<double> t_history;

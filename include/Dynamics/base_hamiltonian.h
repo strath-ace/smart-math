@@ -85,17 +85,18 @@ namespace smartmath
 					smartmath_throw("EVALUATE: the derivative of the state must have same length");				
 
 				dstate.clear();
-
+				/* reconstituting the canonical variables q and p from the state vector */
 				std::vector<T> dHp, dHq, q, p;
 				for(int k = 0; k < m_dim; k++)
 					{
 						q.push_back(state[k]);
 						p.push_back(state[k + m_dim]);
 					}
-
+				/* computing the partial derivatives of the Hamiltonian w.r.t. q and p */ 
 				DHq(t, q, p, dHq);
 				DHp(t, q, p, dHp);
 
+				/* reconstituting the state derivative */
 				for(int k = 0; k < m_dim; k++)
 					{
 						dstate.push_back(dHp[k]);

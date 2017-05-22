@@ -34,7 +34,7 @@ namespace smartmath
             /**
              * @brief base_integrator constructor
              *
-             * The constructor initialize the name of the integrator and a pointer to the dynamical system to eb integrated
+             * The constructor initializes the name of the integrator and a pointer to the dynamical system to be integrated
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
@@ -73,6 +73,10 @@ namespace smartmath
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
 
+                /* sanity checks */
+                if(x0.size() != 2 * m_dyn->get_dim())
+                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system");
+
                 t_history.clear();
                 x_history.clear();
 
@@ -105,6 +109,12 @@ namespace smartmath
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
 
+                /* sanity checks */
+                if(x0.size() != 2 * m_dyn->get_dim())
+                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system");
+                if(xfinal.size() != x0.size())
+                    smartmath_throw("BASE_SYMPLECTIC: initial and final states must have same dimension"); 
+                
                 std::vector<std::vector<T> > x_history;
                 std::vector<double> t_history;
 

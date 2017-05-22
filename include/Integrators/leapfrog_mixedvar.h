@@ -66,6 +66,12 @@ namespace smartmath
              */
             int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
 
+                /* sanity checks */
+                if(x0.size() != 2 * m_dyn->get_dim())
+                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system");
+                if(xfinal.size() != x0.size())
+                    smartmath_throw("BASE_SYMPLECTIC: initial and final states must have same dimension");      
+                
                 std::vector<T> q0, p0;
                 int n = m_dyn->get_dim();
                 for(int i = 0; i < n; i++){

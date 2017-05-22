@@ -52,7 +52,7 @@ namespace smartmath
              * @param[in] time in scaled units
              * @param[in] q position vector in scaled units
              * @param[in] p momenta vector in scaled units
-             * @param[out] dH vector of partial derivatives of H w.r.t. the vector q
+             * @param[out] dH vector of partial derivatives of H w.r.t. the vector p
              * @return exit flag (0=success)
              */
 			int DHp(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const{
@@ -62,7 +62,7 @@ namespace smartmath
 
 			    dH.clear();
 			    for(int i = 0; i < m_dim; i++)
-			        dH.push_back(p[i]);
+			        dH.push_back(p[i]); // partial derivatives of the Hamiltonian from the kinetic energy
 
 			    return 0;
 			};

@@ -20,7 +20,7 @@ namespace smartmath
         /**
          * @brief The forest_mixedvar class is an adaptation for mixed variables of the Forest integrator.
          *
-         * The forest_mixedvar class is an adaptation for mixed variables by Yoshida of the Forest integrator (4th order).
+         * The forest_mixedvar class is an adaptation for mixed variables of a 4th order integrator by Forest (1987).
          */
         template < class T >
         class forest_mixedvar: public symplectic_mixedvar<T>
@@ -35,7 +35,7 @@ namespace smartmath
             /**
              * @brief forest_mixedvar constructor
              *
-             * The constructor initialize a pointer to the dynamics to integrate
+             * The constructor initializes a pointer to the dynamics to integrate and precomputes a parameter necessary for integration
              * @param dyn Hamiltonian system to integrate
              */
             forest_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("Forest integrator with mixed variables", dyn){
@@ -67,6 +67,12 @@ namespace smartmath
              * @return
              */
             int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+
+                /* sanity checks */
+                if(x0.size() != 2 * m_dyn->get_dim())
+                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system");
+                if(xfinal.size() != x0.size())
+                    smartmath_throw("BASE_SYMPLECTIC: initial and final states must have same dimension");      
 
                 std::vector<T> q0, p0;
                 int n = m_dyn->get_dim();
