@@ -21,9 +21,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method integrate()
+         * @brief The base_integrator class is a template abstract class. Any sympletic integrator added to the toolbox needs to inherit from it
          *
-         * The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method that integrates between to given times, initial state and stepsize
+         * The base_symplectic class is a template abstract class. Any symplectic integrator added to the toolbox needs to inherit from it
          */
         template < class T >
         class base_symplectic
@@ -34,24 +34,25 @@ namespace smartmath
             /**
              * @brief base_integrator constructor
              *
-             * The constructor initialize the name of the integrator and a pointer to the dynamical system to eb integrated
+             * The constructor initialize the name of the integrator, a pointer to the dynamical system to be integrated and the order of the integration
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
+             * @param order integer stating the order of the integration scheme
              */
             base_symplectic(const std::string &name, const dynamics::base_hamiltonian<T> *dyn, const int &order): m_name(name), m_dyn(dyn), m_order(order){}
 
             /**
-             * @brief ~base_integrator deconstructor
+             * @brief ~base_symplectic deconstructor
              */
             virtual ~base_symplectic(){}
 
             /**
-             * @brief integration_step performs one integration step from the Runge-Kutta scheme
+             * @brief integration_step performs one integration step from the symplectic integrator
              *
-             * The method implements one step of a Runge-Kutta scheme to integrate with given initial time,
+             * The method implements one step of a symplectic scheme to integrate with given initial time,
              * final time, initial state condition(constant stepsize)
              * @param[in] ti initial time instant
-             * @param[in] h time step
+             * @param[in] tau time step
              * @param[in] x0 vector of initial states
              * @param[out] xfinal vector of final states
              * @return
@@ -89,7 +90,7 @@ namespace smartmath
             /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
-             * The method implements a fixed-step Runge-Kutta scheme to integrate with given initial time,
+             * The method implements a fixed-step symplectic scheme to integrate with given initial time,
              * final time, initial state condition and number of steps (constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] tend final time instant
@@ -122,7 +123,7 @@ namespace smartmath
             /**
              * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
              *
-             * The virtual method is inherited by any subclass. It implements the corresponding integration scheme with given initial time,
+             * The method implements the corresponding integration scheme with given initial time,
              * final time, initial state condition and number of steps (constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] tend final time instant
@@ -148,7 +149,7 @@ namespace smartmath
             std::string m_name;
             const dynamics::base_hamiltonian<T> *m_dyn;
             int m_order;
-            std::vector<double> m_c, m_d;
+            std::vector<double> m_c, m_d; // coefficients for integration step
 
         };
     }

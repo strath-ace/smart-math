@@ -18,6 +18,12 @@ namespace smartmath
 {
     namespace dynamics {
 
+        /**
+         * @brief The hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system with mixed variables needs to inherit from it
+         *
+         * The base_hamiltonian class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
+         * The system has two sets of canonical variables and the Hamiltonian writes H(q, p) =  H(q2, p2).
+         */
         template < class T >
         class hamiltonian_mixedvar: public base_hamiltonian<T>
         {
@@ -26,54 +32,67 @@ namespace smartmath
         	using smartmath::dynamics::base_hamiltonian<T>::m_dim;
 
         public:
+        	 /**
+             * @brief hamiltonian_mixedvar constructor
+             *
+             * The constructor initialize the name of the Hamiltonian dynamics, its half-dimension and a flag about its separability
+             * @param name integrator name
+             * @param dim half-order of the Hamiltonian system
+             * @param separable boolean precising whether the system is separable or not
+             */
             hamiltonian_mixedvar(const std::string &name, const int &dim, const bool &separable): base_hamiltonian<T>(name, dim, separable){}
 
+            /**
+             * @brief ~hamiltonian_mixedvar deconstructor
+             */
             ~hamiltonian_mixedvar(){}
 
-            using smartmath::dynamics::base_hamiltonian<T>::evaluate;
-
-            virtual int DHq(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;
-
-            virtual int DHp(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;
-
+            /**
+             * @brief DHq2 computes the partial derivative of the Hamiltonian with respect to the second 'position' q2
+             *
+             * The method computes the partial derivative of the Hamiltonian with respect to q2
+             * @param[in] time in scaled units
+             * @param[in] q2 vector in scaled units
+             * @param[in] p2 vector in scaled units
+             * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector q
+             * @return exit flag (0=success)
+             */
             virtual int DHq2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const = 0;
 
+            /**
+             * @brief DHp2 computes the partial derivative of the Hamiltonian with respect to the second 'position' q2
+             *
+             * The method computes the partial derivative of the Hamiltonian with respect to p2
+             * @param[in] time in scaled units
+             * @param[in] q2 vector in scaled units
+             * @param[in] p2 vector in scaled units
+             * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector p
+             * @return exit flag (0=success)
+             */
             virtual int DHp2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const = 0;            
 
-            int evaluate2(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
-
-            	/* sanity checks */
-				if(state.size() != 2 * m_dim)
-					smartmath_throw("EVALUATE: the Hamiltonian state must have a consistent dimension");
-				if(state.size() != dstate.size())
-					smartmath_throw("EVALUATE: the derivative of the state must have same length");				
-
-				dstate.clear();
-
-				std::vector<T> dHp2, dHq2, q2, p2;
-				for(int k = 0; k < m_dim; k++)
-					{
-						q2.push_back(state[k]);
-						p2.push_back(state[k + m_dim]);
-					}
-
-				DHq2(t, q2, p2, dHq2);
-				DHp2(t, q2, p2, dHp2);
-
-				for(int k = 0; k < m_dim; k++)
-					{
-						dstate.push_back(dHp2[k]);
-					}
-				for(int k = 0; k < m_dim; k++)
-					{
-						dstate.push_back(-dHq2[k]);
-					}
-
-            	return 0;
-            }
-
+            /**
+             * @brief conversion performs the conversion from the first set of canonical variables to the second one
+             *
+             * The method converts the first set of canonical variables into the second one
+             * @param[in] q vector in scaled units
+             * @param[in] p vector in scaled units            
+             * @param[out] q2 vector in scaled units
+             * @param[out] p2 vector in scaled units
+             * @return exit flag (0=success)
+             */
             virtual int conversion(const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &q2, std::vector<T> &p2) const = 0; 
 
+            /**
+             * @brief conversion performs the conversion from the second set of canonical variables to the first one
+             *
+             * The method converts the second set of canonical variables into the first one
+             * @param[in] q2 vector in scaled units
+             * @param[in] p2 vector in scaled units            
+             * @param[out] q vector in scaled units
+             * @param[out] p vector in scaled units
+             * @return exit flag (0=success)
+             */
             virtual int conversion2(const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &q, std::vector<T> &p) const = 0; 
 
         };

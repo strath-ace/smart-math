@@ -21,9 +21,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method integrate()
+         * @brief The base_integrator class is a template abstract class. Any symplectic integrator using mixed variables needs to inherit from it and implement the method integrate()
          *
-         * The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method that integrates between to given times, initial state and stepsize
+         * The base_integrator class is a template abstract class. Any integrator using mixed variables needs to inherit from it and implement the method that integrates between to given times, initial state and stepsize
          */
         template < class T >
         class symplectic_mixedvar
@@ -41,14 +41,14 @@ namespace smartmath
             symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn): m_name(name), m_dyn(dyn){}
 
             /**
-             * @brief ~base_integrator deconstructor
+             * @brief ~symplectic_mixedvar deconstructor
              */
             virtual ~symplectic_mixedvar(){}
 
             /**
-             * @brief integration_step performs one integration step from the Runge-Kutta scheme
+             * @brief integration_step performs one integration step from the symplectic scheme with mixed variables
              *
-             * The method implements one step of a Runge-Kutta scheme to integrate with given initial time,
+             * The method implements one step of a symplectic scheme with mixed variables to integrate with given initial time,
              * final time, initial state condition(constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] h time step
@@ -61,7 +61,7 @@ namespace smartmath
             /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
-             * The method implements a fixed-step Runge-Kutta scheme to integrate with given initial time,
+             * The method implements a fixed-step symplectic scheme with mixed variables to integrate with given initial time,
              * final time, initial state condition and number of steps (constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] tend final time instant
@@ -94,7 +94,7 @@ namespace smartmath
             /**
              * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
              *
-             * The virtual method is inherited by any subclass. It implements the corresponding integration scheme with given initial time,
+             * The method implements the corresponding integration scheme with given initial time,
              * final time, initial state condition and number of steps (constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] tend final time instant

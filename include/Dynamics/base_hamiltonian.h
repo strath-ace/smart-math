@@ -18,6 +18,12 @@ namespace smartmath
 {
     namespace dynamics {
 
+        /**
+         * @brief The base_hamiltonian class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
+         *
+         * The base_hamiltonian class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
+         * The canonical variables are called q and p. 
+         */
         template < class T >
         class base_hamiltonian: public base_dynamics<T>
         {
@@ -25,21 +31,51 @@ namespace smartmath
         protected:
             using base_dynamics<T>::m_name;
 			int m_dim;
-			bool m_separable;
+			bool m_separable; // 1 if the system is separable i.e. if the Hamiltonian is of the type V(p) + W(q), 0 otherwise
 
         public:
+            /**
+             * @brief base_hamiltonian constructor
+             *
+             * The constructor initialize the name of the Hamiltonian dynamics, its half-dimension and a flag about its separability
+             * @param name integrator name
+             * @param dim half-order of the Hamiltonian system
+             * @param separable boolean precising whether the system is separable or not
+             */
             base_hamiltonian(const std::string &name, const int &dim, const bool &separable): base_dynamics<T>(name), m_dim(dim), m_separable(separable){}
 
+            /**
+             * @brief ~base_hamiltonian deconstructor
+             */
             ~base_hamiltonian(){}
 
+            /**
+             * @brief get_dim performs get the dimension of the Hamiltonian system
+             *
+             * The method returns the dimension of the implemented Hamiltonian system
+             * @return m_dim half-order of the system
+             */
             int get_dim() const{
             	return m_dim;
             }
 
+            /**
+             * @brief is_separable performs get the dimension of the Hamiltonian system
+             *
+             * The method returns a boolean that is true if the system is seperable, false otherwise
+             * @return m_separable boolean about the separability of the Hamiltonian 
+             */
             bool is_separable() const{
             	return m_separable;
             }            
 
+            /**
+             * @brief evaluate differential equations of the implemented Hamiltonian system
+             * @param[in] time in scaled units
+             * @param[in] state vector in scaled units
+             * @param[out] state derivative in scaled units
+             * @return exit flag (0=success)
+             */
             int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
 
             	/* sanity checks */
@@ -72,10 +108,28 @@ namespace smartmath
             	return 0;
             }
 
-			//virtual int Hamiltonian(const double &t, const std::vector<T> &q, const std::vector<T> &p, T &H) const = 0;
-
+            /**
+             * @brief DHq computes the partial derivative of the Hamiltonian with respect to q
+             *
+             * The method computes the partial derivative of the Hamiltonian with respect to q
+             * @param[in] time in scaled units
+             * @param[in] q vector in scaled units
+             * @param[in] p vector in scaled units
+             * @param[out] dH vector of partial derivatives of H w.r.t. the vector q
+             * @return exit flag (0=success)
+             */
 			virtual int DHq(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;
 
+            /**
+             * @brief DHq computes the partial derivative of the Hamiltonian with respect to p
+             *
+             * The method computes the partial derivative of the Hamiltonian with respect to p
+             * @param[in] time in scaled units
+             * @param[in] q vector in scaled units
+             * @param[in] p vector in scaled units
+             * @param[out] dH vector of partial derivatives of H w.r.t. the vector p
+             * @return exit flag (0=success)
+             */
 			virtual int DHp(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const = 0;
 
         };
