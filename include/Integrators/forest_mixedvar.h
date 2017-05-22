@@ -7,8 +7,8 @@
 -------------- e-mail: romain.serra@strath.ac.uk ------------------
 */
 
-#ifndef SMARTMATH_LEAPFROG_MIXEDVAR_H
-#define SMARTMATH_LEAPFROG_MIXEDVAR_H
+#ifndef SMARTMATH_FOREST_MIXEDVAR_H
+#define SMARTMATH_FOREST_MIXEDVAR_H
 
 #include "symplectic_mixedvar.h"
 #include "../exception.h"
@@ -23,12 +23,12 @@ namespace smartmath
          * The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state
          */
         template < class T >
-        class leapfrog_mixedvar: public symplectic_mixedvar<T>
+        class forest_mixedvar: public symplectic_mixedvar<T>
         {
 
         protected:
             using symplectic_mixedvar<T>::m_dyn;
-            bool m_flag;
+            double m_beta;
 
         public:
 
@@ -39,18 +39,21 @@ namespace smartmath
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
-            leapfrog_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn, const bool &flag) : symplectic_mixedvar<T>("leapfrog integrator with mixed variables", dyn), m_flag(flag){
+            forest_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("leapfrog integrator with mixed variables", dyn){
                 
                 /* sanity checks */
                 if(dyn->is_separable() == false)
-                    smartmath_throw("LEAPFROG_MIXEDVAR: symplectic integrator cannot operate on non-separable Hamiltonian");
+                    smartmath_throw("FOREST_MIXEDVAR: symplectic integrator cannot operate on non-separable Hamiltonian");
+
+                double beta = pow(2.0, 1.0 / 3.0);
+                m_beta = beta;
 
             }
 
             /**
              * @brief ~base_rungekutta deconstructor
              */
-            ~leapfrog_mixedvar(){}
+            ~forest_mixedvar(){}
 
 
             /**
@@ -74,57 +77,65 @@ namespace smartmath
                 }
                 std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
 
-                if(m_flag){ // drift-kick-drift
-                    m_dyn->conversion(q, p, q0, p0);
-                    q = q0;
-                    p = p0;
+                m_dyn->conversion(q, p, q0, p0);
+                q = q0;
+                p = p0;                
+                
+                m_dyn->DHp2(ti, q0, p0, dp);
+                for(int i = 0; i < n; i++)
+                    q[i] += tau * dp[i] * 0.5 / (2.0 - m_beta);
 
-                    m_dyn->DHp2(ti, q0, p0, dp);
-                    for(int i = 0; i < n; i++)
-                        q[i] += tau * dp[i] / 2.0;
+                m_dyn->conversion2(q, p, q0, p0);
+                q = q0;
+                p = p0; 
 
-                    m_dyn->conversion2(q, p, q0, p0);
-                    q = q0;
-                    p = p0;
-                    
-                    m_dyn->DHq(ti, q, p0, dq);
-                    for(int i = 0; i < n; i++)
-                        p[i] -= tau * dq[i];
+                m_dyn->DHq(ti, q, p0, dq);
+                for(int i = 0; i < n; i++)
+                    p[i] -= tau * dq[i] * 1.0 / (2.0 - m_beta); 
 
-                    m_dyn->conversion(q, p, q0, p0);
-                    q = q0;
-                    p = p0; 
+                m_dyn->conversion(q, p, q0, p0);
+                q = q0;
+                p = p0; 
 
-                    m_dyn->DHp2(ti, q0, p0, dp);
-                    for(int i = 0; i < n; i++)
-                        q[i] += tau * dp[i] / 2.0;
+                m_dyn->DHp2(ti, q0, p0, dp);
+                for(int i = 0; i < n; i++)
+                    q[i] += tau * dp[i] * 0.5 * (1.0 - m_beta) / (2.0 - m_beta);
 
-                    m_dyn->conversion2(q, p, q0, p0);
-                    q = q0;
-                    p = p0; 
-                }
-                else
-                { // kick-drift-kick
-                    m_dyn->DHq(ti, q, p0, dq);
-                    for(int i = 0; i < n; i++)
-                        p[i] -= tau * dq[i] / 2.0;
+                m_dyn->conversion2(q, p, q0, p0);
+                q = q0;
+                p = p0; 
 
-                    m_dyn->conversion(q, p, q0, p0);
-                    q = q0;
-                    p = p0;
-                    
-                    m_dyn->DHp2(ti, q0, p0, dp);
-                    for(int i = 0; i < n; i++)
-                        q[i] += tau * dp[i];
+                m_dyn->DHq(ti, q, p0, dq);
+                for(int i = 0; i < n; i++)
+                    p[i] -= tau * dq[i] * (- m_beta / (2.0 - m_beta)); 
 
-                    m_dyn->conversion2(q, p, q0, p0);
-                    q = q0;
-                    p = p0; 
+                m_dyn->conversion(q, p, q0, p0);
+                q = q0;
+                p = p0; 
 
-                    m_dyn->DHq(ti, q, p0, dq);
-                    for(int i = 0; i < n; i++)
-                        p[i] -= tau * dq[i] / 2.0;  
-                }
+                m_dyn->DHp2(ti, q0, p0, dp);
+                for(int i = 0; i < n; i++)
+                    q[i] += tau * dp[i] * 0.5 * (1.0 - m_beta) / (2.0 - m_beta);
+
+                m_dyn->conversion2(q, p, q0, p0);
+                q = q0;
+                p = p0; 
+
+                m_dyn->DHq(ti, q, p0, dq);
+                for(int i = 0; i < n; i++)
+                    p[i] -= tau * dq[i] * 1.0 / (2.0 - m_beta); 
+
+                m_dyn->conversion(q, p, q0, p0);
+                q = q0;
+                p = p0; 
+
+                m_dyn->DHp2(ti, q0, p0, dp);
+                for(int i = 0; i < n; i++)
+                    q[i] += tau * dp[i] * 0.5 / (2.0 - m_beta);
+
+                m_dyn->conversion2(q, p, q0, p0);
+                q = q0;
+                p = p0;                 
 
                 xfinal.clear();
                 for(int i = 0; i < n; i++)
@@ -140,4 +151,4 @@ namespace smartmath
     }
 }
 
-#endif // SMARTMATH_LEAPFROG_MIXEDVAR_H
+#endif // SMARTMATH_FOREST_MIXEDVAR_H
