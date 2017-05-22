@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method integration_step()
+         * @brief The leapfrog class is a instantiation of symplectic integrators with order 2.
          *
-         * The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state
+         * The leapfrog class is a 2nd order instantiation of symplectic integrators. It has two versions: kick-drift-kick and drift-kick-drift.
          */
         template < class T >
         class leapfrog: public base_symplectic<T>
@@ -29,18 +29,18 @@ namespace smartmath
         protected:
             using base_symplectic<T>::m_dyn;
             using base_symplectic<T>::m_order;
-            using base_symplectic<T>::m_c;
-            using base_symplectic<T>::m_d;
+            using base_symplectic<T>::m_c; // drift coefficients
+            using base_symplectic<T>::m_d; // kick coefficients
             bool m_flag;
 
         public:
 
             /**
-             * @brief base_rungekutta constructor
+             * @brief leapfrog constructor
              *
-             * The constructor initialize the name of the integrator and a pointer to the dynamical system to be integrated
-             * @param name integrator name
-             * @param dyn pointer to a base_dynamics object
+             * The constructor initialize a pointer to the dynamics to integrate and a flag to decide on the integration scheme to use
+             * @param dyn Hamiltonian system to integrate
+             * @param flag boolean to know what algorithm to use (kick-drift-kick or drift-kick-drift)
              */
             leapfrog(const dynamics::base_hamiltonian<T> *dyn, const bool &flag) : base_symplectic<T>("leapfrog integrator", dyn, 2), m_flag(flag){
                 
@@ -48,27 +48,26 @@ namespace smartmath
                 if(dyn->is_separable() == false)
                     smartmath_throw("LEAPFROG: symplectic integrator cannot operate on non-separable Hamiltonian");
 
+                /* computation integration coefficients depending on chosen algorithm */
                 std::vector<double> c(m_order), d(m_order);
-
-                if(flag){
+                if(flag){ //drift-kick-drift
                     c[0] = 1.0 / 2.0;
                     c[1] = 1.0 / 2.0;
                     d[0] = 1.0;
                     d[1] = 0.0;
                 }
-                else{
+                else{ //kick-drift-kick
                     c[0] = 0.0;
                     c[1] = 1.0;
                     d[0] = 1.0 / 2.0;
                     d[1] = 1.0 / 2.0; 
                 }
-
                 m_c = c;
                 m_d = d;
             }
 
             /**
-             * @brief ~base_rungekutta deconstructor
+             * @brief ~leapfrog deconstructor
              */
             ~leapfrog(){}
 

@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method integration_step()
+         * @brief The forest class is a instantiation of symplectic integrators with order 4.
          *
-         * The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state
+         * The forest class is a 4nd order instantiation of symplectic integrators from Forest (1987). 
          */
         template < class T >
         class forest: public base_symplectic<T>
@@ -35,11 +35,10 @@ namespace smartmath
         public:
 
             /**
-             * @brief base_rungekutta constructor
+             * @brief forest constructor
              *
-             * The constructor initialize the name of the integrator and a pointer to the dynamical system to be integrated
-             * @param name integrator name
-             * @param dyn pointer to a base_dynamics object
+             * The constructor initialize a pointer to the dynamics to integrate
+             * @param dyn Hamiltonian system to integrate
              */
             forest(const dynamics::base_hamiltonian<T> *dyn) : base_symplectic<T>("Forest scheme", dyn, 4){
 
@@ -66,7 +65,7 @@ namespace smartmath
             }
 
             /**
-             * @brief ~base_rungekutta deconstructor
+             * @brief ~forest deconstructor
              */
             ~forest(){}
 

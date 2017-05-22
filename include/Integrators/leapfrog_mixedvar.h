@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method integration_step()
+         * @brief The leapfrog_mixedvar class is an adaptation of the leapfrog algorithm for mixed variables.
          *
-         * The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state
+         * The leapfrog class is an adaptation of the leapfrog algorithm for mixed variables. It has two versions: kick-drift-kick and drift-kick-drift.
          */
         template < class T >
         class leapfrog_mixedvar: public symplectic_mixedvar<T>
@@ -33,11 +33,11 @@ namespace smartmath
         public:
 
             /**
-             * @brief base_rungekutta constructor
+             * @brief leapfrog_mixedvar constructor
              *
-             * The constructor initialize the name of the integrator and a pointer to the dynamical system to be integrated
-             * @param name integrator name
-             * @param dyn pointer to a base_dynamics object
+             * The constructor initialize a pointer to the dynamics to integrate and a flag to decide on the integration scheme to use
+             * @param dyn Hamiltonian system to integrate
+             * @param flag boolean to know what algorithm to use (kick-drift-kick or drift-kick-drift)
              */
             leapfrog_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn, const bool &flag) : symplectic_mixedvar<T>("leapfrog integrator with mixed variables", dyn), m_flag(flag){
                 
@@ -48,18 +48,18 @@ namespace smartmath
             }
 
             /**
-             * @brief ~base_rungekutta deconstructor
+             * @brief ~leapfrog_mixedvar deconstructor
              */
             ~leapfrog_mixedvar(){}
 
 
             /**
-             * @brief integration_step performs one integration step from the Runge-Kutta scheme
+             * @brief integration_step performs one integration step from the leapfrog for mixed variables
              *
-             * The method implements one step of a Runge-Kutta scheme to integrate with given initial time,
+             * The method implements one step of the leapfrog with mixed variables to integrate with given initial time,
              * final time, initial state condition(constant stepsize)
              * @param[in] ti initial time instant
-             * @param[in] h time step
+             * @param[in] tau time step
              * @param[in] x0 vector of initial states
              * @param[out] xfinal vector of final states
              * @return

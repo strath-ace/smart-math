@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method integration_step()
+         * @brief The forest_mixedvar class is an adaptation for mixed variables of the Forest integrator.
          *
-         * The base_rungekutta class is a template abstract class. Any fixed-step Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state
+         * The forest_mixedvar class is an adaptation for mixed variables by Yoshida of the Forest integrator (4th order).
          */
         template < class T >
         class forest_mixedvar: public symplectic_mixedvar<T>
@@ -33,13 +33,12 @@ namespace smartmath
         public:
 
             /**
-             * @brief base_rungekutta constructor
+             * @brief forest_mixedvar constructor
              *
-             * The constructor initialize the name of the integrator and a pointer to the dynamical system to be integrated
-             * @param name integrator name
-             * @param dyn pointer to a base_dynamics object
+             * The constructor initialize a pointer to the dynamics to integrate
+             * @param dyn Hamiltonian system to integrate
              */
-            forest_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("leapfrog integrator with mixed variables", dyn){
+            forest_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("Forest integrator with mixed variables", dyn){
                 
                 /* sanity checks */
                 if(dyn->is_separable() == false)
@@ -51,15 +50,15 @@ namespace smartmath
             }
 
             /**
-             * @brief ~base_rungekutta deconstructor
+             * @brief ~forest_mixedvar deconstructor
              */
             ~forest_mixedvar(){}
 
 
             /**
-             * @brief integration_step performs one integration step from the Runge-Kutta scheme
+             * @brief integration_step performs one integration step from the Forest scheme with mixed variables
              *
-             * The method implements one step of a Runge-Kutta scheme to integrate with given initial time,
+             * The method implements one step of the Forest algorithm with mixed variables to integrate with given initial time,
              * final time, initial state condition(constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] h time step
