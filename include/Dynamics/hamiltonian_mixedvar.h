@@ -48,6 +48,20 @@ namespace smartmath
             ~hamiltonian_mixedvar(){}
 
             /**
+             * @brief evaluate differential equations of the implemented Hamiltonian system
+             * @param[in] time in scaled units
+             * @param[in] state vector in scaled units
+             * @param[out] state derivative in scaled units
+             * @return exit flag (0=success)
+             */
+            int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
+
+                smartmath_throw("EVALUATE: do not use EVALUATE for Hamiltonian systems with mixed variables because part of the dynamics is missing");
+
+                return 0;
+            }          
+
+            /**
              * @brief DHq2 computes the partial derivative of the Hamiltonian with respect to the second 'position' q2
              *
              * The method computes the partial derivative of the Hamiltonian with respect to q2
