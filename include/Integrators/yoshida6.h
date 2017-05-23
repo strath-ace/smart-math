@@ -7,8 +7,8 @@
 -------------- e-mail: romain.serra@strath.ac.uk ------------------
 */
 
-#ifndef SMARTMATH_FOREST_H
-#define SMARTMATH_FOREST_H
+#ifndef SMARTMATH_YOSHIDA6_H
+#define SMARTMATH_YOSHIDA6_H
 
 #include "base_symplectic.h"
 #include "../exception.h"
@@ -18,12 +18,12 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The forest class is a instantiation of symplectic integrators with order 4.
+         * @brief The yoshida6 class is a instantiation of symplectic integrators with order 6.
          *
-         * The forest class is a 4nd order instantiation of symplectic integrators from Forest (1987). 
+         * The yoshida6 class is a 6nd order instantiation of symplectic integrators from Yoshida (1990). 
          */
         template < class T >
-        class forest: public base_symplectic<T>
+        class yoshida6: public base_symplectic<T>
         {
 
         protected:
@@ -35,29 +35,36 @@ namespace smartmath
         public:
 
             /**
-             * @brief forest constructor
+             * @brief yoshida6 constructor
              *
              * The constructor initializes a pointer to the dynamics to integrate and precomputes the integration coefficients
              * @param dyn Hamiltonian system to integrate
              */
-            forest(const dynamics::base_hamiltonian<T> *dyn) : base_symplectic<T>("Forest scheme", dyn, 4){
+            yoshida6(const dynamics::base_hamiltonian<T> *dyn) : base_symplectic<T>("Forest scheme", dyn, 8){
 
                 /* sanity checks */
                 if(dyn->is_separable() == false)
-                    smartmath_throw("FOREST: symplectic integrator cannot operate on non-separable Hamiltonian");
+                    smartmath_throw("YOSHIDA6: symplectic integrator cannot operate on non-separable Hamiltonian");
 
-                double beta = pow(2.0, 1.0 / 3.0);
                 std::vector<double> c(m_stages), d(m_stages);
 
-                c[0] = 0.5 / (2.0 - beta);
-                c[3] = c[0];
-                c[1] = 0.5 * (1.0 - beta) / (2.0 - beta);
-                c[2] = c[1];
+                c[0] = 0.392256805238780;
+                c[7] = c[0];
+                c[1] = 0.510043411918458;
+                c[6] = c[1];
+                c[2] = -0.471053385409758;
+                c[5] = c[2];
+                c[3] = 0.687531682525198e-1;
+                c[4] = c[3];
 
-                d[0] = 1.0 / (2.0 - beta);
-                d[2] = d[0];
-                d[1] = -beta / (2.0 - beta);
-                d[3] = 0.0;
+                d[0] = 0.784513610477560;
+                d[6] = d[0];
+                d[1] = 0.235573213359357;
+                d[5] = d[1];
+                d[2] = -0.117767998417887e1;
+                d[4] = d[2];
+                d[3] = 0.131518632068391e1;
+                d[7] = 0.0;
 
                 m_c = c;
                 m_d = d;
@@ -65,13 +72,13 @@ namespace smartmath
             }
 
             /**
-             * @brief ~forest deconstructor
+             * @brief ~yoshida6 deconstructor
              */
-            ~forest(){}
+            ~yoshida6(){}
 
         };
 
     }
 }
 
-#endif // SMARTMATH_FOREST_H
+#endif // SMARTMATH_YOSHIDA6_H

@@ -7,8 +7,8 @@
 -------------- e-mail: romain.serra@strath.ac.uk ------------------
 */
 
-#ifndef SMARTMATH_FOREST_MIXEDVAR_H
-#define SMARTMATH_FOREST_MIXEDVAR_H
+#ifndef SMARTMATH_YOSHIDA6_MIXEDVAR_H
+#define SMARTMATH_YOSHIDA6_MIXEDVAR_H
 
 #include "symplectic_mixedvar.h"
 #include "../exception.h"
@@ -18,41 +18,48 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The forest_mixedvar class is an adaptation for mixed variables of the Forest integrator.
+         * @brief The yoshida6_mixedvar class is an adaptation for mixed variables of the Forest integrator.
          *
-         * The forest_mixedvar class is an adaptation for mixed variables of a 4th order integrator by Forest (1987).
+         * The yoshida6_mixedvar class is an adaptation for mixed variables of a 4th order integrator by Forest (1987).
          */
         template < class T >
-        class forest_mixedvar: public symplectic_mixedvar<T>
+        class yoshida6_mixedvar: public symplectic_mixedvar<T>
         {
 
         protected:
             using symplectic_mixedvar<T>::m_dyn;
-            double m_beta;
+            double m_c1, m_c2, m_c3, m_c4, m_d1, m_d2, m_d3, m_d4;
 
         public:
 
             /**
-             * @brief forest_mixedvar constructor
+             * @brief yoshida6_mixedvar constructor
              *
              * The constructor initializes a pointer to the dynamics to integrate and precomputes a parameter necessary for integration
              * @param dyn Hamiltonian system to integrate
              */
-            forest_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("Forest integrator with mixed variables", dyn){
+            yoshida6_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("Forest integrator with mixed variables", dyn){
                 
                 /* sanity checks */
                 if(dyn->is_separable() == false)
                     smartmath_throw("FOREST_MIXEDVAR: symplectic integrator cannot operate on non-separable Hamiltonian");
 
-                double beta = pow(2.0, 1.0 / 3.0);
-                m_beta = beta;
+                m_c1 = 0.392256805238780;
+                m_c2 = 0.510043411918458;
+                m_c3 = -0.471053385409758;
+                m_c4 = 0.687531682525198e-1;
+
+                m_d1 = 0.784513610477560;
+                m_d2 = 0.235573213359357;
+                m_d3 = -0.117767998417887e1;
+                m_d4 = 0.131518632068391e1;
 
             }
 
             /**
-             * @brief ~forest_mixedvar deconstructor
+             * @brief ~yoshida6_mixedvar deconstructor
              */
-            ~forest_mixedvar(){}
+            ~yoshida6_mixedvar(){}
 
 
             /**
@@ -88,7 +95,7 @@ namespace smartmath
                 
                 m_dyn->DHp2(ti, q0, p0, dp);
                 for(int i = 0; i < n; i++)
-                    q[i] += tau * dp[i] * 0.5 / (2.0 - m_beta);
+                    q[i] += tau * dp[i] * m_c1;
 
                 m_dyn->conversion2(q, p, q0, p0);
                 q = q0;
@@ -96,7 +103,7 @@ namespace smartmath
 
                 m_dyn->DHq(ti, q, p0, dq);
                 for(int i = 0; i < n; i++)
-                    p[i] -= tau * dq[i] * 1.0 / (2.0 - m_beta); 
+                    p[i] -= tau * dq[i] * m_d1; 
 
                 m_dyn->conversion(q, p, q0, p0);
                 q = q0;
@@ -104,7 +111,7 @@ namespace smartmath
 
                 m_dyn->DHp2(ti, q0, p0, dp);
                 for(int i = 0; i < n; i++)
-                    q[i] += tau * dp[i] * 0.5 * (1.0 - m_beta) / (2.0 - m_beta);
+                    q[i] += tau * dp[i] * m_c2;
 
                 m_dyn->conversion2(q, p, q0, p0);
                 q = q0;
@@ -112,7 +119,7 @@ namespace smartmath
 
                 m_dyn->DHq(ti, q, p0, dq);
                 for(int i = 0; i < n; i++)
-                    p[i] -= tau * dq[i] * (- m_beta / (2.0 - m_beta)); 
+                    p[i] -= tau * dq[i] * m_d2; 
 
                 m_dyn->conversion(q, p, q0, p0);
                 q = q0;
@@ -120,7 +127,7 @@ namespace smartmath
 
                 m_dyn->DHp2(ti, q0, p0, dp);
                 for(int i = 0; i < n; i++)
-                    q[i] += tau * dp[i] * 0.5 * (1.0 - m_beta) / (2.0 - m_beta);
+                    q[i] += tau * dp[i] * m_c3;
 
                 m_dyn->conversion2(q, p, q0, p0);
                 q = q0;
@@ -128,7 +135,7 @@ namespace smartmath
 
                 m_dyn->DHq(ti, q, p0, dq);
                 for(int i = 0; i < n; i++)
-                    p[i] -= tau * dq[i] * 1.0 / (2.0 - m_beta); 
+                    p[i] -= tau * dq[i] * m_d3; 
 
                 m_dyn->conversion(q, p, q0, p0);
                 q = q0;
@@ -136,11 +143,75 @@ namespace smartmath
 
                 m_dyn->DHp2(ti, q0, p0, dp);
                 for(int i = 0; i < n; i++)
-                    q[i] += tau * dp[i] * 0.5 / (2.0 - m_beta);
+                    q[i] += tau * dp[i] * m_c4;
 
                 m_dyn->conversion2(q, p, q0, p0);
                 q = q0;
-                p = p0;                 
+                p = p0;   
+
+                m_dyn->DHq(ti, q, p0, dq);
+                for(int i = 0; i < n; i++)
+                    p[i] -= tau * dq[i] * m_d4; 
+
+                m_dyn->conversion(q, p, q0, p0);
+                q = q0;
+                p = p0;     
+
+                m_dyn->DHp2(ti, q0, p0, dp);
+                for(int i = 0; i < n; i++)
+                    q[i] += tau * dp[i] * m_c4; // c5 = c4
+
+                m_dyn->conversion2(q, p, q0, p0);
+                q = q0;
+                p = p0;   
+
+                m_dyn->DHq(ti, q, p0, dq);
+                for(int i = 0; i < n; i++)
+                    p[i] -= tau * dq[i] * m_d3; // d5 = d3
+
+                m_dyn->conversion(q, p, q0, p0);
+                q = q0;
+                p = p0;                                                
+
+                m_dyn->DHp2(ti, q0, p0, dp);
+                for(int i = 0; i < n; i++)
+                    q[i] += tau * dp[i] * m_c3; // c6 = c3
+
+                m_dyn->conversion2(q, p, q0, p0);
+                q = q0;
+                p = p0;   
+
+                m_dyn->DHq(ti, q, p0, dq);
+                for(int i = 0; i < n; i++)
+                    p[i] -= tau * dq[i] * m_d2; // d6 = d2
+
+                m_dyn->conversion(q, p, q0, p0);
+                q = q0;
+                p = p0;   
+
+                m_dyn->DHp2(ti, q0, p0, dp);
+                for(int i = 0; i < n; i++)
+                    q[i] += tau * dp[i] * m_c2; // c7 = c2
+
+                m_dyn->conversion2(q, p, q0, p0);
+                q = q0;
+                p = p0;   
+
+                m_dyn->DHq(ti, q, p0, dq);
+                for(int i = 0; i < n; i++)
+                    p[i] -= tau * dq[i] * m_d1; // d7 = d1
+
+                m_dyn->conversion(q, p, q0, p0);
+                q = q0;
+                p = p0;   
+
+                m_dyn->DHp2(ti, q0, p0, dp);
+                for(int i = 0; i < n; i++)
+                    q[i] += tau * dp[i] * m_c1; // c8 = c1
+
+                m_dyn->conversion2(q, p, q0, p0);
+                q = q0;
+                p = p0;   
 
                 xfinal.clear();
                 for(int i = 0; i < n; i++)
@@ -156,4 +227,4 @@ namespace smartmath
     }
 }
 
-#endif // SMARTMATH_FOREST_MIXEDVAR_H
+#endif // SMARTMATH_YOSHIDA6_MIXEDVAR_H

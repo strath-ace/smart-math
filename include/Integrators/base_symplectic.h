@@ -34,12 +34,12 @@ namespace smartmath
             /**
              * @brief base_integrator constructor
              *
-             * The constructor initialize the name of the integrator, a pointer to the dynamical system to be integrated and the order of the integration
+             * The constructor initialize the name of the integrator, a pointer to the dynamical system to be integrated and the number of stages of the integration
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
-             * @param order integer stating the order of the integration scheme
+             * @param stages integer stating the number of integration stages in one step
              */
-            base_symplectic(const std::string &name, const dynamics::base_hamiltonian<T> *dyn, const int &order): m_name(name), m_dyn(dyn), m_order(order){}
+            base_symplectic(const std::string &name, const dynamics::base_hamiltonian<T> *dyn, const int &stages): m_name(name), m_dyn(dyn), m_stages(stages){}
 
             /**
              * @brief ~base_symplectic deconstructor
@@ -75,7 +75,7 @@ namespace smartmath
                 std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
 
                 /* performing the integration step per se using the precomputed coefficients */
-                for(int j = 0; j < m_order; j++){
+                for(int j = 0; j < m_stages; j++){
                     m_dyn->DHp(ti, q0, p0, dp);
                     for(int i = 0; i < n; i++)
                         q[i] += m_c[j] * tau * dp[i];
@@ -165,7 +165,7 @@ namespace smartmath
 
             std::string m_name;
             const dynamics::base_hamiltonian<T> *m_dyn;
-            int m_order;
+            int m_stages;
             std::vector<double> m_c, m_d; // coefficients for integration step
 
         };

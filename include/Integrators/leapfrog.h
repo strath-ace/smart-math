@@ -28,7 +28,7 @@ namespace smartmath
 
         protected:
             using base_symplectic<T>::m_dyn;
-            using base_symplectic<T>::m_order;
+            using base_symplectic<T>::m_stages;
             using base_symplectic<T>::m_c; // drift coefficients
             using base_symplectic<T>::m_d; // kick coefficients
             bool m_flag;
@@ -49,7 +49,7 @@ namespace smartmath
                     smartmath_throw("LEAPFROG: symplectic integrator cannot operate on non-separable Hamiltonian");
 
                 /* computation integration coefficients depending on chosen algorithm */
-                std::vector<double> c(m_order), d(m_order);
+                std::vector<double> c(m_stages), d(m_stages);
                 if(flag){ //drift-kick-drift
                     c[0] = 1.0 / 2.0;
                     c[1] = 1.0 / 2.0;

@@ -27,10 +27,12 @@
 #include "rkf45.h"
 #include "rk87.h"
 #include "base_symplectic.h"
-#include "forest.h"
 #include "leapfrog.h"
+#include "forest.h"
+#include "yoshida6.h"
 #include "symplectic_mixedvar.h"
 #include "leapfrog_mixedvar.h"
 #include "forest_mixedvar.h"
+#include "yoshida6_mixedvar.h"
 
 #endif // SMARTMATH_INTEGRATORS_H
