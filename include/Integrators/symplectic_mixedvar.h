@@ -75,7 +75,7 @@ namespace smartmath
 
                 /* sanity checks */
                 if(x0.size() != 2 * m_dyn->get_dim())
-                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system");
+                    smartmath_throw("INTEGRATE: state vector must have consistent dimension with Hamiltonian system");
 
                 t_history.clear();
                 x_history.clear();
@@ -109,18 +109,15 @@ namespace smartmath
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
 
-                /* sanity checks */
-                if(x0.size() != 2 * m_dyn->get_dim())
-                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system");
                 if(xfinal.size() != x0.size())
-                    smartmath_throw("BASE_SYMPLECTIC: initial and final states must have same dimension"); 
+                    smartmath_throw("INTEGRATE: initial and final states must have same dimension"); 
                 
                 std::vector<std::vector<T> > x_history;
                 std::vector<double> t_history;
 
-                integrate(ti,tend,nsteps,x0,x_history,t_history);
+                integrate(ti, tend, nsteps, x0, x_history, t_history);
 
-                xfinal=x_history.back();
+                xfinal = x_history.back();
 
                 return 0;
             }

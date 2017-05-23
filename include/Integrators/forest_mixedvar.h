@@ -70,9 +70,9 @@ namespace smartmath
 
                 /* sanity checks */
                 if(x0.size() != 2 * m_dyn->get_dim())
-                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system");
+                    smartmath_throw("FOREST_MIXEDVAR: state vector must have consistent dimension with Hamiltonian system");
                 if(xfinal.size() != x0.size())
-                    smartmath_throw("BASE_SYMPLECTIC: initial and final states must have same dimension");      
+                    smartmath_throw("FOREST_MIXEDVAR: initial and final states must have same dimension");      
 
                 std::vector<T> q0, p0;
                 int n = m_dyn->get_dim();
