@@ -138,7 +138,7 @@ add_subdirectory("${PROJECT_PATH}/examples")
 # Install header files and library.
 # Destination is set by CMAKE_INSTALL_PREFIX and defaults to usual locations, unless overridden by
 # user.
-install(DIRECTORY ${INCLUDE_PATH} DESTINATION include/${PROJECT_NAME} FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY ${INCLUDE_PATH}/ DESTINATION include/${PROJECT_NAME} PATTERN "*.in" EXCLUDE)
 install(TARGETS ${LIB_NAME} ${LIB_NAME_STATIC} ${BIN_NAME}
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib/${PROJECT_NAME}
