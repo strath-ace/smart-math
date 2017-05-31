@@ -47,6 +47,18 @@ void smartmath::variations(const std::vector<int> values, const int k, std::vect
     smartmath::rep(res, values, item, 0);
 }
 
+
+// template < class T >
+// void smartmath::remove_numerical_zeros(Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> &matrix, const double &threshold)
+// {
+//     matrix = (((matrix.array()) < threshold) &&
+//               ((matrix.array()) > -threshold) &&
+//               ((matrix.array()) != 0.0)).select(Eigen::MatrixXd::Constant(matrix.rows(), matrix.cols(), 0), matrix);
+// }
+
+
+
+
 double smartmath::bisection_method(fun f, double lb, double ub, double prec){
     double f_low = f(lb);
     double f_up  = f(ub);
