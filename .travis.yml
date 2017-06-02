@@ -1,15 +1,10 @@
 language: cpp
 
 compiler:
-#  - clang
   - gcc
 os:
   - linux
 dist: trusty
-sudo: required
-
-before_install:
-  - sudo apt-get update
 
 script: ./build.sh
 
@@ -18,5 +13,5 @@ notifications:
   slack:
     rooms:
       - strathclydesmart:So5Q15xFrEAf8NB4lJaD8PNb
-    on_success: never
+    on_success: change
     on_failure: always
