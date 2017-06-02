@@ -27,11 +27,12 @@ namespace smartmath
             int m_value;
             bool m_trigger;
             double m_last_time;
+            bool m_comments = false;
             
         public:
             /**
-            *
-            */
+             *
+             */
             virtual ~base_event(){}
 
             /**
@@ -70,8 +71,13 @@ namespace smartmath
             void set_last_time(const double &t){m_last_time = t;}
 
             /**
-            *
-            */
+             *
+             */
+            void set_comments(const bool &status){m_comments = status;}
+
+            /**
+             *
+             */
             virtual int evaluate(const double &t, const std::vector<T> &state) = 0;
         };
     }
