@@ -7,8 +7,8 @@
 -------------- e-mail: romain.serra@strath.ac.uk ------------------
 */
 
-#ifndef SMARTMATH_LEAPFROG_H
-#define SMARTMATH_LEAPFROG_H
+#ifndef SMARTMATH_EULER_SYMPLECTIC_H
+#define SMARTMATH_EULER_SYMPLECTIC_H
 
 #include "base_symplectic.h"
 #include "../exception.h"
@@ -18,12 +18,12 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The leapfrog class is a instantiation of symplectic integrators with order 2.
+         * @brief The euler_symplectic class is a instantiation of symplectic integrators with order 1.
          *
-         * The leapfrog class is a 2nd order instantiation of symplectic integrators. It has two versions: kick-drift-kick and drift-kick-drift.
+         * The euler_symplectic class is a 1st order instantiation of symplectic integrators. It has two versions: kick-drift and drift-kick.
          */
         template < class T >
-        class leapfrog: public base_symplectic<T>
+        class euler_symplectic: public base_symplectic<T>
         {
 
         protected:
@@ -36,44 +36,43 @@ namespace smartmath
         public:
 
             /**
-             * @brief leapfrog constructor
+             * @brief euler_symplectic constructor
              *
              * The constructor initialize a pointer to the dynamics to integrate and a flag to decide on the integration scheme to use
              * @param dyn Hamiltonian system to integrate
-             * @param flag boolean to know what algorithm to use (kick-drift-kick or drift-kick-drift)
+             * @param flag boolean to know what algorithm to use (drift-kick or kick-drift)
              */
-            leapfrog(const dynamics::base_hamiltonian<T> *dyn, const bool &flag) : base_symplectic<T>("leapfrog integrator", dyn, 2), m_flag(flag){
+            euler_symplectic(const dynamics::base_hamiltonian<T> *dyn, const bool &flag) : base_symplectic<T>("symplectic version of explicit Euler integrator", dyn, 1), m_flag(flag){
                 
                 /* sanity checks */
                 if(dyn->is_separable() == false)
-                    smartmath_throw("LEAPFROG: symplectic integrator cannot operate on non-separable Hamiltonian");
+                    smartmath_throw("EULER_SYMPLECTIC: symplectic integrator cannot operate on non-separable Hamiltonian");
 
                 /* computation integration coefficients depending on chosen algorithm */
                 std::vector<double> c(m_stages), d(m_stages);
-                if(flag){ //drift-kick-drift
-                    c[0] = 1.0 / 2.0;
+                if(flag){ //drift-kick
+                    c[0] = 1.0;
                     d[0] = 1.0;
-                    c[1] = 1.0 / 2.0;
-                    d[1] = 0.0;
                 }
-                else{ //kick-drift-kick
+                else{ //kick-drift
+                    ++m_stages;
                     c[0] = 0.0;
-                    d[0] = 1.0 / 2.0;
-                    c[1] = 1.0;
-                    d[1] = 1.0 / 2.0; 
+                    d[0] = 1.0;
+                    c.push_back(1.0);
+                    d.push_back(0.0);
                 }
                 m_c = c;
                 m_d = d;
             }
 
             /**
-             * @brief ~leapfrog deconstructor
+             * @brief ~euler_symplectic deconstructor
              */
-            ~leapfrog(){}
+            ~euler_symplectic(){}
 
         };
 
     }
 }
 
-#endif // SMARTMATH_LEAPFROG_H
+#endif // SMARTMATH_EULER_SYMPLECTIC_H
