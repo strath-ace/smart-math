@@ -142,6 +142,19 @@ namespace smartmath
   inline T quantile(const std::vector<T>& v, const double q)
     { return quantile(&v[0], v.size(), q); }
 
+
+
+  /**
+    * Function to compute coefficients of a polynomial given its roots
+    *
+    * @param   roots: Vector containing roots of polynomial
+    *                 Ex. y = (x-x0)(x-x1) -> +x0,+x1 are input roots
+    * @return coeffs: Coefficient of the polynomial written in explicit form
+    *                 and normalized with a_n = 1.0, sorted from order 0 to
+    *                 order n.
+    */
+  std::vector<double> vieta_root2coef(const std::vector<double> &roots);
+
 }
 
 #endif // SMARTMATH_INLINEFUNCTIONS_H
