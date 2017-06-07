@@ -30,6 +30,7 @@ int main(){
     //std::cout << 105.0*x*pow(1.0-x*x,1.5)/5040.0 << std::endl; // P(4,-3,x)
     //std::cout << Legendre_derivative(l,m,x) << std::endl;
 
+    /* Return as it is
     std::vector<double> times(4), func1 = times;
     std::vector<double> func2 = func1;
     std::vector< std::vector<double> > funcs(times.size());
@@ -44,6 +45,23 @@ int main(){
     std::cout << Lagrange1d(times, func1, t) << std::endl;
     std::vector<double> interpolated_vector = LagrangeNd(times, funcs, t);
    	std::cout << interpolated_vector[0] << ", " << interpolated_vector[1] << std::endl;
+     */
+
+    std::vector<double> roots = {1,2};
+    std::vector<double> coeffs ;
+
+    std::cout << "\nRoots are: \n" ;
+    for( double &number : roots)
+        cout << number << " " ;
+    cout << "\n";
+
+    coeffs = vieta_root2coef(roots);
+
+
+    std::cout << "\nCoefficients are: \n" ;
+    for( double &number : coeffs)
+        cout << number << " " ;
+    cout << "\n";
 
 }
 
