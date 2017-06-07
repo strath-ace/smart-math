@@ -305,7 +305,7 @@ std::vector<double> smartmath::vieta_root2coef(const std::vector<double> &roots)
     unsigned int deg = roots.size() ;
 
     // Initialize vector of coefficients to 1.0 (scale vector for a_n)
-    std::vector<double> coeffs(deg+1,1.0);
+    std::vector<double> coeffs(deg+1,1.0), coeffs2, roots2;
 
 //    for ( unsigned int k = 1 ; k < deg ; k++ ) {
 //
@@ -318,6 +318,27 @@ std::vector<double> smartmath::vieta_root2coef(const std::vector<double> &roots)
 //        }
 //        coeffs[deg-k] = static_cast<double>(std::pow(-1,k)) * subcoef ;
 //    }
+
+    if(deg == 1) // linear case
+    {
+        coeffs[1] = -roots[0];
+    }
+    else
+    {
+        for(unsigned int i = 0; i < deg; i++)
+            roots2.push_back(roots[i]);
+
+        coeffs2 = vieta_root2coef(roots2);
+
+        /* first and last */
+        coeffs[0] = 1.0;
+        coeffs[deg+1] = roots[deg+1] * coeffs2[deg];
+
+        /* recursive formula from 2 to deg */
+        for(unsigned int n = 1; n < deg + 1; n++)
+            coeffs[n] = coeffs2[n] - roots[deg+1] * coeffs2[n-1];
+
+    }
 
     return coeffs;
 }
