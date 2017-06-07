@@ -325,18 +325,18 @@ std::vector<double> smartmath::vieta_root2coef(const std::vector<double> &roots)
     }
     else
     {
-        for(unsigned int i = 0; i < deg; i++)
+        for(unsigned int i = 0; i < deg - 1; i++)
             roots2.push_back(roots[i]);
 
         coeffs2 = vieta_root2coef(roots2);
 
         /* first and last */
         coeffs[0] = 1.0;
-        coeffs[deg+1] = roots[deg+1] * coeffs2[deg];
+        coeffs[deg] = - roots[deg-1] * coeffs2[deg-1];
 
         /* recursive formula from 2 to deg */
-        for(unsigned int n = 1; n < deg + 1; n++)
-            coeffs[n] = coeffs2[n] - roots[deg+1] * coeffs2[n-1];
+        for(unsigned int n = 1; n < deg; n++)
+            coeffs[n] = coeffs2[n] - roots[deg-1] * coeffs2[n-1];
 
     }
 
