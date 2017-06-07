@@ -293,8 +293,8 @@ int smartmath::find_PC_bounds_normal_distribution(const Eigen::VectorXd &mean,
   * @param   roots: Vector containing roots of polynomial
   *                 Ex. y = (x-x0)(x-x1) -> +x0,+x1 are input roots
   * @return coeffs: Coefficient of the polynomial written in explicit form
-  *                 and normalized with a_n = 1.0, sorted from order 0 to
-  *                 order n.
+  *                 and normalized with a_n = 1.0, sorted from order n to
+  *                 order 0.
   */
 std::vector<double> smartmath::vieta_root2coef(const std::vector<double> &roots)
 {
@@ -306,18 +306,6 @@ std::vector<double> smartmath::vieta_root2coef(const std::vector<double> &roots)
 
     // Initialize vector of coefficients to 1.0 (scale vector for a_n)
     std::vector<double> coeffs(deg+1,1.0), coeffs2, roots2;
-
-//    for ( unsigned int k = 1 ; k < deg ; k++ ) {
-//
-//        double subcoef = 0.0 ;
-//        for ( unsigned int j = 0 ; j < deg-k+1 ; j++ ) {
-//            double subsubcoef = 1.0;
-//            for (unsigned int i = 0; i < k; i++)
-//                subsubcoef *= roots[i];
-//            subcoef += subsubcoef;
-//        }
-//        coeffs[deg-k] = static_cast<double>(std::pow(-1,k)) * subcoef ;
-//    }
 
     if(deg == 1) // linear case
     {
