@@ -150,8 +150,8 @@ namespace smartmath
     * @param   roots: Vector containing roots of polynomial
     *                 Ex. y = (x-x0)(x-x1) -> +x0,+x1 are input roots
     * @return coeffs: Coefficient of the polynomial written in explicit form
-    *                 and normalized with a_n = 1.0, sorted from order 0 to
-    *                 order n.
+    *                 and normalized with a_n = 1.0, sorted from order n to
+    *                 order 0.
     */
   std::vector<double> vieta_root2coef(const std::vector<double> &roots);
 
