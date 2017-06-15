@@ -61,9 +61,7 @@ namespace smartmath
 
                 /* sanity checks */
                 if(x0.size() != 2 * m_dyn->get_dim())
-                    smartmath_throw("INTEGRATION_STEP: state vector must have consistent dimension with Hamiltonian system");
-                if(xfinal.size() != x0.size())
-                    smartmath_throw("INTEGRATION_STEP: initial and final states must have same dimension");                
+                    smartmath_throw("INTEGRATION_STEP: state vector must have consistent dimension with Hamiltonian system");               
 
                 /* reconstituting the initial canonical variables from the state vector */
                 std::vector<T> q0, p0;
