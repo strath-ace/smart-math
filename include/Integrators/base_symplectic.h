@@ -145,10 +145,6 @@ namespace smartmath
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
 
-                /* sanity checks */
-                if(xfinal.size() != x0.size())
-                    smartmath_throw("INTEGRATE: initial and final states must have same dimension"); 
-
                 std::vector<std::vector<T> > x_history;
                 std::vector<double> t_history;
 
