@@ -25,7 +25,7 @@ namespace smartmath
         protected:
             std::string m_name;
             int m_value;
-            bool m_trigger;
+            bool m_trigger = false;
             double m_last_time;
             bool m_comments = false;
             
