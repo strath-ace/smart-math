@@ -60,9 +60,7 @@ namespace smartmath
 			    if(p.size() != m_dim)
 			        smartmath_exception("DHP: the momentum must have the correct dimension");
 
-			    dH.clear();
-			    for(int i = 0; i < m_dim; i++)
-			        dH.push_back(p[i]); // partial derivatives of the Hamiltonian from the kinetic energy
+			    dH = p;
 
 			    return 0;
 			};
