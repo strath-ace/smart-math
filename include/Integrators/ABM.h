@@ -82,7 +82,7 @@ namespace smartmath
              */
             int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
                 
-                if(f.size()!=m)
+                if(f.size()!= static_cast<unsigned int>(m))
                     smartmath_throw("INTEGRATION_STEP: wrong number of saved states in multistep integration"); 
 
                 std::vector<T> dx=x0;    
@@ -110,7 +110,8 @@ namespace smartmath
             int correction(const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
 
                 xfinal=x0;
-                for(int i=0; i<x0.size(); i++){
+                int x0_size = x0.size();
+                for(int i=0; i<x0_size; i++){
                     for(int j=0; j<m_order; j++){
                         xfinal[i]+=h*m_beta_Moulton[j]*f[j][i];
                     }

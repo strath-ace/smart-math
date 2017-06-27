@@ -82,11 +82,12 @@ namespace smartmath
              */
             int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
 
-                if(f.size()!=m)
+                if(f.size()!= static_cast<unsigned int>(m))
                     smartmath_throw("INTEGRATION_STEP: wrong number of saved states for multistep integration"); 
 
                 xfinal=x0;
-                for(int i=0; i<x0.size(); i++){
+                int size_x0 = x0.size();
+                for(int i=0; i<size_x0; i++){
                     for(int j=0; j<m; j++){
                         xfinal[i]+=h*m_beta[j]*f[j][i];
                     }
