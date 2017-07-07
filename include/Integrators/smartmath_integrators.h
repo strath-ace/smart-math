@@ -26,6 +26,7 @@
 #include "base_stepsizecontrol.h"
 #include "rkf45.h"
 #include "rk87.h"
+#include "base_bulirschstoer.h"
 #include "base_symplectic.h"
 #include "euler_symplectic.h"
 #include "leapfrog.h"
