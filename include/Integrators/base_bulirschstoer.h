@@ -30,7 +30,7 @@ namespace smartmath
             using base_integrator<T>::m_name;
             using base_integrator<T>::m_dyn;
             std::vector<int> m_orders;
-            int m_stage;
+            int m_extrapol;
 
         public:
 
@@ -44,20 +44,24 @@ namespace smartmath
              * @param dyn pointer to a base_dynamics object
              * @param order number of saved steps
              */
-            base_bulirschstoer(const dynamics::base_dynamics<T> *dyn, const int &stage = 7) : base_integrator<T>("Bulirsch-Stoer algorithm", dyn), m_stage(stage){
+            base_bulirschstoer(const dynamics::base_dynamics<T> *dyn, const int &extrapol = 7) : base_integrator<T>("Bulirsch-Stoer algorithm", dyn), m_extrapol(extrapol){
 
                 /* sanity checks */
-                if(m_stage < 3)
-                    smartmath_throw("base_bulirschstoer: "); 
+                if(m_extrapol < 1)
+                    smartmath_throw("BASE_BULIRSCHSTOER: number of extrapolations needs to be non negative"); 
 
-                std::vector<int> orders(m_stage);
+                std::vector<int> orders(m_extrapol);
                 orders[0] = 2;
-                orders[1] = 4;
-                orders[2] = 6;
-                for(int k = 3; k < m_stage; k++)
-                    orders[k] = 2 * orders[k - 2];
+                if(m_extrapol > 1)
+                    orders[1] = 4;
+                if(m_extrapol > 2)
+                    orders[2] = 6;
+                if(m_extrapol > 3)
+                {
+                    for(int k = 3; k < m_extrapol; k++)
+                        orders[k] = 2 * orders[k - 2];
+                }
                 m_orders = orders;
-
             }
 
             /**
@@ -81,8 +85,8 @@ namespace smartmath
             int integration_step(const double &t, const double &H, const std::vector<T> &x0, std::vector<T> &xfinal) const{
 
                 std::vector< std::vector<T> > M;
-                extrapolation(m_stage, H, x0, t, M);
-                xfinal = M[m_stage-1];
+                extrapolation(m_extrapol, H, x0, t, M);
+                xfinal = M[m_extrapol-1];
                 
                 return 0;
             }
@@ -135,10 +139,12 @@ namespace smartmath
              */ 
             int midpoint(const std::vector<T> &y, const int &n, const double &H, const double &t, std::vector<T> &eta) const{
 
-                double h = H / double(n);
-                eta = y;
+                /* sanity checks */
+                if(n < 2)
+                    smartmath_throw("MID_POINT: number of micro-steps needs to be higher or equal to 2"); 
 
                 std::vector<T> f = y, u0 = y, u1 = y;
+                double h = H / double(n), h2 = 2.0 * h;
 
                 m_dyn->evaluate(t, y, f);
                 for(unsigned int j = 0; j < y.size(); j++)
@@ -147,22 +153,38 @@ namespace smartmath
                 std::vector<T> u2 = u0;
                 m_dyn->evaluate(t + h, u1, f);
                 for(unsigned int j = 0; j < y.size(); j++)
-                    u2[j] += 2.0 * h * f[j];
+                    u2[j] += h2 * f[j];
 
                 std::vector<T> v = y, w = y;
-                for(int i = 2; i < n - 1; i++)
+                for(int i = 2; i < n; i++)
                 {
                     v = u2;
-                    m_dyn->evaluate(t + i * h, u2, f);
+                    u2 = u1;
+                    m_dyn->evaluate(t + i * h, v, f);
                     for(unsigned int j = 0; j < y.size(); j++)
-                        u2[j] = u1[j] + 2.0 * h * f[j];
+                        u2[j] += h2 * f[j];
                     w = u1;
                     u1 = v;
                     u0 = w;
                 }
 
+                eta = y;
                 for(unsigned int j = 0; j < y.size(); j++)
                     eta[j] = u0[j] / 4.0 + u1[j] / 2.0 + u2[j] / 4.0;
+
+                // for(unsigned int j = 0; j < y.size(); j++)
+                //     std::cout << y[j] << " ";
+                // std::cout << std::endl;
+                // for(unsigned int j = 0; j < y.size(); j++)
+                //     std::cout << u0[j] << " ";
+                // std::cout << std::endl;
+                // for(unsigned int j = 0; j < y.size(); j++)
+                //     std::cout << u1[j] << " ";
+                // std::cout << std::endl;
+                // for(unsigned int j = 0; j < y.size(); j++)
+                //     std::cout << u2[j] << " ";
+                // std::cout << std::endl;                                  
+                // std::cout << std::endl;
 
                 return 0;
             } 
@@ -178,11 +200,12 @@ namespace smartmath
              */ 
             int extrapolation(const int &i, const double &H, const std::vector<T> &y, const double &t, std::vector<std::vector<T> > &M) const{
 
-                M.clear();
-                double aux;
+                
+                double aux1, aux2;
                 std::vector<T> eta = y;
 
                 midpoint(y, m_orders[i-1], H, t, eta);
+                M.clear();
                 M.push_back(eta);
 
                 if(i > 1)
@@ -190,13 +213,30 @@ namespace smartmath
                     std::vector<std::vector<T> > Mp;
                     extrapolation(i - 1, H, y, t, Mp); // recursive call
 
-                    for(int j = 1; j < i; j++){
-                        M.push_back(M[j - 1]);
-                        aux = double(m_orders[i-1]) / double(m_orders[i-1-j]);
+                    for(int j = 1; j < i; j++)
+                    {
+                        eta = M[j - 1];
+                        M.push_back(eta);
+                        aux1 = double(m_orders[i-1]) / double(m_orders[i-1-j]);
+                        aux2 = aux1 * aux1 - 1.0;
                         for(unsigned int k = 0; k < y.size(); k++)
-                            M[j][k] += (M[j-1][k] - Mp[j-1][k]) / (aux * aux - 1.0);
+                            M[j][k] += (eta[k] - Mp[j-1][k]) / aux2;
                     }
                 }
+
+                // std::cout << std::endl;
+                // std::cout << "y0: " << std::endl;
+                // for(unsigned int j = 0; j < y.size(); j++)
+                //         std::cout << y[j] << " ";
+                // std::cout << std::endl;
+
+                // for(unsigned int i = 0; i < M.size(); i++)
+                // {
+                //     std::cout << std::endl;
+                //     for(unsigned int j = 0; j < y.size(); j++)
+                //         std::cout << M[i][j] << " ";
+                // }
+                // std::cout << std::endl;
 
                 return 0;
             } 
