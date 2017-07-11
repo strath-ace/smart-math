@@ -28,7 +28,38 @@ namespace smartmath
 
         protected:
             using symplectic_mixedvar<T>::m_dyn;
-            double m_c1, m_c2, m_c3, m_c4, m_d1, m_d2, m_d3, m_d4;
+            /**
+             * @brief m_c1 first coefficient for drift
+             */            
+            double m_c1;
+            /**
+             * @brief m_c2 second coefficient for drift
+             */            
+            double m_c2;            
+            /**
+             * @brief m_c3 third coefficient for drift
+             */            
+            double m_c3;
+            /**
+             * @brief m_c4 fourth coefficient for drift
+             */            
+            double m_c4;            
+            /**
+             * @brief m_d1 first coefficient for kicks
+             */                  
+            double m_d1;
+            /**
+             * @brief m_d2 second coefficient for kicks
+             */                  
+            double m_d2;
+            /**
+             * @brief m_d3 third coefficient for kicks
+             */                  
+            double m_d3;
+            /**
+             * @brief m_d4 fourth coefficient for kicks
+             */                  
+            double m_d4;
 
         public:
 
@@ -68,7 +99,7 @@ namespace smartmath
              * The method implements one step of the Forest algorithm with mixed variables to integrate with given initial time,
              * final time, initial state condition(constant stepsize)
              * @param[in] ti initial time instant
-             * @param[in] h time step
+             * @param[in] tau time step
              * @param[in] x0 vector of initial states
              * @param[out] xfinal vector of final states
              * @return

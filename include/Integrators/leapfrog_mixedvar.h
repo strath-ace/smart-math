@@ -28,6 +28,9 @@ namespace smartmath
 
         protected:
             using symplectic_mixedvar<T>::m_dyn;
+            /**
+             * @brief m_flag boolean to chose between drift-kick and kick-drift versions
+             */             
             bool m_flag;
 
         public:

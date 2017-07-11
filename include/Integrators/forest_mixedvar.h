@@ -28,6 +28,9 @@ namespace smartmath
 
         protected:
             using symplectic_mixedvar<T>::m_dyn;
+            /**
+             * @brief m_beta numerical parameter used in integration step
+             */ 
             double m_beta;
 
         public:
@@ -61,7 +64,7 @@ namespace smartmath
              * The method implements one step of the Forest algorithm with mixed variables to integrate with given initial time,
              * final time, initial state condition(constant stepsize)
              * @param[in] ti initial time instant
-             * @param[in] h time step
+             * @param[in] tau time step
              * @param[in] x0 vector of initial states
              * @param[out] xfinal vector of final states
              * @return

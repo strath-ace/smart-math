@@ -30,8 +30,14 @@ namespace smartmath
 
         protected:
             using base_dynamics<T>::m_name;
+            /**
+             * @brief m_dim half-dimension of Hamiltonian system
+             */             
 			int m_dim;
-			bool m_separable; // 1 if the system is separable i.e. if the Hamiltonian is of the type V(p) + W(q), 0 otherwise
+            /**
+             * @brief m_separable flag equal to 1 if the system is separable i.e. if the Hamiltonian is of the type V(p) + W(q), 0 otherwise
+             */             
+			bool m_separable; 
 
         public:
             /**
@@ -71,9 +77,9 @@ namespace smartmath
 
             /**
              * @brief evaluate differential equations of the implemented Hamiltonian system
-             * @param[in] time in scaled units
+             * @param[in] t time in scaled units
              * @param[in] state vector in scaled units
-             * @param[out] state derivative in scaled units
+             * @param[out] dstate derivative in scaled units
              * @return exit flag (0=success)
              */
             int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
@@ -113,7 +119,7 @@ namespace smartmath
              * @brief DHq computes the partial derivative of the Hamiltonian with respect to q
              *
              * The method computes the partial derivative of the Hamiltonian with respect to q
-             * @param[in] time in scaled units
+             * @param[in] t time in scaled units
              * @param[in] q vector in scaled units
              * @param[in] p vector in scaled units
              * @param[out] dH vector of partial derivatives of H w.r.t. the vector q
@@ -125,7 +131,7 @@ namespace smartmath
              * @brief DHq computes the partial derivative of the Hamiltonian with respect to p
              *
              * The method computes the partial derivative of the Hamiltonian with respect to p
-             * @param[in] time in scaled units
+             * @param[in] t time in scaled units
              * @param[in] q vector in scaled units
              * @param[in] p vector in scaled units
              * @param[out] dH vector of partial derivatives of H w.r.t. the vector p

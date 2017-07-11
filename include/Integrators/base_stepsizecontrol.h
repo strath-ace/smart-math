@@ -33,9 +33,18 @@ namespace smartmath
             using base_integrationwevent<T>::m_dyn;
             using base_integrationwevent<T>::m_minstep_events;
             using base_integrationwevent<T>::m_maxstep_events;     
-            using base_integrationwevent<T>::m_event_list;
+            using base_integrationwevent<T>::m_event_list;            
+            /**
+             * @brief m_tol tolerance for step-size control
+             */
             double m_tol;
+            /**
+             * @brief m_multiplier maximum multiplying factor used when increasing step-size
+             */            
             double m_multiplier;
+            /**
+             * @brief m_control order of scheme used for state estimation in step-size control
+             */            
             double m_control;
             
 
@@ -52,8 +61,8 @@ namespace smartmath
              * @param dyn pointer to a base_dynamics object
              * @param tol threshold used for acceptable estimated error
              * @param multiplier factor used to increase step-sized when judged necessary
-             * @param m_minstep_events minimum step-size to detect an event
-             * @param m_maxstep_events maximum step-size
+             * @param minstep_events minimum step-size to detect an event
+             * @param maxstep_events maximum step-size
              */
             base_stepsizecontrol(const std::string &name, const dynamics::base_dynamics<T> *dyn, const double &tol, const double &multiplier, const double &minstep_events, const double &maxstep_events) : base_integrationwevent<T>(name, dyn, minstep_events, maxstep_events), m_tol(tol), m_multiplier(multiplier){
                 
@@ -81,7 +90,7 @@ namespace smartmath
              * @param[in] x0 vector of initial states
              * @param[in] f vector of saved state vectors (for multistep scheme only) 
              * @param[out] xfinal vector of final states
-             * @param[out] estimated error
+             * @param[out] er estimated error
              * @return
              */
             virtual int integration_step(const double &ti, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const = 0;
@@ -97,7 +106,7 @@ namespace smartmath
              * @param[in] x0 vector of initial states
              * @param[out] xfinal vector of intermediate states
              * @param[out] t_history vector of intermediate times
-             * @param[in] event function             
+             * @param[in] g event function             
              * @return
              */
             int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history, std::vector<int> (*g)(std::vector<T> x, double d)) const{

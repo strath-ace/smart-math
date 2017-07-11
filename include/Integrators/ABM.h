@@ -26,7 +26,13 @@ namespace smartmath
             using base_multistep<T>::m_name;
             using base_multistep<T>::m_dyn;
             using base_multistep<T>::m_order;
+            /**
+             * @brief m_beta coefficients used for corrector
+             */                
             std::vector<double> m_beta_Moulton;
+            /**
+             * @brief m_predictor integrator used as predictor (Adam-Bashforth)
+             */            
             integrator::AB<T> *m_predictor;
 
         public:

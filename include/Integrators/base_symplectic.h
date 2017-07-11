@@ -157,10 +157,26 @@ namespace smartmath
 
         protected:
 
+            /**
+             * @brief m_name integrator name
+             */
             std::string m_name;
+            /**
+             * @brief m_dyn pointer to dynamics
+             */
             const dynamics::base_hamiltonian<T> *m_dyn;
+            /**
+             * @brief m_stages number of stages in integration step
+             */
             int m_stages;
-            std::vector<double> m_c, m_d; // coefficients for integration step
+            /**
+             * @brief m_c coefficients for drifts
+             */
+            std::vector<double> m_c;
+            /**
+             * @brief m_s coefficients for kicks
+             */
+            std::vector<double> m_d;
 
         };
     }

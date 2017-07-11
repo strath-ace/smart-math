@@ -31,6 +31,9 @@ namespace smartmath
             using base_symplectic<T>::m_stages;
             using base_symplectic<T>::m_c; // drift coefficients
             using base_symplectic<T>::m_d; // kick coefficients
+            /**
+             * @brief m_flag boolean to chose between drift-kick and kick-drift versions
+             */ 
             bool m_flag;
 
         public:

@@ -25,7 +25,13 @@ namespace smartmath
             using base_multistep<T>::m_name;
             using base_multistep<T>::m_dyn;
             using base_multistep<T>::m_order;
+            /**
+             * @brief m_beta coefficients used in integration step
+             */             
             std::vector<double> m_beta;
+            /**
+             * @brief m_initializer Runge-Kutta scheme used to initialize Adam-Bashforth
+             */             
             integrator::rk4<T> *m_initializer;
 
         public:

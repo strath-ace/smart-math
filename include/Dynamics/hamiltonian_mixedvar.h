@@ -49,9 +49,9 @@ namespace smartmath
 
             /**
              * @brief evaluate differential equations of the implemented Hamiltonian system
-             * @param[in] time in scaled units
+             * @param[in] t time in scaled units
              * @param[in] state vector in scaled units
-             * @param[out] state derivative in scaled units
+             * @param[out] dstate vector of time derivatives in scaled units
              * @return exit flag (0=success)
              */
             int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
@@ -65,7 +65,7 @@ namespace smartmath
              * @brief DHq2 computes the partial derivative of the Hamiltonian with respect to the second 'position' q2
              *
              * The method computes the partial derivative of the Hamiltonian with respect to q2
-             * @param[in] time in scaled units
+             * @param[in] t time in scaled units
              * @param[in] q2 vector in scaled units
              * @param[in] p2 vector in scaled units
              * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector q
@@ -77,7 +77,7 @@ namespace smartmath
              * @brief DHp2 computes the partial derivative of the Hamiltonian with respect to the second 'position' q2
              *
              * The method computes the partial derivative of the Hamiltonian with respect to p2
-             * @param[in] time in scaled units
+             * @param[in] t time in scaled units
              * @param[in] q2 vector in scaled units
              * @param[in] p2 vector in scaled units
              * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector p

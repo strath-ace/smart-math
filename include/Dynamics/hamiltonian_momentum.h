@@ -49,7 +49,7 @@ namespace smartmath
              * @brief DHp computes the partial derivative of the Hamiltonian with respect to the momenta
              *
              * The method computes the partial derivative of the Hamiltonian with respect to p the vector of momentum
-             * @param[in] time in scaled units
+             * @param[in] t time in scaled units
              * @param[in] q position vector in scaled units
              * @param[in] p momenta vector in scaled units
              * @param[out] dH vector of partial derivatives of H w.r.t. the vector p

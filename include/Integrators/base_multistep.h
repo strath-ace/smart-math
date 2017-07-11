@@ -29,6 +29,9 @@ namespace smartmath
         protected:
             using base_integrator<T>::m_name;
             using base_integrator<T>::m_dyn;
+            /**
+             * @brief m_order order of the multistep integrator
+             */
             int m_order;
 
         public:

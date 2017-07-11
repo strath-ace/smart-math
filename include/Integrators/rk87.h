@@ -44,9 +44,10 @@ namespace smartmath
              * @brief rk87 constructor
              *
              * @param dyn
-             * @param tolerance for error estimation in step-size control
-             * @param max multiplier for step-size control
-             * @param min time step for events detection
+             * @param tol tolerance for error estimation in step-size control
+             * @param multiplier maximum multiplying factor for step-size control
+             * @param minstep_events minimum time step for events detection
+             * @param maxstep_events maximum time step for events detection
              */
             rk87(const dynamics::base_dynamics<T> *dyn, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_stepsizecontrol<T>("Runge Kutta 8-7 variable step time", dyn, tol, multiplier, minstep_events, maxstep_events)
             {
@@ -63,10 +64,10 @@ namespace smartmath
              * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
              *
              * The method implements the RK8(7) scheme to perform one integration step
-             * @param[in] ti initial time
+             * @param[in] t initial time
              * @param[in] m method order
              * @param[in] h step size
-             * @param[in] x0 vector of initial states
+             * @param[in] x vector of initial states
              * @param[in] f vector of saved state vectors (for multistep scheme only) 
              * @param[out] xfinal vector of final states
              * @param[out] er estimated error 

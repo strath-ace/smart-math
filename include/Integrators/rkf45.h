@@ -43,10 +43,11 @@ namespace smartmath
             /**
              * @brief rkf45 constructor
              *
-             * @param dyn
-             * @param tolerance for error estimation in step-size control
-             * @param max multiplier for step-size control
-             * @param min time step for events detection
+             * @param dyn dynamics used for integration
+             * @param tol tolerance for error estimation in step-size control
+             * @param multiplier maximum multiplying factor for step-size control
+             * @param minstep_events minimum time step for events detection
+             * @param maxstep_events maximum time step for events detection
              */
             rkf45(const dynamics::base_dynamics<T> *dyn, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_stepsizecontrol<T>("Runge Kutta 4-5 variable step time", dyn, tol, multiplier, minstep_events, maxstep_events)
             {

@@ -51,7 +51,7 @@ namespace smartmath
              * The method implements one step of a symplectic scheme with mixed variables to integrate with given initial time,
              * final time, initial state condition(constant stepsize)
              * @param[in] ti initial time instant
-             * @param[in] h time step
+             * @param[in] tau time step
              * @param[in] x0 vector of initial states
              * @param[out] xfinal vector of final states
              * @return
@@ -120,8 +120,13 @@ namespace smartmath
             }
 
         protected:
-
+            /**
+             * @brief m_name name of integrator
+             */
             std::string m_name;
+            /**
+             * @brief m_dyn pointer to Hamiltonian dynamics with mixed variables
+             */            
             const dynamics::hamiltonian_mixedvar<T> *m_dyn;
 
         };

@@ -67,7 +67,7 @@ namespace smartmath
             /**
              * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
              *
-             * The virtual method is inherited by any subclass. It implements the corresponding integration scheme with given initial time,
+             * The method implements the corresponding integration scheme with given initial time,
              * final time, initial state condition and number of steps (constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] tend final time instant
@@ -99,6 +99,7 @@ namespace smartmath
 
                 return 0;
             }
+            
             /**
              * @brief get_name return integrator name
              *
