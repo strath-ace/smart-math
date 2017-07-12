@@ -1,0 +1,9 @@
+<map id="smartmath::dynamics::base_dynamics&lt; T &gt;" name="smartmath::dynamics::base_dynamics&lt; T &gt;">
+<area shape="rect" id="node2" href="$classsmartmath_1_1dynamics_1_1base__hamiltonian.html" title="The base_hamiltonian class is a template abstract class. Any Hamiltonian system added to the toolbox ..." alt="" coords="208,37,371,78"/>
+<area shape="rect" id="node5" href="$classsmartmath_1_1dynamics_1_1lotkavolterra.html" title="The Lotka Volterra problem. " alt="" coords="215,102,363,143"/>
+<area shape="rect" id="node6" href="$classsmartmath_1_1dynamics_1_1spring.html" title="The spring problem. " alt="" coords="215,167,363,209"/>
+<area shape="rect" id="node7" href="$classsmartmath_1_1dynamics_1_1twobody.html" title="The Two&#45;body problem. " alt="" coords="215,233,363,274"/>
+<area shape="rect" id="node8" href="$classsmartmath_1_1dynamics_1_1vanderpol.html" title="The Van der Pol oscillator. " alt="" coords="215,298,363,339"/>
+<area shape="rect" id="node3" href="$classsmartmath_1_1dynamics_1_1hamiltonian__mixedvar.html" title="The hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system with mixed variab..." alt="" coords="425,5,613,46"/>
+<area shape="rect" id="node4" href="$classsmartmath_1_1dynamics_1_1hamiltonian__momentum.html" title="The hamiltonian_momentum class is a template abstract class. Any Hamiltonian system using position an..." alt="" coords="419,70,619,111"/>
+</map>

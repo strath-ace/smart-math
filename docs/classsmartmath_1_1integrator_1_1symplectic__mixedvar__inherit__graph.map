@@ -1,0 +1,7 @@
+<map id="smartmath::integrator::symplectic_mixedvar&lt; T &gt;" name="smartmath::integrator::symplectic_mixedvar&lt; T &gt;">
+<area shape="rect" id="node3" href="$classsmartmath_1_1integrator_1_1euler__mixedvar.html" title="The euler_mixedvar class is an adaptation of the leapfrog algorithm for mixed variables. " alt="" coords="453,5,603,46"/>
+<area shape="rect" id="node4" href="$classsmartmath_1_1integrator_1_1forest__mixedvar.html" title="The forest_mixedvar class is an adaptation for mixed variables of the Forest integrator. " alt="" coords="451,70,605,111"/>
+<area shape="rect" id="node5" href="$classsmartmath_1_1integrator_1_1leapfrog__mixedvar.html" title="The leapfrog_mixedvar class is an adaptation of the leapfrog algorithm for mixed variables. " alt="" coords="444,135,612,177"/>
+<area shape="rect" id="node6" href="$classsmartmath_1_1integrator_1_1yoshida6__mixedvar.html" title="The yoshida6_mixedvar class is an adaptation for mixed variables of the Yoshida 6 integrator..." alt="" coords="441,201,615,242"/>
+<area shape="rect" id="node2" href="$classsmartmath_1_1integrator_1_1base__integrator.html" title="The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to ..." alt="" coords="6,103,157,145"/>
+</map>

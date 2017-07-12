@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classsmartmath_1_1integrator_1_1base__symplectic.html" title="The base_integrator class is a template abstract class. Any sympletic integrator added to the toolbox..." alt="" coords="5,103,165,145"/>
+<area shape="rect" id="node2" href="$classsmartmath_1_1integrator_1_1euler__symplectic.html" title="The euler_symplectic class is a instantiation of symplectic integrators with order 1..." alt="" coords="213,5,373,46"/>
+<area shape="rect" id="node3" href="$classsmartmath_1_1integrator_1_1forest.html" title="The forest class is a instantiation of symplectic integrators with order 4. " alt="" coords="220,70,367,111"/>
+<area shape="rect" id="node4" href="$classsmartmath_1_1integrator_1_1leapfrog.html" title="The leapfrog class is a instantiation of symplectic integrators with order 2. " alt="" coords="220,135,367,177"/>
+<area shape="rect" id="node5" href="$classsmartmath_1_1integrator_1_1yoshida6.html" title="The yoshida6 class is a instantiation of symplectic integrators with order 6. " alt="" coords="220,201,367,242"/>
+</map>

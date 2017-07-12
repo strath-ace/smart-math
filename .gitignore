@@ -1,6 +1,5 @@
 # Files to be ignored by git
 build
-docs
 .idea
 .project
 CMakeCache.txt
