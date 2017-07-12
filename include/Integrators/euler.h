@@ -58,9 +58,8 @@ namespace smartmath
                 m_dyn->evaluate(ti, x0, dx);
 
                 xfinal=x0;
-                for(unsigned int j=0; j<l; j++){
+                for(unsigned int j=0; j<l; j++)
                     xfinal[j] += h*dx[j];
-                }
 
                 return 0;
             }

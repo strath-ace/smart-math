@@ -66,14 +66,16 @@ namespace smartmath
                 /* reconstituting the initial canonical variables from the state vector */
                 std::vector<T> q0, p0;
                 int n = m_dyn->get_dim();
-                for(int i = 0; i < n; i++){
+                for(int i = 0; i < n; i++)
+                {
                     q0.push_back(x0[i]);
                     p0.push_back(x0[i + n]);
                 }
                 std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
 
                 /* performing the integration step per se using the precomputed coefficients */
-                for(int j = 0; j < m_stages; j++){
+                for(int j = 0; j < m_stages; j++)
+                {
                     m_dyn->DHp(ti, q0, p0, dp);
                     for(int i = 0; i < n; i++)
                         q[i] += m_c[j] * tau * dp[i];
@@ -120,7 +122,8 @@ namespace smartmath
 
                 double t = ti, h = (tend-ti) / nsteps;
 
-                for(int i = 0; i < nsteps; i++){
+                for(int i = 0; i < nsteps; i++)
+                {
                     integration_step(t, h, x, x_temp);
                     t += h;
                     x = x_temp;

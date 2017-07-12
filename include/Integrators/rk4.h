@@ -30,7 +30,7 @@ namespace smartmath
              * @brief rk4 constructor
              *
              * The integrator is initialized with the super class constructor. No additional parameters are set.
-             * @param dyn
+             * @param dyn pointer to dynamical system to be integrated
              */
             rk4(const dynamics::base_dynamics<T> *dyn) : base_rungekutta<T>("Runge Kutta 4 fixed time-step", dyn){}
 
@@ -43,7 +43,7 @@ namespace smartmath
              * @brief performs one integration step from the RK4 method
              *
              * The method implements one step of the RK4 scheme to integrate with given initial time,
-             * final time, initial state condition(constant stepsize)
+             * final time, initial state condition (constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] h time step
              * @param[in] x0 vector of initial states
@@ -82,7 +82,7 @@ namespace smartmath
                 //* Return x(t+h) computed from third-order Runge Kutta.
                 xfinal=x0;
                 for(unsigned int j=0; j<l; j++)
-                    xfinal[j] +=  (k1[j]+2.0*k2[j]+2.0*k3[j]+k4[j])*h/6.0;
+                    xfinal[j] += (k1[j]+2.0*k2[j]+2.0*k3[j]+k4[j])*h/6.0;
 
                 return 0;
             }

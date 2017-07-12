@@ -29,8 +29,8 @@ namespace smartmath
         protected:
             using base_symplectic<T>::m_dyn;
             using base_symplectic<T>::m_stages;
-            using base_symplectic<T>::m_c; // drift coefficients
-            using base_symplectic<T>::m_d; // kick coefficients
+            using base_symplectic<T>::m_c; 
+            using base_symplectic<T>::m_d; 
             /**
              * @brief m_flag boolean to chose between drift-kick and kick-drift versions
              */          
@@ -53,13 +53,15 @@ namespace smartmath
 
                 /* computation integration coefficients depending on chosen algorithm */
                 std::vector<double> c(m_stages), d(m_stages);
-                if(flag){ //drift-kick-drift
+                if(flag)
+                { //drift-kick-drift
                     c[0] = 1.0 / 2.0;
                     d[0] = 1.0;
                     c[1] = 1.0 / 2.0;
                     d[1] = 0.0;
                 }
-                else{ //kick-drift-kick
+                else
+                { //kick-drift-kick
                     c[0] = 0.0;
                     d[0] = 1.0 / 2.0;
                     c[1] = 1.0;

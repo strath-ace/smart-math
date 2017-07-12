@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The yoshida6_mixedvar class is an adaptation for mixed variables of the Forest integrator.
+         * @brief The yoshida6_mixedvar class is an adaptation for mixed variables of the Yoshida 6 integrator.
          *
-         * The yoshida6_mixedvar class is an adaptation for mixed variables of a 4th order integrator by Forest (1987).
+         * The yoshida6_mixedvar class is an adaptation for mixed variables of a 6th order integrator by Yoshida.
          */
         template < class T >
         class yoshida6_mixedvar: public symplectic_mixedvar<T>
@@ -69,11 +69,11 @@ namespace smartmath
              * The constructor initializes a pointer to the dynamics to integrate and precomputes a parameter necessary for integration
              * @param dyn Hamiltonian system to integrate
              */
-            yoshida6_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("Forest integrator with mixed variables", dyn){
+            yoshida6_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("Yoshida 6 integrator with mixed variables", dyn){
                 
                 /* sanity checks */
                 if(dyn->is_separable() == false)
-                    smartmath_throw("FOREST_MIXEDVAR: symplectic integrator cannot operate on non-separable Hamiltonian");
+                    smartmath_throw("YOSHIDA6_MIXEDVAR: symplectic integrator cannot operate on non-separable Hamiltonian");
 
                 m_c1 = 0.392256805238780;
                 m_c2 = 0.510043411918458;
@@ -114,7 +114,8 @@ namespace smartmath
 
                 std::vector<T> q0, p0;
                 int n = m_dyn->get_dim();
-                for(int i = 0; i < n; i++){
+                for(int i = 0; i < n; i++)
+                {
                     q0.push_back(x0[i]);
                     p0.push_back(x0[i + n]);
                 }

@@ -43,7 +43,7 @@ namespace smartmath
             /**
              * @brief rk87 constructor
              *
-             * @param dyn
+             * @param dyn pointer to dynamical system to be integrated
              * @param tol tolerance for error estimation in step-size control
              * @param multiplier maximum multiplying factor for step-size control
              * @param minstep_events minimum time step for events detection
@@ -61,7 +61,7 @@ namespace smartmath
             ~rk87(){}
 
             /**
-             * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
+             * @brief integrate method to integrate bewteen two given time steps, initial condition and step-size
              *
              * The method implements the RK8(7) scheme to perform one integration step
              * @param[in] t initial time
@@ -167,7 +167,8 @@ namespace smartmath
 
 		        //* Return x(t+h) computed from Runge Kutta.
 		        er=0.0;
-		        for(int j=0; j<n; j++){
+		        for(int j=0; j<n; j++)
+		        {
 		            xbar[j] +=  (k1[j]*14005451.0/335480064.0 -k6[j]*59238493.0/1068277825.0 +k7[j]*181606767.0/758867731.0 +k8[j]* 561292985.0/797845732.0
 		             -k9[j]*1041891430.0/1371343529.0 +k10[j]*760417239.0/1151165299.0  +k11[j]*118820643.0/751138087.0 -k12[j]*528747749.0/2220607170.0 + k13[j]/4.0)*h;
 		            xfinal[j] +=  (k1[j]*13451932.0/455176623.0 -k6[j]*808719846.0/976000145.0 +k7[j]*1757004468.0/5645159321.0 +k8[j]*656045339.0/265891186.0
@@ -179,7 +180,6 @@ namespace smartmath
 		        return 0;
 
             }
-
 
         };
 

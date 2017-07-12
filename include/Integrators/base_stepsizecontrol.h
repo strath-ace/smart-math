@@ -124,15 +124,12 @@ namespace smartmath
 
                 std::vector<int> events, events2;
                 if(m_event_list.size()==0)
-                {
                     events=g(x0,ti);
-                }
-                else{
+                else
+                {
                     events=std::vector<int>(m_event_list.size(),0);
                     for(unsigned int index = 0; index < m_event_list.size(); ++index)
-                    {   
                         events[index] = m_event_list[index]->evaluate(ti, x0);
-                    }
                 }
                 events2=events;
                 int m=events.size();           
@@ -140,13 +137,12 @@ namespace smartmath
                 int i=0;
                 while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
 
-                    if((h*h>m_maxstep_events*m_maxstep_events)&&(m_maxstep_events>0.0)){
-                        if(h>0.0){
+                    if((h*h>m_maxstep_events*m_maxstep_events)&&(m_maxstep_events>0.0))
+                    {
+                        if(h>0.0)
                             h=m_maxstep_events;
-                        }
-                        else{
+                        else
                             h=-m_maxstep_events;
-                        }   
                     }   
 
                     if(sqrt(pow(tend-t,2))<sqrt(h*h))
@@ -157,38 +153,37 @@ namespace smartmath
                     /* Step-size control */
                     value = evaluate_squarerootintegrationerror(er);
                     factor=pow(m_tol/value,1.0/(m_control+1.0));
-                    if(er>m_tol){ // unsucessful step
+                    if(er>m_tol) // unsucessful step
                         h*=0.9*factor;  
-                    }
-                    else{ // sucessful step
+                    else
+                    { // sucessful step
                         /* Checking for the events */
                         if(m_event_list.size()==0)
-                        {
                             events2=g(xtemp,t+h);
-                        }
-                        else{
+                        else
+                        {
                             for(unsigned int index = 0; index < m; ++index)
-                            {
                                 events2[index] = m_event_list[index]->evaluate(t+h, xtemp);
-                            }
                         }
                         k=0;
                         check=0;        
-                        while(k<m){
-                            if(events2[k]-events[k]!=0){
+                        while(k<m)
+                        {
+                            if(events2[k]-events[k]!=0)
+                            {
                                 check=1;
                                 k=m;
                             }
-                            else{
+                            else
                                 k++;
-                            }
                         }
 
-                        if(check==1){
-                            if(sqrt(h*h)>m_minstep_events){
+                        if(check==1)
+                        {
+                            if(sqrt(h*h)>m_minstep_events)
                                 h*=0.5;
-                            }
-                            else{
+                            else
+                            {
                                 tend=t+h; // saving the termination time    
                                 t=tend; // trick to get out of the while loop   
                                 x_history.push_back(xtemp);
@@ -205,16 +200,16 @@ namespace smartmath
                                     std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << i << " steps" << std::endl;
                             }
                         }
-                        else{
+                        else
+                        {
                             x=xtemp; // updating state
                             t+=h; // updating current time  
                             events=events2; 
                             x_history.push_back(x);
                             t_history.push_back(t); 
                             /* Step-size control */
-                            if(factor>m_multiplier){
-                                factor=m_multiplier;
-                            }   
+                            if(factor>m_multiplier)
+                                factor=m_multiplier;  
                             h*=factor; // updating step-size
                             i++; // counting the number of steps
                         }           
@@ -225,7 +220,6 @@ namespace smartmath
                 return 0;
             }
 
-	
         };
 
     }

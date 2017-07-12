@@ -41,12 +41,12 @@ namespace smartmath
             /**
              * @brief Adam Bashforth constructor
              *
-             * The integrator is initialized with the super class constructor. No additional parameters are set.
-             * @param dyn
+             * The integrator is initialized with the super class constructor. The user can choose the order of the method, the default value being 8 
+             * @param dyn pointer to the dynamical system to be integrated
+             * @param order order of the method
              */
             AB(const dynamics::base_dynamics<T> *dyn, const int order=8): base_multistep<T>("Adam Bashforth integration scheme", dyn, order)
             {
-
                 if((order<1)||(order>8))
                     smartmath_throw("AB: order must be between 1 and 8");  
 
@@ -60,9 +60,8 @@ namespace smartmath
                 {19087.0/60480.0,-134472.0/60480.0,407139.0/60480.0,-688256.0/60480.0,705549.0/60480.0,-447288.0/60480.0,198721.0/60480.0,0.0},
                 {-36799.0/120960.0,295767.0/120960.0,-1041723.0/120960.0,2102243.0/120960.0,-2664477.0/120960.0,2183877.0/120960.0,-1152169.0/120960.0,434241.0/120960.0}
                 };        
-                for(int i=0; i<m_order; i++){
+                for(int i=0; i<m_order; i++)
                     m_beta.push_back(prebeta[m_order-1][i]);
-                }
 
                 m_initializer = new integrator::rk4<T>(m_dyn);
 
@@ -93,10 +92,10 @@ namespace smartmath
 
                 xfinal=x0;
                 int size_x0 = x0.size();
-                for(int i=0; i<size_x0; i++){
-                    for(int j=0; j<m; j++){
+                for(int i=0; i<size_x0; i++)
+                {
+                    for(int j=0; j<m; j++)
                         xfinal[i]+=h*m_beta[j]*f[j][i];
-                    }
                 }
 
                 update_saved_steps(m,t+h,xfinal,f);
@@ -108,7 +107,7 @@ namespace smartmath
             /**
              * @brief initialize method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
-             * The method initializes via RK4 the Adam Bashforth scheme for an integration with step-size h starting at given initial time and condition 
+             * The method initializes via RK4 the Adam Bashforth scheme for an integration with step-size h starting at given initial time and conditions 
              * @param[in] ti initial time instant
              * @param[in] h step size
              * @param[in] x0 vector of initial states
@@ -126,7 +125,8 @@ namespace smartmath
                 m_dyn->evaluate(ti,x,dx);
                 fp.push_back(dx);
                 double t=ti;
-                for(int j=0; j<m-1; j++){
+                for(int j=0; j<m-1; j++)
+                {
                     m_initializer->integration_step(t,-h,x,xp);
                     t-=h;
                     x=xp;
@@ -135,9 +135,8 @@ namespace smartmath
                 }
                 
                 /* Putting the saved steps in the right order */
-                for(int j=0; j<m; j++){
+                for(int j=0; j<m; j++)
                     f.push_back(fp[m-j-1]);
-                }
 
                 return 0;
             }
@@ -159,9 +158,8 @@ namespace smartmath
 
                 std::vector<T> dx=x;
                 std::vector<std::vector<T> > fp=f;
-                for(int j=0; j<m-1; j++){
+                for(int j=0; j<m-1; j++)
                     f[j]=fp[j+1];
-                }
                 m_dyn->evaluate(t, x, dx);
                 f[m-1]=dx;
 

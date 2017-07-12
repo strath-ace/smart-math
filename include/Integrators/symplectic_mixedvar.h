@@ -62,7 +62,7 @@ namespace smartmath
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
              * The method implements a fixed-step symplectic scheme with mixed variables to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
+             * final time, initial state condition and number of steps (constant stepsize) returning the full history of propagation
              * @param[in] ti initial time instant
              * @param[in] tend final time instant
              * @param[in] nsteps number of integration steps
@@ -84,7 +84,8 @@ namespace smartmath
 
                 double t = ti, h = (tend-ti) / nsteps;
 
-                for(int i = 0; i < nsteps; i++){
+                for(int i = 0; i < nsteps; i++)
+                {
                     integration_step(t, h, x, x_temp);
                     t += h;
                     x = x_temp;
@@ -96,7 +97,7 @@ namespace smartmath
             }
 
             /**
-             * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
+             * @brief integrate method to integrate bewteen two given time steps, initial condition and number of steps
              *
              * The method implements the corresponding integration scheme with given initial time,
              * final time, initial state condition and number of steps (constant stepsize)

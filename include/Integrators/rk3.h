@@ -11,7 +11,7 @@ namespace smartmath
         /**
          * @brief The Runge Kutta 3 integrator scheme
          *
-         * The class model the Runge Kutta third order integration scheme
+         * The class models the Runge Kutta third order integration scheme
          */
         template < class T >
         class rk3: public base_rungekutta<T>
@@ -30,7 +30,7 @@ namespace smartmath
              * @brief rk3 constructor
              *
              * The integrator is initialized with the super class constructor. No additional parameters are set.
-             * @param dyn
+             * @param dyn pointer to dynamical system to be integrated
              */
             rk3(const dynamics::base_dynamics<T> *dyn): base_rungekutta<T>("Runge Kutta 3 fixed time-step", dyn){}
 
@@ -43,7 +43,7 @@ namespace smartmath
              * @brief performs one integration step from the RK3 method
              *
              * The method implements one step of the RK3 scheme to integrate with given initial time,
-             * final time, initial state condition(constant stepsize)
+             * final time, initial state condition (constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] h time step
              * @param[in] x0 vector of initial states

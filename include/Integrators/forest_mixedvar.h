@@ -79,7 +79,8 @@ namespace smartmath
 
                 std::vector<T> q0, p0;
                 int n = m_dyn->get_dim();
-                for(int i = 0; i < n; i++){
+                for(int i = 0; i < n; i++)
+                {
                     q0.push_back(x0[i]);
                     p0.push_back(x0[i + n]);
                 }

@@ -24,7 +24,7 @@ namespace smartmath
         /**
          * @brief The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method integrate()
          *
-         * The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method that integrates between to given times, initial state and stepsize
+         * The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method that integrates between two given times, with initial state and stepsize
          */
         template < class T >
         class base_integrator
@@ -50,7 +50,7 @@ namespace smartmath
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
              * The method implements the scheme to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
+             * final time, initial state condition and number of steps (constant stepsize) returning the full history of propagation
              * @param[in] ti initial time instant
              * @param[in] tend final time instant
              * @param[in] nsteps number of integration steps
@@ -65,7 +65,7 @@ namespace smartmath
             { smartmath_throw("integrate_function using Eigen not implemented "); return 1; }
 
             /**
-             * @brief integrate method to integrate bewteen two given time steps, initial condition and step lenght
+             * @brief integrate method to integrate from initial conditions to a final time with a given number of steps
              *
              * The method implements the corresponding integration scheme with given initial time,
              * final time, initial state condition and number of steps (constant stepsize)
@@ -99,7 +99,7 @@ namespace smartmath
 
                 return 0;
             }
-            
+
             /**
              * @brief get_name return integrator name
              *

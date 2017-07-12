@@ -31,7 +31,7 @@ namespace smartmath
              * The integrator is initialized with the super class constructor. No additional parameters are set.
              * @param dyn
              */
-            heun(const dynamics::base_dynamics<T> *dyn): base_rungekutta<T>("Heun's method of order 2", dyn){}
+            heun(const dynamics::base_dynamics<T> *dyn): base_rungekutta<T>("Heun's method of order 2 with fixed step-size", dyn){}
 
             /**
               * @brief ~heun deconstructor
@@ -56,15 +56,13 @@ namespace smartmath
 
 	            m_dyn->evaluate(ti, x0, dx);
 
-	            for(unsigned int j=0; j<l; j++){
+	            for(unsigned int j=0; j<l; j++)
 	                x_temp[j] = x0[j] + h*dx[j];
-	            }
 	            m_dyn->evaluate(ti+h, x_temp, dx_temp);
 	
 	            xfinal=x0;
-	            for(unsigned int j=0; j<l; j++){
+	            for(unsigned int j=0; j<l; j++)
 	                xfinal[j] += h/2.0*(dx[j] + dx_temp[j]);
-	            }
 
 	            return 0;
             }

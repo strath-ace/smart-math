@@ -77,13 +77,15 @@ namespace smartmath
                 
                 std::vector<T> q0, p0;
                 int n = m_dyn->get_dim();
-                for(int i = 0; i < n; i++){
+                for(int i = 0; i < n; i++)
+                {
                     q0.push_back(x0[i]);
                     p0.push_back(x0[i + n]);
                 }
                 std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
 
-                if(m_flag){ // drift-kick-drift
+                if(m_flag)
+                { // drift-kick-drift
                     m_dyn->conversion(q, p, q0, p0);
                     q = q0;
                     p = p0;

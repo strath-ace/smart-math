@@ -54,10 +54,10 @@ namespace smartmath
             virtual ~base_multistep(){}
 
             /**
-             * @brief integration_step performs one integration step from the Adam Bashforth (order 6) method
+             * @brief integration_step performs one integration step 
              *
-             * The method implements one step of the Adam Bashforth 6 scheme to integrate with given initial time,
-             * final time, initial state condition(constant stepsize)
+             * The method implements one step of a multi-step algorithm to integrate with given initial time,
+             * final time, initial state condition(constant stepsize) returning the full history of propagation
              * @param[in] t initial time for integration step 
              * @param[in] m order
              * @param[in] h step-size
@@ -71,7 +71,7 @@ namespace smartmath
             /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
-             * The method implements the multistep scheme to integrate with given initial time,
+             * The method implements a multistep scheme to integrate with given initial time,
              * final time, initial state condition and number of steps (constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] tend final time instant
@@ -92,8 +92,8 @@ namespace smartmath
 
                 initialize(m_order,ti,h,x0,f);
 
-                for(int k=0; k<nsteps; k++){
-
+                for(int k=0; k<nsteps; k++)
+                {
                     integration_step(t,m_order,h,x,f,xp);
 
                     /* Saving states */
@@ -101,7 +101,6 @@ namespace smartmath
                     x=xp;
                     t_history.push_back(t);
                     x_history.push_back(x);
-
                 }
 
                 return 0;

@@ -42,8 +42,9 @@ namespace smartmath
             /**
              * @brief Adam Bashforth Moulton constructor
              *
-             * The integrator is initialized with the super class constructor. No additional parameters are set.
-             * @param dyn
+             * The integrator is initialized with the super class constructor. The user can choose the order of the method, the default value being 8 
+             * @param dyn pointer to the dynamical system to be integrated
+             * @param order order of the method
              */
             ABM(const dynamics::base_dynamics<T> *dyn, const int order=8): base_multistep<T>("Adam Bashforth Moulton algorithm", dyn, order)
             {
@@ -60,9 +61,8 @@ namespace smartmath
                 {-863.0/60480.0,6312.0/60480.0,-20211.0/60480.0,37504.0/60480.0,-46461.0/60480.0,65112.0/60480.0,19087.0/60480.0,0.0},
                 {1375.0/120960.0,-11351.0/120960.0,41499.0/120960.0,-88547.0/120960.0,123133.0/120960.0,-121797.0/120960.0,139849.0/120960.0,36799.0/120960.0}
                 };        
-                for(int i=0; i<m_order; i++){
+                for(int i=0; i<m_order; i++)
                     m_beta_Moulton.push_back(prebeta[m_order-2][i]);
-                }
 
                 m_predictor = new integrator::AB<T>(m_dyn,m_order);
 
@@ -117,10 +117,10 @@ namespace smartmath
 
                 xfinal=x0;
                 int x0_size = x0.size();
-                for(int i=0; i<x0_size; i++){
-                    for(int j=0; j<m_order; j++){
+                for(int i=0; i<x0_size; i++)
+                {
+                    for(int j=0; j<m_order; j++)
                         xfinal[i]+=h*m_beta_Moulton[j]*f[j][i];
-                    }
                 }
 
                 return 0;

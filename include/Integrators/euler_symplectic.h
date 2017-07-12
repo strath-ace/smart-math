@@ -53,11 +53,13 @@ namespace smartmath
 
                 /* computation integration coefficients depending on chosen algorithm */
                 std::vector<double> c(m_stages), d(m_stages);
-                if(flag){ //drift-kick
+                if(flag)
+                { //drift-kick
                     c[0] = 1.0;
                     d[0] = 1.0;
                 }
-                else{ //kick-drift
+                else
+                { //kick-drift
                     ++m_stages;
                     c[0] = 0.0;
                     d[0] = 1.0;
