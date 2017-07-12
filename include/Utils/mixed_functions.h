@@ -8,6 +8,18 @@
 --------- Author: Annalisa Riccardi and Carlos Ortega Absil ----------
 */
 
+/*! \file mixed_functions.h
+  \brief Test
+  Testing
+ */ 
+
+/*! \fn double Legendre(int l, int m, double x)
+  \brief Legendre evaluation of associated Legendre polynomials
+  \param l order
+  \param m degree
+  \param x evaluation point
+ */
+
 #ifndef SMARTMATH_INLINEFUNCTIONS_H
 #define SMARTMATH_INLINEFUNCTIONS_H
 
@@ -53,13 +65,7 @@ namespace smartmath
   typedef double (*fun)(double);
   double bisection_method(fun f, double lb, double ub, double prec);
 
-  /**
-   * @brief Legendre evaluation of associated Legendre polynomials
-   * @param[in] l order
-   * @param[in] m degree
-   * @param[in] x evaluation point
-   * @return value of Plm at x
-   */
+
   double Legendre(int l, int m, double x);
 
   /**
