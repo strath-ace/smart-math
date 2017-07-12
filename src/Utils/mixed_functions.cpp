@@ -152,25 +152,22 @@ double smartmath::Legendre(int l, int m, double x)
     /* l>=m>=0 */
     double out=1.0; // default value (l=0)
 
-    if(l==1){
-        if(m==1){
+    if(l==1)
+    {
+        if(m==1)
             out=-sqrt(1.0-x*x);
-        }
-        if(m==0){
-            out=x;
-        }       
+        if(m==0)
+            out=x;    
     }
 
-    if(l>1){
-        if(l==m){
+    if(l>1)
+    {
+        if(l==m)
             out=-double(2*l-1)*sqrt(1.0-x*x)*smartmath::Legendre(l-1,l-1,x);
-        }
-        else if(m==l-1){
-            out=double(2*m+1)*x*smartmath::Legendre(m,m,x);
-        }        
-        else{
-            out=(double(2*l-1)*x*smartmath::Legendre(l-1,m,x)-double(l-1+m)*smartmath::Legendre(l-2,m,x))/double(l-m); 
-        }        
+        else if(m==l-1)
+            out=double(2*m+1)*x*smartmath::Legendre(m,m,x);        
+        else
+            out=(double(2*l-1)*x*smartmath::Legendre(l-1,m,x)-double(l-1+m)*smartmath::Legendre(l-2,m,x))/double(l-m);     
     }
 
     return out;
@@ -179,9 +176,6 @@ double smartmath::Legendre(int l, int m, double x)
 
 double smartmath::Legendre_derivative(int l, int m, double x)
 {
-    if(x*x>=1.0)
-        smartmath_throw("LEGENDRE: real number must be in ]-1,1[");  
-
     return (double(l)*x*smartmath::Legendre(l,m,x)-double(l+m)*smartmath::Legendre(l-1,m,x))/(x*x-1.0); 
 }
 

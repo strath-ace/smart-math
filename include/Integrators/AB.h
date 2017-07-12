@@ -113,6 +113,7 @@ namespace smartmath
              * @brief initialize method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
              * The method initializes via RK4 the Adam Bashforth scheme for an integration with step-size h starting at given initial time and conditions 
+             * @param[in] m order
              * @param[in] ti initial time instant
              * @param[in] h step size
              * @param[in] x0 vector of initial states

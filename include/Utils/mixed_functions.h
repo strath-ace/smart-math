@@ -53,7 +53,22 @@ namespace smartmath
   typedef double (*fun)(double);
   double bisection_method(fun f, double lb, double ub, double prec);
 
+  /**
+   * @brief Legendre evaluation of associated Legendre polynomials
+   * @param[in] l order
+   * @param[in] m degree
+   * @param[in] x evaluation point
+   * @return value of Plm at x
+   */
   double Legendre(int l, int m, double x);
+
+  /**
+   * @brief Legendre_derivative evaluation of derivative of associated Legendre polynomials
+   * @param[in] l order
+   * @param[in] m degree
+   * @param[in] x evaluation point
+   * @return value of d_Plm / d_x at x
+   */  
   double Legendre_derivative(int l, int m, double x);
 
   double Lagrange1d(std::vector<double> times, std::vector<double> values, double t);
