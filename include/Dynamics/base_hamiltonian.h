@@ -104,13 +104,9 @@ namespace smartmath
 
 				/* reconstituting the state derivative */
 				for(int k = 0; k < m_dim; k++)
-					{
 						dstate.push_back(dHp[k]);
-					}
 				for(int k = 0; k < m_dim; k++)
-					{
 						dstate.push_back(-dHq[k]);
-					}
 
             	return 0;
             }

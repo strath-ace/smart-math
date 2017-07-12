@@ -20,6 +20,10 @@ namespace smartmath
         private:
             using base_rungekutta<T>::m_name;
             using base_rungekutta<T>::m_dyn;
+            using base_rungekutta<T>::m_stages;
+            using base_rungekutta<T>::m_coeT;
+            using base_rungekutta<T>::m_coeK;
+            using base_rungekutta<T>::m_coeX;
 
         public:
 
@@ -32,52 +36,22 @@ namespace smartmath
              * The integrator is initialized with the super class constructor. No additional parameters are set.
              * @param dyn
              */
-            euler(const dynamics::base_dynamics<T> *dyn): base_rungekutta<T>("Explicit Euler integration scheme", dyn){}
+            euler(const dynamics::base_dynamics<T> *dyn): base_rungekutta<T>("Explicit Euler integration scheme", dyn){
+
+                m_stages = 1;
+
+                std::vector<double> coe(m_stages);
+                coe[0] = 0.0;
+                m_coeT = coe;
+                coe[0] = 1.0;
+                m_coeX = coe;   
+
+            }
 
             /**
               * @brief ~euler deconstructor
               */
             ~euler(){}
-
-            /**
-             * @brief integration_step performs one integration step from the Euler explicit method
-             *
-             * The method implements one step of the explicit Euler scheme to integrate with given initial time,
-             * final time, initial state condition(constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] h time step
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-
-                std::vector<T> dx=x0;
-                unsigned int l = x0.size();
-
-                m_dyn->evaluate(ti, x0, dx);
-
-                xfinal=x0;
-                for(unsigned int j=0; j<l; j++)
-                    xfinal[j] += h*dx[j];
-
-                return 0;
-            }
-
-
-            /**
-             * @brief integration_step, the same as above but for Eigen
-             */
-            int integration_step_eigen(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
-
-                Eigen::VectorXd dx=x0;
-
-                m_dyn->evaluate_eigen(ti, x0, dx);
-
-                xfinal = x0 + h*dx ;
-
-                return 0;
-            }
 
         };
 

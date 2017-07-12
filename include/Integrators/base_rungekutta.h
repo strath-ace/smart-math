@@ -29,6 +29,10 @@ namespace smartmath
         protected:
             using base_integrator<T>::m_name;
             using base_integrator<T>::m_dyn;
+            int m_stages;
+            std::vector<double> m_coeT;
+            std::vector<double> m_coeK;
+            std::vector<double> m_coeX;
 
         public:
 
@@ -53,16 +57,82 @@ namespace smartmath
              * @brief integration_step performs one integration step from the Runge-Kutta scheme
              *
              * The method implements one step of a Runge-Kutta scheme to integrate with given initial time,
-             * final time, initial state condition(constant stepsize)
+             * final time, initial state condition (constant stepsize)
+             * This implementation only works for methods whose Butcher tableau has only a sub-diagonal of non-zero coefficients
+             * It needs to be overwritten in other cases e.g. Kutta's third order method
              * @param[in] ti initial time instant
              * @param[in] h time step
              * @param[in] x0 vector of initial states
              * @param[out] xfinal vector of final states
              * @return
              */
-            virtual int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal) const = 0;
-            virtual int integration_step_eigen(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const
-            { smartmath_throw("integrate_function using Eigen not implemented "); return 1; }
+            int integration_step(const double &ti, const double &h, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+
+                std::vector<T> x_temp = x0, k = x0;
+                unsigned int l = x0.size();
+
+                xfinal = x0;
+
+                for(int i = 0; i < m_stages; i++)
+                {
+                    x_temp = x0;
+                    if(i == 0)
+                    {
+                        m_dyn->evaluate(ti + h * m_coeT[i], x_temp, k);
+                        for(unsigned int j = 0; j < l; j++)
+                            xfinal[j] += m_coeX[i] * k[j] * h;
+                    }
+                    else
+                    { 
+                        for(unsigned int j = 0; j < l; j++)
+                            x_temp[j] += m_coeK[i - 1] * k[j] * h;    
+                        m_dyn->evaluate(ti + h * m_coeT[i], x_temp, k);
+                        for(unsigned int j = 0; j < l; j++)
+                            xfinal[j] += m_coeX[i] * k[j] * h;        
+                    }
+                }              
+
+                return 0;
+            }
+
+            /**
+             * @brief integration_step_eigen performs one integration step from the Runge-Kutta scheme handling Eigen vectors
+             *
+             * The method implements one step of a Runge-Kutta scheme to integrate with given initial time,
+             * final time, initial state condition (constant stepsize)
+             * This implementation only works for methods whose Butcher tableau has only a sub-diagonal of non-zero coefficients
+             * It needs to be overwritten in other cases e.g. Kutta's third order method
+             * @param[in] ti initial time instant
+             * @param[in] h time step
+             * @param[in] x0 vector of initial states
+             * @param[out] xfinal vector of final states
+             * @return
+             */
+            int integration_step_eigen(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
+
+                Eigen::VectorXd x_temp=x0, k=x0;
+
+                xfinal = x0;
+
+                for(int i = 0; i < m_stages; i++)
+                {
+                    x_temp = x0;
+                    if(i == 0)
+                    {
+                        m_dyn->evaluate_eigen(ti + h * m_coeT[i], x_temp, k);
+                        xfinal += m_coeX[i] * k * h;
+                    }
+                    else
+                    { 
+                        x_temp += k * m_coeK[i - 1];    
+                        m_dyn->evaluate_eigen(ti + h * m_coeT[i], x_temp, k);
+                        xfinal += m_coeX[i] * k * h;        
+                    }
+                }              
+
+                return 0;
+            }
+
 
             /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
