@@ -18,7 +18,7 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The yoshida6 class is a instantiation of symplectic integrators with order 6.
+         * @brief The yoshida6 class is an instantiation of symplectic integrators with order 6.
          *
          * The yoshida6 class is a 6th order instantiation of symplectic integrators from Yoshida (1990). 
          */

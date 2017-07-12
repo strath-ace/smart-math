@@ -18,7 +18,7 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The forest class is a instantiation of symplectic integrators with order 4.
+         * @brief The forest class is an instantiation of symplectic integrators with order 4.
          *
          * The forest class is a 4nd order instantiation of symplectic integrators from Forest (1987). 
          */

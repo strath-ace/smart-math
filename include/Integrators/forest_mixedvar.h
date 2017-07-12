@@ -27,7 +27,7 @@ namespace smartmath
         {
 
         protected:
-            using symplectic_mixedvar<T>::m_dyn;
+            using symplectic_mixedvar<T>::m_ham;
             /**
              * @brief m_beta numerical parameter used in integration step
              */ 
@@ -72,13 +72,13 @@ namespace smartmath
             int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
 
                 /* sanity checks */
-                if(x0.size() != 2 * m_dyn->get_dim())
+                if(x0.size() != 2 * m_ham->get_dim())
                     smartmath_throw("INTEGRATION_STEP: state vector must have consistent dimension with Hamiltonian system");
                 if(xfinal.size() != x0.size())
                     smartmath_throw("INTEGRATION_STEP: initial and final states must have same dimension");      
 
                 std::vector<T> q0, p0;
-                int n = m_dyn->get_dim();
+                int n = m_ham->get_dim();
                 for(int i = 0; i < n; i++)
                 {
                     q0.push_back(x0[i]);
@@ -86,63 +86,63 @@ namespace smartmath
                 }
                 std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
 
-                m_dyn->conversion(q, p, q0, p0);
+                m_ham->conversion(q, p, q0, p0);
                 q = q0;
                 p = p0;                
                 
-                m_dyn->DHp2(ti, q0, p0, dp);
+                m_ham->DHp2(ti, q0, p0, dp);
                 for(int i = 0; i < n; i++)
                     q[i] += tau * dp[i] * 0.5 / (2.0 - m_beta);
 
-                m_dyn->conversion2(q, p, q0, p0);
+                m_ham->conversion2(q, p, q0, p0);
                 q = q0;
                 p = p0; 
 
-                m_dyn->DHq(ti, q, p0, dq);
+                m_ham->DHq(ti, q, p0, dq);
                 for(int i = 0; i < n; i++)
                     p[i] -= tau * dq[i] * 1.0 / (2.0 - m_beta); 
 
-                m_dyn->conversion(q, p, q0, p0);
+                m_ham->conversion(q, p, q0, p0);
                 q = q0;
                 p = p0; 
 
-                m_dyn->DHp2(ti, q0, p0, dp);
+                m_ham->DHp2(ti, q0, p0, dp);
                 for(int i = 0; i < n; i++)
                     q[i] += tau * dp[i] * 0.5 * (1.0 - m_beta) / (2.0 - m_beta);
 
-                m_dyn->conversion2(q, p, q0, p0);
+                m_ham->conversion2(q, p, q0, p0);
                 q = q0;
                 p = p0; 
 
-                m_dyn->DHq(ti, q, p0, dq);
+                m_ham->DHq(ti, q, p0, dq);
                 for(int i = 0; i < n; i++)
                     p[i] -= tau * dq[i] * (- m_beta / (2.0 - m_beta)); 
 
-                m_dyn->conversion(q, p, q0, p0);
+                m_ham->conversion(q, p, q0, p0);
                 q = q0;
                 p = p0; 
 
-                m_dyn->DHp2(ti, q0, p0, dp);
+                m_ham->DHp2(ti, q0, p0, dp);
                 for(int i = 0; i < n; i++)
                     q[i] += tau * dp[i] * 0.5 * (1.0 - m_beta) / (2.0 - m_beta);
 
-                m_dyn->conversion2(q, p, q0, p0);
+                m_ham->conversion2(q, p, q0, p0);
                 q = q0;
                 p = p0; 
 
-                m_dyn->DHq(ti, q, p0, dq);
+                m_ham->DHq(ti, q, p0, dq);
                 for(int i = 0; i < n; i++)
                     p[i] -= tau * dq[i] * 1.0 / (2.0 - m_beta); 
 
-                m_dyn->conversion(q, p, q0, p0);
+                m_ham->conversion(q, p, q0, p0);
                 q = q0;
                 p = p0; 
 
-                m_dyn->DHp2(ti, q0, p0, dp);
+                m_ham->DHp2(ti, q0, p0, dp);
                 for(int i = 0; i < n; i++)
                     q[i] += tau * dp[i] * 0.5 / (2.0 - m_beta);
 
-                m_dyn->conversion2(q, p, q0, p0);
+                m_ham->conversion2(q, p, q0, p0);
                 q = q0;
                 p = p0;                 
 

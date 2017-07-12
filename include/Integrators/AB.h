@@ -17,6 +17,11 @@ namespace smartmath
 {
     namespace integrator {
 
+        /**
+         * @brief The AB class is an implementation of the Adam-Bashforth algorithm 
+         *
+         * The AB class is an implementation of a multistep integrator namely the Adam-Bashforth algorithm with fixed step-size 
+         */
         template < class T >
         class AB: public base_multistep<T>
         {

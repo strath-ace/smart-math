@@ -7,12 +7,9 @@
 ----------------- Author: Romain Serra -------------------------------
 */
 
-
-
 #ifndef SMARTMATH_SYMPLECTIC_MIXEDVAR_H
 #define SMARTMATH_SYMPLECTIC_MIXEDVAR_H
 
-#include "../LinearAlgebra/Eigen/Core"
 #include "../Dynamics/hamiltonian_mixedvar.h"
 #include "../exception.h"
 
@@ -21,24 +18,26 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_integrator class is a template abstract class. Any symplectic integrator using mixed variables needs to inherit from it and implement the method integrate()
+         * @brief The symplectic_mixedvar class is a template abstract class. Any symplectic integrator using mixed variables needs to inherit from it and implement the method integrate()
          *
-         * The base_integrator class is a template abstract class. Any integrator using mixed variables needs to inherit from it and implement the method that integrates between to given times, initial state and stepsize
+         * The symplectic_mixedvar class is a template abstract class. Any integrator using mixed variables needs to inherit from it and implement the method that integrates between to given times, initial state and stepsize
          */
         template < class T >
-        class symplectic_mixedvar
+        class symplectic_mixedvar: public base_integrator<T>
         {
 
         public:
 
+            using base_integrator<T>::integrate;
+
             /**
-             * @brief base_integrator constructor
+             * @brief symplectic_mixedvar constructor
              *
              * The constructor initializes the name of the integrator and a pointer to the dynamical system to be integrated
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
-            symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn): m_name(name), m_dyn(dyn){}
+            symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn): base_integrator<T>(name, NULL), m_ham(dyn){}
 
             /**
              * @brief ~symplectic_mixedvar deconstructor
@@ -74,7 +73,7 @@ namespace smartmath
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
 
                 /* sanity checks */
-                if(x0.size() != 2 * m_dyn->get_dim())
+                if(x0.size() != 2 * m_ham->get_dim())
                     smartmath_throw("INTEGRATE: state vector must have consistent dimension with Hamiltonian system");
 
                 t_history.clear();
@@ -96,39 +95,12 @@ namespace smartmath
                 return 0;
             }
 
-            /**
-             * @brief integrate method to integrate bewteen two given time steps, initial condition and number of steps
-             *
-             * The method implements the corresponding integration scheme with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-                
-                std::vector<std::vector<T> > x_history;
-                std::vector<double> t_history;
-
-                integrate(ti, tend, nsteps, x0, x_history, t_history);
-
-                xfinal = x_history.back();
-
-                return 0;
-            }
-
         protected:
+            using base_integrator<T>::m_name;
             /**
-             * @brief m_name name of integrator
-             */
-            std::string m_name;
-            /**
-             * @brief m_dyn pointer to Hamiltonian dynamics with mixed variables
+             * @brief m_ham pointer to Hamiltonian dynamics with mixed variables
              */            
-            const dynamics::hamiltonian_mixedvar<T> *m_dyn;
+            const dynamics::hamiltonian_mixedvar<T> *m_ham;
 
         };
     }

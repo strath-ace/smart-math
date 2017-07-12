@@ -18,7 +18,7 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The leapfrog class is a instantiation of symplectic integrators with order 2.
+         * @brief The leapfrog class is an instantiation of symplectic integrators with order 2.
          *
          * The leapfrog class is a 2nd order instantiation of symplectic integrators. It has two versions: kick-drift-kick and drift-kick-drift.
          */

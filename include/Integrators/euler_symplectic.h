@@ -18,7 +18,7 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The euler_symplectic class is a instantiation of symplectic integrators with order 1.
+         * @brief The euler_symplectic class is an instantiation of symplectic integrators with order 1.
          *
          * The euler_symplectic class is a 1st order instantiation of symplectic integrators. It has two versions: kick-drift and drift-kick.
          */
