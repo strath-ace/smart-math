@@ -136,7 +136,7 @@ namespace smartmath
                     }
                     else
                     { 
-                        x_temp += k * m_coeK[i - 1];    
+                        x_temp += m_coeK[i - 1] * k * h;    
                         m_dyn->evaluate_eigen(ti + h * m_coeT[i], x_temp, k);
                         xfinal += m_coeX[i] * k * h;        
                     }
