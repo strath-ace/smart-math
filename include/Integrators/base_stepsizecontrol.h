@@ -104,7 +104,7 @@ namespace smartmath
              * @param[in] tend final time instant
              * @param[in] nsteps initial guess for number of integration steps
              * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of intermediate states
+             * @param[out] x_history vector of intermediate states
              * @param[out] t_history vector of intermediate times
              * @param[in] g event function             
              * @return

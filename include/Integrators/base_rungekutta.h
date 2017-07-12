@@ -29,9 +29,21 @@ namespace smartmath
         protected:
             using base_integrator<T>::m_name;
             using base_integrator<T>::m_dyn;
+            /**
+             * @brief m_stages number of stages
+             */            
             int m_stages;
+            /**
+             * @brief m_coeT coefficients for evaluation in time inside the integration step
+             */             
             std::vector<double> m_coeT;
+            /**
+             * @brief m_coeK coefficients for evaluation in state inside the integration step (only valid for methods whose Butcher tableau has zeros everywhere except on the sub-diagonal)
+             */             
             std::vector<double> m_coeK;
+            /**
+             * @brief m_coeX coefficients for state update inside the integration step
+             */             
             std::vector<double> m_coeX;
 
         public:
@@ -167,6 +179,19 @@ namespace smartmath
                 return 0;
             }
 
+            /**
+             * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states) handling Eigen vectors
+             *
+             * The method implements a fixed-step Runge-Kutta scheme to integrate with given initial time,
+             * final time, initial state condition and number of steps (constant stepsize)
+             * @param[in] ti initial time instant
+             * @param[in] tend final time instant
+             * @param[in] nsteps number of integration steps
+             * @param[in] x0 vector of initial states
+             * @param[out] x_history vector of intermediate state vector (including final one)
+             * @param[out] t_history vector of intermediate times (including final one)
+             * @return
+             */
             int integrate_eigen(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::MatrixXd> x_history, Eigen::Ref<Eigen::VectorXd> t_history) const{
 
                 t_history.setZero();
