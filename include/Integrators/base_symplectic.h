@@ -75,12 +75,20 @@ namespace smartmath
                 /* performing the integration step per se using the precomputed coefficients */
                 for(int j = 0; j < m_stages; j++)
                 {
-                    m_ham->DHp(ti, q0, p0, dp);
-                    for(int i = 0; i < n; i++)
-                        q[i] += m_c[j] * tau * dp[i];
-                    m_ham->DHq(ti, q, p0, dq);
-                    for(int i = 0; i < n; i++)
-                        p[i] -= m_d[j] * tau * dq[i];
+                    if(m_c[j] != 0.0)
+                    {
+                        m_ham->DHp(ti, q0, p0, dp);
+                        for(int i = 0; i < n; i++)
+                            q[i] += m_c[j] * tau * dp[i];
+                    }
+
+                    if(m_d[j] != 0.0)
+                    {
+                        m_ham->DHq(ti, q, p0, dq);    
+                        for(int i = 0; i < n; i++)
+                            p[i] -= m_d[j] * tau * dq[i];
+                    }
+
                     q0 = q;
                     p0 = p;
                 }
