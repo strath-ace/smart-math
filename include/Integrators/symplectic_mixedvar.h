@@ -35,7 +35,7 @@ namespace smartmath
              *
              * The constructor initializes the name of the integrator and a pointer to the dynamical system to be integrated
              * @param name integrator name
-             * @param dyn pointer to a Hamiltonian dynamics with mixted variables
+             * @param dyn pointer to a Hamiltonian dynamics with mixed variables
              * @param stages integer stating the number of integration stages in one step
              */
             symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn, const int &stages): base_symplectic<T>(name, NULL, stages), m_mix(dyn){}

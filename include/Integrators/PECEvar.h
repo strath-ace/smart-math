@@ -17,6 +17,11 @@ namespace smartmath
 {
     namespace integrator {
 
+        /**
+         * @brief The PECEvar class is an implementation of the Adam-Bashforth-Moulton algorithm with variable step-size and order
+         *
+         * The ABM class is an implementation of the Adam-Bashforth-Moulton algorithm with variable step-size and order 
+         */
         template < class T >
         class PECEvar: public base_integrationwevent<T>
         { 
@@ -26,11 +31,34 @@ namespace smartmath
             using base_integrationwevent<T>::m_dyn;
             using base_integrationwevent<T>::m_minstep_events;
             using base_integrationwevent<T>::m_maxstep_events;  
-            using base_integrationwevent<T>::m_event_list;          
+            using base_integrationwevent<T>::m_event_list;
+            /**
+             * @brief m_tol tolerance for step-size control
+             */
             double m_tol;
+            /**
+             * @brief m_multiplier maximum multiplying factor used when increasing step-size
+             */            
             double m_multiplier;
-            int m_order_max, m_order_min;
-            std::vector<double> m_gamma_Bashforth, m_gamma_Moulton;
+            /**
+             * @brief m_order_max maximum order for the order
+             */                 
+            int m_order_max;
+            /**
+             * @brief m_order_min minimum order for the order
+             */     
+            int m_order_min;
+            /**
+             * @brief m_gamma_Bashforth coefficients for predictor
+             */                 
+            std::vector<double> m_gamma_Bashforth;
+            /**
+             * @brief m_gamma_Moulton coefficients for corrector
+             */             
+            std::vector<double> m_gamma_Moulton;
+            /**
+             * @brief m_predictor integrator used as predictor (Adam-Bashforth)
+             */               
             integrator::AB<T> *m_initializer;
 
         public:
@@ -47,8 +75,8 @@ namespace smartmath
              * @param order_min minimum order for predictor-corrector               
              * @param tol threshold used for acceptable estimated error
              * @param multiplier factor used to increase step-sized when judged necessary            
-             * @param m_minstep_events minimum step-size to detect an event
-             * @param m_maxstep_events maximum step-size     
+             * @param minstep_events minimum step-size to detect an event
+             * @param maxstep_events maximum step-size     
              */
             PECEvar(const dynamics::base_dynamics<T> *dyn, const int order_min=4, const int order_max=8, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_integrationwevent <T>("Adam Bashforth Moulton integration scheme with variable order", dyn, minstep_events, maxstep_events), m_tol(tol), m_multiplier(multiplier), m_order_max(order_max), m_order_min(order_min)
             {
@@ -87,9 +115,9 @@ namespace smartmath
              * @param[in] tend final time instant
              * @param[in] nsteps initial guess for number of integration steps
              * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of intemrediate states
+             * @param[out] x_history vector of intermediate states
              * @param[out] t_history vector of intermediate times
-             * @param[in] event function             
+             * @param[in] g event function             
              * @return
              */
             int integrate(const double &ti, double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history, std::vector<int> (*g)(std::vector<T> x, double d)) const{
@@ -110,15 +138,11 @@ namespace smartmath
 
                 std::vector<int> events, events2;
                 if(m_event_list.size()==0)
-                {
                     events=g(x0,ti);
-                }
                 else{
                     events=std::vector<int>(m_event_list.size(),0);
                     for(unsigned int index = 0; index < m_event_list.size(); ++index)
-                    {   
                         events[index] = m_event_list[index]->evaluate(ti, x0);
-                    }
                 }
                 events2=events;
                 int q=events.size();  
@@ -126,19 +150,20 @@ namespace smartmath
                 m_initializer->initialize(m_order_max,ti,h,x0,f_max);
 
                 int k=0;
-                while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
+                while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2)))
+                {
 
-                    if((h*h>m_maxstep_events*m_maxstep_events)&&(m_maxstep_events>0.0)){
-                        if(h>=0.0){
+                    if((h*h>m_maxstep_events*m_maxstep_events)&&(m_maxstep_events>0.0))
+                    {
+                        if(h>=0.0)
                             h=m_maxstep_events;
-                        }
-                        else{
+                        else
                             h=-m_maxstep_events;  
-                        }   
                         m_initializer->initialize(m_order_max,t,h,x,f_max);
                     }  
 
-                    if(sqrt(pow(tend-t,2))<sqrt(h*h)){
+                    if(sqrt(pow(tend-t,2))<sqrt(h*h))
+                    {
                         h=tend-t;
                         m_initializer->initialize(m_order_max,t,h,x,f_max); 
                     }
@@ -153,47 +178,51 @@ namespace smartmath
                     value=evaluate_squarerootintegrationerror(er);
                     factor=pow(m_tol/value,1.0/(double(m)+1.0));
                     if(value>m_tol){ // unsucessful step
-                        if(m<m_order_max){
+                        if(m<m_order_max)
+                        {
                             mold=m;
                             m++;
                             //std::cout << "increasing order" << std::endl;
                         }
-                        else{               
+                        else
+                        {               
                             h*=0.9*factor;          
                             m_initializer->initialize(m_order_max,t,h,x,f_max);
                             //std::cout << "decreasing time-step" << std::endl; 
                         }
                     }
-                    else{ // sucessful step
+                    else
+                    { // sucessful step
                         /* Checking for the events */
                         if(m_event_list.size()==0)
-                        {
                             events2=g(xp,t+h);
-                        }
-                        else{
+                        else
+                        {
                             for(unsigned int index = 0; index < q; ++index)
-                            {
                                 events2[index] = m_event_list[index]->evaluate(t+h, xp);
-                            }
                         }                       
                         i=0;
                         check=0;        
-                        while(i<q){
-                            if(events2[i]-events[i]!=0){
+                        while(i<q)
+                        {
+                            if(events2[i]-events[i]!=0)
+                            {
                                 check=1;
                                 i=q;
                             }
-                            else{
+                            else
                                 i++;
-                            }
                         }
-                        if(check==1){
-                            if(sqrt(h*h)>m_minstep_events){
+                        if(check==1)
+                        {
+                            if(sqrt(h*h)>m_minstep_events)
+                            {
                                 h*=0.5;
                                 m_initializer->initialize(m_order_max,t,h,x,f_max);
                                 //std::cout << "decreasing time-step for event detection" << std::endl;
                             }
-                            else{
+                            else
+                            {
                                 tend=t+h; // saving the termination time    
                                 t=tend; // trick to get out of the while loop   
                                 x_history.push_back(xp);
@@ -202,7 +231,8 @@ namespace smartmath
                                     std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << k << " steps" << std::endl;
                             }
                         }
-                        else{
+                        else
+                        {
                             k++; // counting the number of steps
                             x=xp; // updating state
                             t+=h; // updating current time  
@@ -220,20 +250,22 @@ namespace smartmath
                                 }
                             }                             
                             /* Step-size and order control */
-                            if((m>m_order_min)&&(mold!=m-1)){
+                            if((m>m_order_min)&&(mold!=m-1))
+                            {
                                 mold=m;
                                 m--;
                                 //std::cout << "decreasing order" << std::endl;
                             }
-                            else if((m==m_order_min)&&(factor>=2.0)){
-                                if(factor>m_multiplier){
+                            else if((m==m_order_min)&&(factor>=2.0))
+                            {
+                                if(factor>m_multiplier)
                                     factor=m_multiplier;
-                                }   
                                 h*=factor; // updating step-size
                                 m_initializer->initialize(m_order_max,t,h,x,f_max);
                                 //std::cout << "increasing time-step" << std::endl;
                             }
-                            else{
+                            else
+                            {
                                 //std::cout << "keeping both time-step and order constant" << std::endl;
                             }
                             //std::cout << k << std::endl;
@@ -268,7 +300,8 @@ namespace smartmath
                 half_step(m,h,x0,f,m_gamma_Bashforth,x); // prediction
 
                 std::vector<std::vector<T> > fp=f;
-                for(int j=0; j<m-1; j++){
+                for(int j=0; j<m-1; j++)
+                {
                     fp[j]=f[j+1];
                 }
                 m_dyn->evaluate(t+h, x, dx);
@@ -308,11 +341,11 @@ namespace smartmath
                     for(int j=0; j<m-1; j++)
                         fp.push_back(f[j]);
                     backward_differences(fp,m-1,Dfp); // recursive call
-                    for(int j=1; j<m; j++){
+                    for(int j=1; j<m; j++)
+                    {
                         Df.push_back(Df[j-1]);
-                        for(int i=0; i<f[0].size(); i++){
+                        for(int i=0; i<f[0].size(); i++)
                             Df[j][i]-=Dfp[j-1][i];
-                        }
                     }
                 }
 
@@ -327,7 +360,8 @@ namespace smartmath
              * @param[in] m order
              * @param[in] h step-size
              * @param[in] x0 vector of initial states
-             * @param[in] Df vector of finite differences vectors            
+             * @param[in] f vector of saved state vectors    
+             * @param[in] gamma coefficients for predictor/corrector          
              * @param[out] xfinal vector of final states
              * @return
              */
@@ -340,10 +374,10 @@ namespace smartmath
                 backward_differences(f,m,Df);
 
                 xfinal=x0;
-                for(int i=0; i<x0.size(); i++){
-                    for(int j=0; j<m; j++){     
+                for(int i=0; i<x0.size(); i++)
+                {
+                    for(int j=0; j<m; j++)   
                         xfinal[i]+=h*gamma[j]*Df[j][i];
-                    }
                 }
 
                 return 0;
