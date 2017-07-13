@@ -38,7 +38,7 @@ namespace smartmath
              * @param dyn pointer to a Hamiltonian dynamics with mixted variables
              * @param stages integer stating the number of integration stages in one step
              */
-            symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn, const int &stages): base_symplectic<T>(name, dyn, stages), m_mix(dyn){}
+            symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn, const int &stages): base_symplectic<T>(name, NULL, stages), m_mix(dyn){}
 
             /**
              * @brief ~symplectic_mixedvar deconstructor
@@ -56,21 +56,18 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+            int integration_step(const double &ti, const double &tau, const std::vector<T> &q0, const std::vector<T> &p0, std::vector<T> &qf, std::vector<T> &pf) const{
 
                 /* sanity checks */
-                if(x0.size() != 2 * m_mix->get_dim())
-                    smartmath_throw("INTEGRATION_STEP: state vector must have consistent dimension with Hamiltonian system");     
+                if(q0.size() != m_mix->get_dim())
+                    smartmath_throw("INTEGRATION_STEP: position vector must have consistent dimension with Hamiltonian system");               
+                if(p0.size() != m_mix->get_dim())
+                    smartmath_throw("INTEGRATION_STEP: momentum vector must have consistent dimension with Hamiltonian system");     
 
-                /* reconstituting the initial canonical variables from the state vector */
-                std::vector<T> q0, p0;
                 int n = m_mix->get_dim();
-                for(int i = 0; i < n; i++)
-                {
-                    q0.push_back(x0[i]);
-                    p0.push_back(x0[i + n]);
-                }
                 std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
+                qf = q0;
+                pf = p0;                
 
                 /* performing the integration step per se using the precomputed coefficients */
                 for(int j = 0; j < m_stages; j++)
@@ -79,39 +76,32 @@ namespace smartmath
                     if(m_c[j] != 0.0)
                     { // drift with second set of coordinates
                         
-                        m_mix->conversion(q, p, q0, p0);
-                        q = q0;
-                        p = p0;                        
+                        m_mix->conversion(qf, pf, q, p);
+                        qf = q;
+                        pf = p;                        
 
-                        m_mix->DHp2(ti, q0, p0, dp);
+                        m_mix->DHp2(ti, q, p, dp);
                         for(int i = 0; i < n; i++)
-                            q[i] += m_c[j] * tau * dp[i];
+                            qf[i] += m_c[j] * tau * dp[i];
 
-                        m_mix->conversion2(q, p, q0, p0);
-                        q = q0;
-                        p = p0;
+                        m_mix->conversion2(qf, pf, q, p);
+                        qf = q;
+                        pf = p;
 
                     }
 
                     if(m_d[j] != 0.0)
                     { // kick with first set of coordinates
                         
-                        m_mix->DHq(ti, q0, p0, dq);
+                        m_mix->DHq(ti, q, p, dq);
                         for(int i = 0; i < n; i++)
-                            p[i] -= m_d[j] * tau * dq[i];
-                        
-                        p0 = p;
+                            pf[i] -= m_d[j] * tau * dq[i];
+
+                        p = pf;
 
                     }       
 
                 }
-
-                /* reconstituting the final state vector from the propagated canonical variables */
-                xfinal.clear();
-                for(int i = 0; i < n; i++)
-                    xfinal.push_back(q[i]);
-                for(int i = 0; i < n; i++)
-                    xfinal.push_back(p[i]);
                                
                 return 0;
             }
@@ -131,18 +121,39 @@ namespace smartmath
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
 
+                /* sanity checks */
+                if(x0.size() != 2 * m_mix->get_dim())
+                    smartmath_throw("INTEGRATION: state vector must have consistent dimension with Hamiltonian system"); 
+
                 t_history.clear();
                 x_history.clear();
 
-                std::vector<T> dx = x0, x = x0, x_temp = x0;
-
                 double t = ti, h = (tend-ti) / nsteps;
+
+                std::vector<T> x = x0;
+
+                /* splitting the initial state vector */
+                T zero = 0.0 * x0[0];
+                std::vector<T> q0(3, zero), p0(3, zero);
+                int n = m_mix->get_dim();
+                for(int j = 0; j < n; j++)
+                {
+                    q0[j] = x0[j];
+                    p0[j] = x0[j + n];
+                }
+                std::vector<T> q = q0, p = p0;
 
                 for(int i = 0; i < nsteps; i++)
                 {
-                    integration_step(t, h, x, x_temp);
+                    integration_step(t, h, q0, p0, q, p);
                     t += h;
-                    x = x_temp;
+                    q0 = q;
+                    p0 = p;
+                    for(int j = 0; j < n; j++)
+                    {
+                        x[j] = q0[j];
+                        x[j + n] = p0[j];
+                    }                    
                     t_history.push_back(t);
                     x_history.push_back(x);
                 }
