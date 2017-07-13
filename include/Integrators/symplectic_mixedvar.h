@@ -52,8 +52,10 @@ namespace smartmath
              * final time, initial state condition(constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] tau time step
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
+             * @param[in] q0 vector of initial coordinates
+             * @param[in] p0 vector of initial momenta
+             * @param[out] qf vector of final coordinates
+             * @param[out] pf vector of final momenta
              * @return
              */
             int integration_step(const double &ti, const double &tau, const std::vector<T> &q0, const std::vector<T> &p0, std::vector<T> &qf, std::vector<T> &pf) const{
