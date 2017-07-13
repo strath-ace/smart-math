@@ -23,21 +23,22 @@ namespace smartmath
          * The symplectic_mixedvar class is a template abstract class. Any integrator using mixed variables needs to inherit from it and implement the method that integrates between to given times, initial state and stepsize
          */
         template < class T >
-        class symplectic_mixedvar: public base_integrator<T>
+        class symplectic_mixedvar: public base_symplectic<T>
         {
 
         public:
 
-            using base_integrator<T>::integrate;
+            using base_symplectic<T>::integrate;
 
             /**
              * @brief symplectic_mixedvar constructor
              *
              * The constructor initializes the name of the integrator and a pointer to the dynamical system to be integrated
              * @param name integrator name
-             * @param dyn pointer to a base_dynamics object
+             * @param dyn pointer to a Hamiltonian dynamics with mixted variables
+             * @param stages integer stating the number of integration stages in one step
              */
-            symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn): base_integrator<T>(name, NULL), m_ham(dyn){}
+            symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn, const int &stages): base_symplectic<T>(name, dyn, stages), m_mix(dyn){}
 
             /**
              * @brief ~symplectic_mixedvar deconstructor
@@ -55,13 +56,71 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            virtual int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const = 0;
+            int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
+
+                /* sanity checks */
+                if(x0.size() != 2 * m_mix->get_dim())
+                    smartmath_throw("INTEGRATION_STEP: state vector must have consistent dimension with Hamiltonian system");     
+
+                /* reconstituting the initial canonical variables from the state vector */
+                std::vector<T> q0, p0;
+                int n = m_mix->get_dim();
+                for(int i = 0; i < n; i++)
+                {
+                    q0.push_back(x0[i]);
+                    p0.push_back(x0[i + n]);
+                }
+                std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
+
+                /* performing the integration step per se using the precomputed coefficients */
+                for(int j = 0; j < m_stages; j++)
+                {
+
+                    if(m_c[j] != 0.0)
+                    { // drift with second set of coordinates
+                        
+                        m_mix->conversion(q, p, q0, p0);
+                        q = q0;
+                        p = p0;                        
+
+                        m_mix->DHp2(ti, q0, p0, dp);
+                        for(int i = 0; i < n; i++)
+                            q[i] += m_c[j] * tau * dp[i];
+
+                        m_mix->conversion2(q, p, q0, p0);
+                        q = q0;
+                        p = p0;
+
+                    }
+
+                    if(m_d[j] != 0.0)
+                    { // kick with first set of coordinates
+                        
+                        m_mix->DHq(ti, q0, p0, dq);
+                        for(int i = 0; i < n; i++)
+                            p[i] -= m_d[j] * tau * dq[i];
+                        
+                        p0 = p;
+
+                    }       
+
+                }
+
+                /* reconstituting the final state vector from the propagated canonical variables */
+                xfinal.clear();
+                for(int i = 0; i < n; i++)
+                    xfinal.push_back(q[i]);
+                for(int i = 0; i < n; i++)
+                    xfinal.push_back(p[i]);
+                               
+                return 0;
+            }
 
             /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
-             * The method implements a fixed-step symplectic scheme with mixed variables to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize) returning the full history of propagation
+             * The method implements a fixed-step symplectic scheme to integrate with given initial time,
+             * final time, initial state condition and number of steps (constant stepsize)
              * @param[in] ti initial time instant
              * @param[in] tend final time instant
              * @param[in] nsteps number of integration steps
@@ -71,10 +130,6 @@ namespace smartmath
              * @return
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
-
-                /* sanity checks */
-                if(x0.size() != 2 * m_ham->get_dim())
-                    smartmath_throw("INTEGRATE: state vector must have consistent dimension with Hamiltonian system");
 
                 t_history.clear();
                 x_history.clear();
@@ -96,11 +151,14 @@ namespace smartmath
             }
 
         protected:
-            using base_integrator<T>::m_name;
+            using base_symplectic<T>::m_name;
+            using base_symplectic<T>::m_c;
+            using base_symplectic<T>::m_d;
+            using base_symplectic<T>::m_stages;
             /**
-             * @brief m_ham pointer to Hamiltonian dynamics with mixed variables
+             * @brief m_mix pointer to Hamiltonian dynamics with mixed variables
              */            
-            const dynamics::hamiltonian_mixedvar<T> *m_ham;
+            const dynamics::hamiltonian_mixedvar<T> *m_mix;
 
         };
     }

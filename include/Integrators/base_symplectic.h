@@ -35,7 +35,7 @@ namespace smartmath
              *
              * The constructor initialize the name of the integrator, a pointer to the dynamical system to be integrated and the number of stages of the integration
              * @param name integrator name
-             * @param dyn pointer to a base_dynamics object
+             * @param dyn pointer to a Hamiltonian dynamics
              * @param stages integer stating the number of integration stages in one step
              */
             base_symplectic(const std::string &name, const dynamics::base_hamiltonian<T> *dyn, const int &stages): base_integrator<T>(name, NULL), m_ham(dyn), m_stages(stages){}
@@ -117,10 +117,6 @@ namespace smartmath
              * @return
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
-
-                /* sanity checks */
-                if(x0.size() != 2 * m_ham->get_dim())
-                    smartmath_throw("INTEGRATE: state vector must have consistent dimension with Hamiltonian system"); 
 
                 t_history.clear();
                 x_history.clear();

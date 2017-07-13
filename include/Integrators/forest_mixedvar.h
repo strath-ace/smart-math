@@ -28,10 +28,9 @@ namespace smartmath
 
         protected:
             using symplectic_mixedvar<T>::m_ham;
-            /**
-             * @brief m_beta numerical parameter used in integration step
-             */ 
-            double m_beta;
+            using symplectic_mixedvar<T>::m_stages;
+            using symplectic_mixedvar<T>::m_c; 
+            using symplectic_mixedvar<T>::m_d;              
 
         public:
 
@@ -41,14 +40,26 @@ namespace smartmath
              * The constructor initializes a pointer to the dynamics to integrate and precomputes a parameter necessary for integration
              * @param dyn Hamiltonian system to integrate
              */
-            forest_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("Forest integrator with mixed variables", dyn){
+            forest_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn) : symplectic_mixedvar<T>("Forest integrator with mixed variables", dyn, 4){
                 
                 /* sanity checks */
                 if(dyn->is_separable() == false)
                     smartmath_throw("FOREST_MIXEDVAR: symplectic integrator cannot operate on non-separable Hamiltonian");
 
                 double beta = pow(2.0, 1.0 / 3.0);
-                m_beta = beta;
+
+                std::vector<double> c(m_stages), d(m_stages);
+                c[0] = 0.5 / (2.0 - beta);
+                d[0] = 1.0 / (2.0 - beta); 
+                c[1] = 0.5 * (1.0 - beta) / (2.0 - beta);
+                d[1] = - beta / (2.0 - beta); 
+                c[2] = 0.5 * (1.0 - beta) / (2.0 - beta);
+                d[2] = 1.0 / (2.0 - beta); 
+                c[3] = 0.5 / (2.0 - beta);
+                d[3] = 0.0;
+
+                m_c = c;
+                m_d = d;                
 
             }
 
@@ -56,104 +67,6 @@ namespace smartmath
              * @brief ~forest_mixedvar deconstructor
              */
             ~forest_mixedvar(){}
-
-
-            /**
-             * @brief integration_step performs one integration step from the Forest scheme with mixed variables
-             *
-             * The method implements one step of the Forest algorithm with mixed variables to integrate with given initial time,
-             * final time, initial state condition(constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tau time step
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-
-                /* sanity checks */
-                if(x0.size() != 2 * m_ham->get_dim())
-                    smartmath_throw("INTEGRATION_STEP: state vector must have consistent dimension with Hamiltonian system");
-                if(xfinal.size() != x0.size())
-                    smartmath_throw("INTEGRATION_STEP: initial and final states must have same dimension");      
-
-                std::vector<T> q0, p0;
-                int n = m_ham->get_dim();
-                for(int i = 0; i < n; i++)
-                {
-                    q0.push_back(x0[i]);
-                    p0.push_back(x0[i + n]);
-                }
-                std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
-
-                m_ham->conversion(q, p, q0, p0);
-                q = q0;
-                p = p0;                
-                
-                m_ham->DHp2(ti, q0, p0, dp);
-                for(int i = 0; i < n; i++)
-                    q[i] += tau * dp[i] * 0.5 / (2.0 - m_beta);
-
-                m_ham->conversion2(q, p, q0, p0);
-                q = q0;
-                p = p0; 
-
-                m_ham->DHq(ti, q, p0, dq);
-                for(int i = 0; i < n; i++)
-                    p[i] -= tau * dq[i] * 1.0 / (2.0 - m_beta); 
-
-                m_ham->conversion(q, p, q0, p0);
-                q = q0;
-                p = p0; 
-
-                m_ham->DHp2(ti, q0, p0, dp);
-                for(int i = 0; i < n; i++)
-                    q[i] += tau * dp[i] * 0.5 * (1.0 - m_beta) / (2.0 - m_beta);
-
-                m_ham->conversion2(q, p, q0, p0);
-                q = q0;
-                p = p0; 
-
-                m_ham->DHq(ti, q, p0, dq);
-                for(int i = 0; i < n; i++)
-                    p[i] -= tau * dq[i] * (- m_beta / (2.0 - m_beta)); 
-
-                m_ham->conversion(q, p, q0, p0);
-                q = q0;
-                p = p0; 
-
-                m_ham->DHp2(ti, q0, p0, dp);
-                for(int i = 0; i < n; i++)
-                    q[i] += tau * dp[i] * 0.5 * (1.0 - m_beta) / (2.0 - m_beta);
-
-                m_ham->conversion2(q, p, q0, p0);
-                q = q0;
-                p = p0; 
-
-                m_ham->DHq(ti, q, p0, dq);
-                for(int i = 0; i < n; i++)
-                    p[i] -= tau * dq[i] * 1.0 / (2.0 - m_beta); 
-
-                m_ham->conversion(q, p, q0, p0);
-                q = q0;
-                p = p0; 
-
-                m_ham->DHp2(ti, q0, p0, dp);
-                for(int i = 0; i < n; i++)
-                    q[i] += tau * dp[i] * 0.5 / (2.0 - m_beta);
-
-                m_ham->conversion2(q, p, q0, p0);
-                q = q0;
-                p = p0;                 
-
-                xfinal.clear();
-                for(int i = 0; i < n; i++)
-                    xfinal.push_back(q[i]);
-                for(int i = 0; i < n; i++)
-                    xfinal.push_back(p[i]);
-                               
-                return 0;
-            }
 
         };
 

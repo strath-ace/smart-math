@@ -28,6 +28,9 @@ namespace smartmath
 
         protected:
             using symplectic_mixedvar<T>::m_ham;
+            using symplectic_mixedvar<T>::m_stages;
+            using symplectic_mixedvar<T>::m_c; 
+            using symplectic_mixedvar<T>::m_d;              
             /**
              * @brief m_flag boolean to chose between drift-kick and kick-drift versions
              */             
@@ -42,109 +45,40 @@ namespace smartmath
              * @param dyn Hamiltonian system to integrate
              * @param flag boolean to know what algorithm to use (kick-drift-kick or drift-kick-drift)
              */
-            leapfrog_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn, const bool &flag) : symplectic_mixedvar<T>("leapfrog integrator with mixed variables", dyn), m_flag(flag){
+            leapfrog_mixedvar(const dynamics::hamiltonian_mixedvar<T> *dyn, const bool &flag) : symplectic_mixedvar<T>("leapfrog integrator with mixed variables", dyn, 3), m_flag(flag){
                 
                 /* sanity checks */
                 if(dyn->is_separable() == false)
                     smartmath_throw("LEAPFROG_MIXEDVAR: symplectic integrator cannot operate on non-separable Hamiltonian");
 
+                std::vector<double> c(m_stages), d(m_stages);
+                if(flag)
+                { //drift-kick-drift
+                    c[0] = 1.0 / 2.0;
+                    d[0] = 0.0;
+                    c[1] = 0.0;
+                    d[1] = 1.0;
+                    c[2] = 1.0 / 2.0;
+                    d[2] = 0.0;                                       
+                }
+                else
+                { //kick-drift-kick
+                    c[0] = 0.0;
+                    d[0] = 1.0 / 2.0;
+                    c[1] = 1.0;
+                    d[1] = 0.0;
+                    c[2] = 0.0;
+                    d[2] = 1.0 / 2.0; 
+                }
+                m_c = c;
+                m_d = d;
+                
             }
 
             /**
              * @brief ~leapfrog_mixedvar deconstructor
              */
             ~leapfrog_mixedvar(){}
-
-
-            /**
-             * @brief integration_step performs one integration step from the leapfrog for mixed variables
-             *
-             * The method implements one step of the leapfrog with mixed variables to integrate with given initial time,
-             * final time, initial state condition(constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tau time step
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integration_step(const double &ti, const double &tau, const std::vector<T> &x0, std::vector<T> &xfinal) const{
-
-                /* sanity checks */
-                if(x0.size() != 2 * m_ham->get_dim())
-                    smartmath_throw("BASE_SYMPLECTIC: state vector must have consistent dimension with Hamiltonian system");
-                if(xfinal.size() != x0.size())
-                    smartmath_throw("BASE_SYMPLECTIC: initial and final states must have same dimension");      
-                
-                std::vector<T> q0, p0;
-                int n = m_ham->get_dim();
-                for(int i = 0; i < n; i++)
-                {
-                    q0.push_back(x0[i]);
-                    p0.push_back(x0[i + n]);
-                }
-                std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
-
-                if(m_flag)
-                { // drift-kick-drift
-                    m_ham->conversion(q, p, q0, p0);
-                    q = q0;
-                    p = p0;
-
-                    m_ham->DHp2(ti, q0, p0, dp);
-                    for(int i = 0; i < n; i++)
-                        q[i] += tau * dp[i] / 2.0;
-
-                    m_ham->conversion2(q, p, q0, p0);
-                    q = q0;
-                    p = p0;
-                    
-                    m_ham->DHq(ti, q, p0, dq);
-                    for(int i = 0; i < n; i++)
-                        p[i] -= tau * dq[i];
-
-                    m_ham->conversion(q, p, q0, p0);
-                    q = q0;
-                    p = p0; 
-
-                    m_ham->DHp2(ti, q0, p0, dp);
-                    for(int i = 0; i < n; i++)
-                        q[i] += tau * dp[i] / 2.0;
-
-                    m_ham->conversion2(q, p, q0, p0);
-                    q = q0;
-                    p = p0; 
-                }
-                else
-                { // kick-drift-kick
-                    m_ham->DHq(ti, q, p0, dq);
-                    for(int i = 0; i < n; i++)
-                        p[i] -= tau * dq[i] / 2.0;
-
-                    m_ham->conversion(q, p, q0, p0);
-                    q = q0;
-                    p = p0;
-                    
-                    m_ham->DHp2(ti, q0, p0, dp);
-                    for(int i = 0; i < n; i++)
-                        q[i] += tau * dp[i];
-
-                    m_ham->conversion2(q, p, q0, p0);
-                    q = q0;
-                    p = p0; 
-
-                    m_ham->DHq(ti, q, p0, dq);
-                    for(int i = 0; i < n; i++)
-                        p[i] -= tau * dq[i] / 2.0;  
-                }
-
-                xfinal.clear();
-                for(int i = 0; i < n; i++)
-                    xfinal.push_back(q[i]);
-                for(int i = 0; i < n; i++)
-                    xfinal.push_back(p[i]);
-                               
-                return 0;
-            }
 
         };
 
