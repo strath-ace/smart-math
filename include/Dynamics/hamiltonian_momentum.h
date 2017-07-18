@@ -33,12 +33,12 @@ namespace smartmath
              /**
              * @brief hamiltonian_momentum constructor
              *
-             * The constructor initialize the name of the Hamiltonian dynamics, its half-dimension and a flag about its separability
+             * The constructor initializes the name of the Hamiltonian dynamics, its half-dimension and a flag about its separability
              * @param name integrator name
              * @param dim half-order of the Hamiltonian system
              * @param separable boolean precising whether the system is separable or not
              */
-            hamiltonian_momentum(const std::string &name, const int &dim, const bool &separable): base_hamiltonian<T>(name, dim, separable){}
+            hamiltonian_momentum(const std::string &name, const int &dim, const bool &separable = false): base_hamiltonian<T>(name, dim, separable){}
 
             /**
              * @brief ~hamiltonian_momentum deconstructor

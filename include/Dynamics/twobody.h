@@ -41,7 +41,7 @@ namespace smartmath
             /**
              * @brief twobody constructor
              *
-             * The constructor initialize the problem parameters and scaling factors to the value supplied by the user.
+             * The constructor initializes the problem parameters and scaling factors to the value supplied by the user.
              * The model parameters (10 in total) are supplied in order as:
              * - param 1-3: thrust value alng each direction
              * - param 4: \f$\alpha\f$

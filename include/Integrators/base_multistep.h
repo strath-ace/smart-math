@@ -41,7 +41,7 @@ namespace smartmath
             /**
              * @brief base_multistep constructor
              *
-             * The constructor initialize the name of the integrator and a pointer to the dynamical system to be integrated
+             * The constructor initializes the name of the integrator and a pointer to the dynamical system to be integrated
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              * @param order number of saved steps

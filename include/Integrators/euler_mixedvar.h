@@ -41,7 +41,7 @@ namespace smartmath
             /**
              * @brief euler_mixedvar constructor
              *
-             * The constructor initialize a pointer to the dynamics to integrate and a flag to decide on the integration scheme to use
+             * The constructor initializes a pointer to the dynamics to integrate and a flag to decide on the integration scheme to use
              * @param dyn Hamiltonian system to integrate
              * @param flag boolean to know what algorithm to use (kick-drift-kick or drift-kick-drift)
              */

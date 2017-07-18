@@ -39,7 +39,7 @@ namespace smartmath
             /**
              * @brief base_multistep constructor
              *
-             * The constructor initialize the name of the integrator and a pointer to the dynamical system to be integrated
+             * The constructor initializes the name of the integrator and a pointer to the dynamical system to be integrated
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              * @param order number of saved steps
@@ -110,7 +110,6 @@ namespace smartmath
                 x_history.clear();
 
                 std::vector<T> x(x0),xp(x0);
-                std::vector<std::vector<T> > f;
                 double t=ti, H = (tend-ti)/nsteps;
 
                 for(int k=0; k<nsteps; k++){
@@ -142,17 +141,20 @@ namespace smartmath
                 /* sanity checks */
                 if(n < 2)
                     smartmath_throw("MID_POINT: number of micro-steps needs to be higher or equal to 2"); 
+                if(floor(double(n) / 2.0) != double(n) / 2.0)
+                    smartmath_throw("MID_POINT: number of micro-steps has to be even");                 
 
+                unsigned int s = y.size();
                 std::vector<T> f = y, u0 = y, u1 = y;
                 double h = H / double(n), h2 = 2.0 * h;
 
                 m_dyn->evaluate(t, y, f);
-                for(unsigned int j = 0; j < y.size(); j++)
+                for(unsigned int j = 0; j < s; j++)
                     u1[j] += h * f[j];
 
                 std::vector<T> u2 = u0;
                 m_dyn->evaluate(t + h, u1, f);
-                for(unsigned int j = 0; j < y.size(); j++)
+                for(unsigned int j = 0; j < s; j++)
                     u2[j] += h2 * f[j];
 
                 std::vector<T> v = y, w = y;
@@ -161,7 +163,7 @@ namespace smartmath
                     v = u2;
                     u2 = u1;
                     m_dyn->evaluate(t + i * h, v, f);
-                    for(unsigned int j = 0; j < y.size(); j++)
+                    for(unsigned int j = 0; j < s; j++)
                         u2[j] += h2 * f[j];
                     w = u1;
                     u1 = v;
@@ -169,7 +171,7 @@ namespace smartmath
                 }
 
                 eta = y;
-                for(unsigned int j = 0; j < y.size(); j++)
+                for(unsigned int j = 0; j < s; j++)
                     eta[j] = u0[j] / 4.0 + u1[j] / 2.0 + u2[j] / 4.0;
 
                 // for(unsigned int j = 0; j < y.size(); j++)
@@ -200,9 +202,13 @@ namespace smartmath
              */ 
             int extrapolation(const int &i, const double &H, const std::vector<T> &y, const double &t, std::vector<std::vector<T> > &M) const{
 
+                /* sanity checks */
+                if(i < 1)
+                    smartmath_throw("EXTRAPOLATION: the extrapolation scheme needs to have at least one step"); 
                 
                 double aux1, aux2;
                 std::vector<T> eta = y;
+                unsigned int s = y.size();
 
                 midpoint(y, m_orders[i-1], H, t, eta);
                 M.clear();
@@ -219,7 +225,7 @@ namespace smartmath
                         M.push_back(eta);
                         aux1 = double(m_orders[i-1]) / double(m_orders[i-1-j]);
                         aux2 = aux1 * aux1 - 1.0;
-                        for(unsigned int k = 0; k < y.size(); k++)
+                        for(unsigned int k = 0; k < s; k++)
                             M[j][k] += (eta[k] - Mp[j-1][k]) / aux2;
                     }
                 }

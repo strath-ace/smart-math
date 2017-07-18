@@ -41,7 +41,7 @@ namespace smartmath
             /**
              * @brief euler_symplectic constructor
              *
-             * The constructor initialize a pointer to the dynamics to integrate and a flag to decide on the integration scheme to use
+             * The constructor initializes a pointer to the dynamics to integrate and a flag to decide on the integration scheme to use
              * @param dyn Hamiltonian system to integrate
              * @param flag boolean to know what algorithm to use (drift-kick or kick-drift)
              */

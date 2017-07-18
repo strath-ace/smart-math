@@ -38,7 +38,7 @@ namespace smartmath
             /**
              * @brief spring constructor
              *
-             * The constructor initialize the problem parameters and scaling factors to the value supplied by the user.
+             * The constructor initializes the problem parameters and scaling factors to the value supplied by the user.
              * Default values for scaling factors are 1 and parameters is a vector of zero values or zero polynomials.
              * @param k elastic coefficient of the spring
              * @param t_scale time scaling factor

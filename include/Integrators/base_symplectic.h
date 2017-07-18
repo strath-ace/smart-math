@@ -33,7 +33,7 @@ namespace smartmath
             /**
              * @brief base_integrator constructor
              *
-             * The constructor initialize the name of the integrator, a pointer to the dynamical system to be integrated and the number of stages of the integration
+             * The constructor initializes the name of the integrator, a pointer to the dynamical system to be integrated and the number of stages of the integration
              * @param name integrator name
              * @param dyn pointer to a Hamiltonian dynamics
              * @param stages integer stating the number of integration stages in one step

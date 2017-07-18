@@ -35,7 +35,7 @@ namespace smartmath
             /**
              * @brief base_integrator constructor
              *
-             * The constructor initialize the name of the integrator and a pointer to the dynamical system to eb integrated
+             * The constructor initializes the name of the integrator and a pointer to the dynamical system to eb integrated
              * @param name integrator name
              * @param dyn pointer to a base_dynamics object
              */
