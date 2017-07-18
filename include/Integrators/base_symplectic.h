@@ -116,7 +116,7 @@ namespace smartmath
                 t_history.clear();
                 x_history.clear();
 
-                double t = ti, h = (tend-ti) / nsteps;
+                double t = ti, h = (tend-ti) / double(nsteps);
 
                 std::vector<T> x = x0;
 

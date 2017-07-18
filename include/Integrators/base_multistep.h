@@ -88,7 +88,7 @@ namespace smartmath
 
                 std::vector<T> x(x0),xp(x0);
                 std::vector<std::vector<T> > f;
-                double t=ti, h = (tend-ti)/nsteps;
+                double t=ti, h = (tend-ti)/double(nsteps);
 
                 initialize(m_order,ti,h,x0,f);
 

@@ -133,7 +133,7 @@ namespace smartmath
                 std::vector<std::vector<T> > f_max, f;
                 T er;
                 int m=m_order_min, mold=m_order_min;
-                double t=ti, h = (tend-ti)/nsteps;
+                double t=ti, h = (tend-ti)/double(nsteps);
                 double value;
 
                 std::vector<int> events, events2;

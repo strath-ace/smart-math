@@ -77,7 +77,7 @@ namespace smartmath
              */
             int integration_step(const double &ti, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const{
 		
-		        int n = x0.size();
+		        unsigned int n = x0.size();
 		        std::vector<T> k1(x0), k2(x0), k3(x0), k4(x0), k5(x0), k6(x0), xbar(x0), xtemp(x0);
 		        double t1, t2, t3, t4, t5, t6;
                 xfinal=x0;
@@ -93,33 +93,33 @@ namespace smartmath
 		        m_dyn->evaluate(t1, x0, k1);
 
 		        //* Evaluate k2 
-		        for(int j=0; j<n; j++)
+		        for(unsigned int j=0; j<n; j++)
 		            xtemp[j] = x0[j]+k1[j]*h/4.0;
 		        m_dyn->evaluate(t2, xtemp, k2);
 
 		        //* Evaluate k3 
-		        for(int j=0; j<n; j++)
+		        for(unsigned int j=0; j<n; j++)
 		            xtemp[j] = x0[j]+k1[j]*h*3.0/32.0+k2[j]*h*9.0/32.0;
 		        m_dyn->evaluate(t3, xtemp, k3);
 
 		        //* Evaluate k4 
-		        for(int j=0; j<n; j++)
+		        for(unsigned int j=0; j<n; j++)
 		            xtemp[j] = x0[j]+k1[j]*h*1932.0/2197.0-k2[j]*h*7200.0/2197.0+k3[j]*h*7296.0/2197.0;
 		        m_dyn->evaluate(t4, xtemp, k4);
 
 		        //* Evaluate k5
-		        for(int j=0; j<n; j++)
+		        for(unsigned int j=0; j<n; j++)
 		            xtemp[j] = x0[j]+k1[j]*h*439.0/216.0-k2[j]*h*8.0+k3[j]*h*3680.0/513.0-k4[j]*h*845.0/4104.0;
 		        m_dyn->evaluate(t5, xtemp, k5);
 
 		        //* Evaluate k6
-		        for(int j=0; j<n; j++)
+		        for(unsigned int j=0; j<n; j++)
 		            xtemp[j] = x0[j]-k1[j]*h*8.0/27.0+k2[j]*h*2.0-k3[j]*h*3544.0/2565.0+k4[j]*h*1859.0/4104.0-k5[j]*h*11.0/40.0;
 		        m_dyn->evaluate(t6, xtemp, k6);
 
 		        //* Return x(t+h) computed from fourth-order Runge Kutta.
 		        er=0.0*x0[0];
-		        for(int j=0; j<n; j++)
+		        for(unsigned int j=0; j<n; j++)
                 {
 		            xbar[j] += (k1[j]*16.0/135.0+k3[j]*6656.0/12825.0+k4[j]*28561.0/56430.0-k5[j]*9.0/50.0+k6[j]*2.0/55.0)*h;
 		            xfinal[j] += (k1[j]*25.0/216.0+k3[j]*1408.0/2565.0+k4[j]*2197.0/4104.0-k5[j]/5.0)*h;

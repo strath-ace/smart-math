@@ -110,7 +110,7 @@ namespace smartmath
                 x_history.clear();
 
                 std::vector<T> x(x0),xp(x0);
-                double t=ti, H = (tend-ti)/nsteps;
+                double t=ti, H = (tend-ti)/double(nsteps);
 
                 for(int k=0; k<nsteps; k++){
 
@@ -230,17 +230,21 @@ namespace smartmath
                     }
                 }
 
-                // std::cout << std::endl;
-                // std::cout << "y0: " << std::endl;
-                // for(unsigned int j = 0; j < y.size(); j++)
-                //         std::cout << y[j] << " ";
-                // std::cout << std::endl;
-
-                // for(unsigned int i = 0; i < M.size(); i++)
+                // if(i == 1)
                 // {
                 //     std::cout << std::endl;
-                //     for(unsigned int j = 0; j < y.size(); j++)
-                //         std::cout << M[i][j] << " ";
+                //     std::cout << "y0: " << std::endl;
+                //     for(unsigned int j = 0; j < s; j++)
+                //             std::cout << y[j] << " ";
+                //     std::cout << std::endl;
+                // }
+
+                // std::cout << M.size() << std::endl;
+                // for(unsigned int l = 0; l < M.size(); l++)
+                // {
+                //     for(unsigned int k = 0; k < s; k++)
+                //         std::cout << M[l][k] << " ";
+                //     std::cout << std::endl;
                 // }
                 // std::cout << std::endl;
 

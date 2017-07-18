@@ -166,7 +166,7 @@ namespace smartmath
 
                 std::vector<T> dx=x0, x=x0, x_temp=x0;
 
-                double t=ti, h = (tend-ti)/nsteps;
+                double t=ti, h = (tend-ti)/double(nsteps);
 
                 for(int i=0; i<nsteps; i++){
                     integration_step(t,h,x,x_temp);
@@ -199,7 +199,7 @@ namespace smartmath
 
                 Eigen::VectorXd x=x0, x_temp=x0;
 
-                double t=ti, h = (tend-ti)/nsteps;
+                double t=ti, h = (tend-ti)/double(nsteps);
 
                 for(int i=0; i<nsteps; i++){
                     integration_step_eigen(t,h,x,x_temp);

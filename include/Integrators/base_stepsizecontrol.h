@@ -119,7 +119,7 @@ namespace smartmath
                 std::vector<T> x(x0), xtemp(x0);
                 std::vector<std::vector<T> > f;
 
-                double factor=1.0, value=0.0, t=ti, h = (tend-ti)/nsteps;
+                double factor=1.0, value=0.0, t=ti, h = (tend-ti)/double(nsteps);
                 T er=0.0*x0[0];
 
                 std::vector<int> events, events2;
