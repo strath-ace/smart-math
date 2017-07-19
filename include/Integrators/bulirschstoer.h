@@ -56,18 +56,18 @@ namespace smartmath
                     smartmath_throw("bulirschstoer: number of extrapolations needs to be non negative"); 
 
                 /* defining Bulirsch sequence */
-                std::vector<int> orders(m_extrapol);
-                orders[0] = 2;
+                std::vector<int> sequence(m_extrapol);
+                sequence[0] = 2;
                 if(m_extrapol > 1)
-                    orders[1] = 4;
+                    sequence[1] = 4;
                 if(m_extrapol > 2)
-                    orders[2] = 6;
+                    sequence[2] = 6;
                 if(m_extrapol > 3)
                 {
                     for(int k = 3; k < m_extrapol; k++)
-                        orders[k] = 2 * orders[k - 2];
+                        sequence[k] = 2 * sequence[k - 2];
                 }
-                m_sequence = orders;
+                m_sequence = sequence;
             }
 
             /**
