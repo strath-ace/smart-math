@@ -10,7 +10,7 @@
 #ifndef SMARTMATH_RKF45_H
 #define SMARTMATH_RKF45_H
 
-#include "base_stepsizecontrol.h"
+#include "base_embeddedRK.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -23,22 +23,22 @@ namespace smartmath
          * The class model the Runge Kutta Felhberg integration scheme
          */
         template < class T >
-        class rkf45: public base_stepsizecontrol<T>
+        class rkf45: public base_embeddedRK<T>
         {
 
         private:
-            using base_stepsizecontrol<T>::m_name;
-            using base_stepsizecontrol<T>::m_dyn;
-            using base_stepsizecontrol<T>::m_tol;
-            using base_stepsizecontrol<T>::m_multiplier;
-            using base_stepsizecontrol<T>::m_control;
-            using base_stepsizecontrol<T>::m_minstep_events;
-            using base_stepsizecontrol<T>::m_maxstep_events;
+            using base_embeddedRK<T>::m_name;
+            using base_embeddedRK<T>::m_dyn;
+            using base_embeddedRK<T>::m_tol;
+            using base_embeddedRK<T>::m_multiplier;
+            using base_embeddedRK<T>::m_control;
+            using base_embeddedRK<T>::m_minstep_events;
+            using base_embeddedRK<T>::m_maxstep_events;
 
         public:
 
-            using base_stepsizecontrol<T>::integrate;
-            using base_stepsizecontrol<T>::dummy_event;
+            using base_embeddedRK<T>::integrate;
+            using base_embeddedRK<T>::dummy_event;
             
             /**
              * @brief rkf45 constructor
@@ -49,7 +49,7 @@ namespace smartmath
              * @param minstep_events minimum time step for events detection
              * @param maxstep_events maximum time step for events detection
              */
-            rkf45(const dynamics::base_dynamics<T> *dyn, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_stepsizecontrol<T>("Runge Kutta 4-5 variable step time", dyn, tol, multiplier, minstep_events, maxstep_events)
+            rkf45(const dynamics::base_dynamics<T> *dyn, const double tol=1.0e-7, const double multiplier=5.0, const double minstep_events=1.0e-4, const double maxstep_events=0.0): base_embeddedRK<T>("Runge Kutta 4-5 variable step time", dyn, tol, multiplier, minstep_events, maxstep_events)
             {
 
                m_control=4.0;
