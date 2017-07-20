@@ -39,6 +39,10 @@ namespace smartmath
              * @brief m_predictor integrator used as predictor (Adam-Bashforth)
              */            
             integrator::AB<T> *m_predictor;
+            /**
+             * @brief m_init boolean defining the type of initializer used by the predictor (true is B-S, false is R-K)
+             */             
+            bool m_init;
 
         public:
 
@@ -51,7 +55,7 @@ namespace smartmath
              * @param dyn pointer to the dynamical system to be integrated
              * @param order order of the method
              */
-            ABM(const dynamics::base_dynamics<T> *dyn, const int order=8): base_multistep<T>("Adam Bashforth Moulton algorithm", dyn, order)
+            ABM(const dynamics::base_dynamics<T> *dyn, const int order=8, const bool init = false): base_multistep<T>("Adam Bashforth Moulton algorithm", dyn, order), m_init(init)
             {
 
                 if((order<2)||(order>8))
@@ -69,7 +73,7 @@ namespace smartmath
                 for(int i=0; i<m_order; i++)
                     m_beta_Moulton.push_back(prebeta[m_order-2][i]);
 
-                m_predictor = new integrator::AB<T>(m_dyn,m_order);
+                m_predictor = new integrator::AB<T>(m_dyn,m_order,m_init);
 
             }
 

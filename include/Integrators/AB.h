@@ -11,6 +11,7 @@
 #define SMARTMATH_AB_H
 
 #include "base_multistep.h"
+#include "bulirschstoer.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -35,9 +36,17 @@ namespace smartmath
              */             
             std::vector<double> m_beta;
             /**
-             * @brief m_initializer Runge-Kutta scheme used to initialize Adam-Bashforth
+             * @brief m_initializerRK Runge-Kutta scheme used to initialize Adam-Bashforth
              */             
-            integrator::rk4<T> *m_initializer;
+            integrator::rk4<T> *m_initializerRK;
+            /**
+             * @brief m_initializerBS Bulirsch-Stoer scheme used to initialize Adam-Bashforth
+             */             
+            integrator::bulirschstoer<T> *m_initializerBS;
+            /**
+             * @brief m_init boolean defining the type of initializer (true is B-S, false is R-K)
+             */             
+            bool m_init;
 
         public:
 
@@ -50,7 +59,7 @@ namespace smartmath
              * @param dyn pointer to the dynamical system to be integrated
              * @param order order of the method
              */
-            AB(const dynamics::base_dynamics<T> *dyn, const int order=8): base_multistep<T>("Adam Bashforth integration scheme", dyn, order)
+            AB(const dynamics::base_dynamics<T> *dyn, const int order=8, const bool init = false): base_multistep<T>("Adam Bashforth integration scheme", dyn, order)
             {
                 if((order<1)||(order>8))
                     smartmath_throw("AB: order must be between 1 and 8");  
@@ -68,7 +77,8 @@ namespace smartmath
                 for(int i=0; i<m_order; i++)
                     m_beta.push_back(prebeta[m_order-1][i]);
 
-                m_initializer = new integrator::rk4<T>(m_dyn);
+                m_initializerRK = new integrator::rk4<T>(m_dyn);
+                m_initializerBS = new integrator::bulirschstoer<T>(m_dyn, (order + 1) / 2);
 
             }
 
@@ -112,7 +122,7 @@ namespace smartmath
             /**
              * @brief initialize method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
-             * The method initializes via RK4 the Adam Bashforth scheme for an integration with step-size h starting at given initial time and conditions 
+             * The method initializes with another integrator the Adam Bashforth scheme for an integration with step-size h starting at given initial time and conditions 
              * @param[in] m order
              * @param[in] ti initial time instant
              * @param[in] h step size
@@ -133,7 +143,10 @@ namespace smartmath
                 double t=ti;
                 for(int j=0; j<m-1; j++)
                 {
-                    m_initializer->integration_step(t,-h,x,xp);
+                    if(m_init)
+                        m_initializerBS->integration_step(t,-h,x,xp);
+                    else
+                        m_initializerRK->integration_step(t,-h,x,xp);
                     t-=h;
                     x=xp;
                     m_dyn->evaluate(t,x,dx);
