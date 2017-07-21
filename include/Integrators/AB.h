@@ -11,6 +11,7 @@
 #define SMARTMATH_AB_H
 
 #include "base_multistep.h"
+#include "rk4.h"
 #include "bulirschstoer.h"
 #include "../exception.h"
 
