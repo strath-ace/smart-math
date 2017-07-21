@@ -129,7 +129,15 @@ namespace smartmath
                 {
                     events=std::vector<int>(m_event_list.size(),0);
                     for(unsigned int index = 0; index < m_event_list.size(); ++index)
+                    {
+                        if(m_event_list[index]->get_status_scope() != NULL)
+                        {
+                            if(*(m_event_list[index]->get_status_scope()) == false)
+                                continue;
+                        }
+                        
                         events[index] = m_event_list[index]->evaluate(ti, x0);
+                    }
                 }
                 events2=events;
                 int m=events.size();           
@@ -163,7 +171,15 @@ namespace smartmath
                         else
                         {
                             for(unsigned int index = 0; index < m; ++index)
+                            {
+                                if(m_event_list[index]->get_status_scope() != NULL)
+                                {
+                                    if(*(m_event_list[index]->get_status_scope()) == false)
+                                        continue;
+                                }
+
                                 events2[index] = m_event_list[index]->evaluate(t+h, xtemp);
+                            }
                         }
                         k=0;
                         check=0;        
