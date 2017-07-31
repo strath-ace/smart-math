@@ -53,7 +53,7 @@ namespace smartmath
 
                 /* sanity checks */
                 if(m_extrapol < 1)
-                    smartmath_throw("bulirschstoer: number of extrapolations needs to be non negative"); 
+                    smartmath_throw("BULIRSCHSTOER: number of extrapolations needs to be non negative"); 
 
                 /* defining Bulirsch sequence */
                 std::vector<int> sequence(m_extrapol);
@@ -146,9 +146,9 @@ namespace smartmath
 
                 /* sanity checks */
                 if(n < 2)
-                    smartmath_throw("MID_POINT: number of micro-steps needs to be higher or equal to 2"); 
+                    smartmath_throw("MIDPOINT: number of micro-steps needs to be higher or equal to 2"); 
                 if(floor(double(n) / 2.0) != double(n) / 2.0)
-                    smartmath_throw("MID_POINT: number of micro-steps has to be even");                 
+                    smartmath_throw("MIDPOINT: number of micro-steps has to be even");                 
 
                 unsigned int s = y.size();
                 std::vector<T> f = y, u0 = y, u1 = y;

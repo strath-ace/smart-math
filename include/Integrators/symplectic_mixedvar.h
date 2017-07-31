@@ -136,8 +136,8 @@ namespace smartmath
 
                 /* splitting the initial state vector */
                 T zero = 0.0 * x0[0];
-                std::vector<T> q0(3, zero), p0(3, zero);
                 int n = m_mix->get_dim();
+                std::vector<T> q0(n, zero), p0(n, zero);
                 for(int j = 0; j < n; j++)
                 {
                     q0[j] = x0[j];

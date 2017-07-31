@@ -111,7 +111,7 @@ namespace smartmath
 
                 /* sanity checks */
                 if(x0.size() != 2 * m_ham->get_dim())
-                    smartmath_throw("INTEGRATION: state vector must have consistent dimension with Hamiltonian system"); 
+                    smartmath_throw("INTEGRATE: state vector must have consistent dimension with Hamiltonian system"); 
 
                 t_history.clear();
                 x_history.clear();
@@ -122,8 +122,8 @@ namespace smartmath
 
                 /* splitting the initial state vector */
                 T zero = 0.0 * x0[0];
-                std::vector<T> q0(3, zero), p0(3, zero);
                 int n = m_ham->get_dim();
+                std::vector<T> q0(n, zero), p0(n, zero);
                 for(int j = 0; j < n; j++)
                 {
                     q0[j] = x0[j];
