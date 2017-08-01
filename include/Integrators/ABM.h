@@ -54,6 +54,7 @@ namespace smartmath
              * The integrator is initialized with the super class constructor. The user can choose the order of the method, the default value being 8 
              * @param dyn pointer to the dynamical system to be integrated
              * @param order order of the method
+             * @param init boolean defining the type of initializer used by the predictor (true is B-S, false is R-K)
              */
             ABM(const dynamics::base_dynamics<T> *dyn, const int order=8, const bool init = false): base_multistep<T>("Adam Bashforth Moulton algorithm", dyn, order), m_init(init)
             {

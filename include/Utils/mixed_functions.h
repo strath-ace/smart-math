@@ -9,16 +9,8 @@
 */
 
 /*! \file mixed_functions.h
-  \brief Test
-  Testing
+  \brief A selection of functions for mathematical purposes
  */ 
-
-/*! \fn double Legendre(int l, int m, double x)
-  \brief Legendre evaluation of associated Legendre polynomials
-  \param l order
-  \param m degree
-  \param x evaluation point
- */
 
 #ifndef SMARTMATH_INLINEFUNCTIONS_H
 #define SMARTMATH_INLINEFUNCTIONS_H
@@ -36,8 +28,16 @@
 namespace smartmath
 {
 
+  /**
+   * @brief ZERO numerical value that can be used to check if a double can be considered as zero or not
+   */  
   const double ZERO = 1.0e-15;
 
+  /**
+   * @brief templated function returning the inverse
+   * @param[in] x point where to evaluate the inverse
+   * @return value of the inverse of x
+   */ 
   template <class T>
   T inverse(T x){
       if(fabs(x)<=ZERO)
@@ -49,9 +49,24 @@ namespace smartmath
   }
 
   //MATH STUFFS
+
+  /**
+   * @brief method computing the factorial recursively
+   * @param[in] n integer whose factorial needs to be computed
+   * @return n!
+   */   
   int factorial(int n);
+
+  /**
+   * @brief method computing (n+k)!/(n!k!)
+   * @param[in] n first input integer 
+   * @param[in] k second input integer 
+   * @return (n+k)!/(n!k!)
+   */   
   int combination(int n, int k);
+
   void rep(std::vector<std::vector<int> > &res, const std::vector<int> &values, std::vector<int> &item, unsigned int count);
+
   void variations(const std::vector<int> values, const int k, std::vector<std::vector<int> > &res);
 
   template < class T >
@@ -63,13 +78,20 @@ namespace smartmath
   }
 
   typedef double (*fun)(double);
+
   double bisection_method(fun f, double lb, double ub, double prec);
 
-
+  /**
+   * @brief Legendre evaluation of associated Legendre functions
+   * @param[in] l order
+   * @param[in] m degree
+   * @param[in] x evaluation point
+   * @return value of Plm at x
+   */  
   double Legendre(int l, int m, double x);
 
   /**
-   * @brief Legendre_derivative evaluation of derivative of associated Legendre polynomials
+   * @brief Legendre_derivative evaluation of derivative of associated Legendre functions
    * @param[in] l order
    * @param[in] m degree
    * @param[in] x evaluation point
@@ -77,7 +99,22 @@ namespace smartmath
    */  
   double Legendre_derivative(int l, int m, double x);
 
+  /**
+   * @brief Lagrange1d evaluation of Lagrange univariate polynomial
+   * @param[in] times vector of interpolation points
+   * @param[in] values vector of interpolated values
+   * @param[in] t point where to evaluate polynomial
+   * @return value at t
+   */  
   double Lagrange1d(std::vector<double> times, std::vector<double> values, double t);
+
+  /**
+   * @brief LagrangeNd evaluation of Lagrange multivariate polynomial
+   * @param[in] times vector of interpolation points
+   * @param[in] values vector of interpolated vectors
+   * @param[in] t point where to evaluate polynomial
+   * @return vector of values at t
+   */ 
   std::vector<double>  LagrangeNd(std::vector<double> times, std::vector<std::vector<double> > values, double t);
 
   int find_PC_bounds_normal_distribution(const Eigen::VectorXd &mean,
