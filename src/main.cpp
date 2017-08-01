@@ -39,7 +39,8 @@ int main(){
     x[0] = 0.1;
     x[1] = 0.01;
 
-    cout << "Initial conditions are: (" << x[0] << ", " << x[1] << "). The corresponding value for the Hamiltonian H is: " << H(x) << endl;
+    cout << "Initial conditions are: (" << x[0] << ", " << x[1] << ")." << endl;
+    cout << "The corresponding value for the Hamiltonian H is: " << H(x) << endl;
 
     double dt = 1.0e5; // time of propagation
     int steps = 1e6; // number of integration steps
@@ -47,7 +48,8 @@ int main(){
     prop1.integrate(0.0, dt, steps, x, x1); // propagation with non-symplectic integrator
     prop2.integrate(0.0, dt, steps, x, x2); // propagation with symplectic integrator
 
-	cout << "Values for H after an elapsed time of " << dt << " are: " << H(x2) << " with symplectic integration and " << H(x1) << " without" << endl;
+    cout << "State after an elapsed time of " << dt << " are: (" << x2[0] << ", " << x2[1] << ") with symplectic integration and (" << x1[0] << ", " << x1[1] << ") without" << endl;
+	cout << "Values for H are respectively " << H(x2) << " and " << H(x1) << endl;
     cout << endl;
 
     delete dyn;
