@@ -36,14 +36,14 @@ int main(){
 
     /* Setting initial conditions */
     std::vector<double> x(2), x1 = x, x2 = x;
-    x[0] = 0.1;
-    x[1] = 0.01;
+    x[0] = 0.1; // angle
+    x[1] = 0.01; // angular velocity
 
     cout << "Initial conditions are: (" << x[0] << ", " << x[1] << ")." << endl;
     cout << "The corresponding value for the Hamiltonian H is: " << H(x) << endl;
 
     double dt = 1.0e5; // time of propagation
-    int steps = 1e6; // number of integration steps
+    int steps = floor(dt / 0.1); // number of integration steps
 
     prop1.integrate(0.0, dt, steps, x, x1); // propagation with non-symplectic integrator
     prop2.integrate(0.0, dt, steps, x, x2); // propagation with symplectic integrator
