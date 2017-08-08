@@ -32,6 +32,8 @@
 #include "../exception.h"
 #include "chebyshev_inequality.h"
 #include <time.h>
+#include <functional>
+#include <utility>
 
 namespace smartmath
 {
@@ -64,6 +66,9 @@ namespace smartmath
 
   typedef double (*fun)(double);
   double bisection_method(fun f, double lb, double ub, double prec);
+
+
+  double bisection_method_2(std::function<double(double)> f, double lb, double ub, double prec);
 
 
   double Legendre(int l, int m, double x);

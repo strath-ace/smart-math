@@ -79,6 +79,26 @@ double smartmath::bisection_method(fun f, double lb, double ub, double prec){
 return smartmath::bisection_method(f, lb, ub, prec);
 }
 
+double smartmath::bisection_method_2(std::function<double(double)> f, double lb, double ub, double prec){
+    double f_low = f(lb);
+    double f_up  = f(ub);
+    if( (f_low*f_up) < 0 && (ub-lb) <= prec )
+    {
+        return lb;
+    }
+
+    double temp   = (ub+lb)/2;
+    double f_temp = f(temp);
+
+    if( (f_temp*f_low) > 0 )
+        lb = temp;
+
+    if( (f_temp*f_up) > 0 )
+        ub = temp;
+
+return smartmath::bisection_method_2(f, lb, ub, prec);
+}
+
 double smartmath::Lagrange1d(std::vector<double> times, std::vector<double> values, double t)
 {
     if(times.size()!=values.size())
