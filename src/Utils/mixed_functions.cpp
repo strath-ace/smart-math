@@ -59,6 +59,13 @@ void smartmath::variations(const std::vector<int> values, const int k, std::vect
 
 int smartmath::bisection_method(fun f, const double &lb0, const double &ub0, const double &prec, const int &iter, double &root){
 
+    if(lb0 > ub0)
+        smartmath_throw("BISECTION_METHOD: lower bound must be smaller than upper one");
+    if(prec <= 0.0)
+        smartmath_throw("BISECTION_METHOD: required precision must be non-negative");    
+    if(iter < 1)
+        smartmath_throw("BISECTION_METHOD: maximum number of iterations must be non-negative");    
+
     double f_low = f(lb0);
     double f_up  = f(ub0);
     root = (ub0 + lb0) / 2.0;
