@@ -63,31 +63,32 @@ double smartmath::bisection_method(fun f, double lb, double ub, double prec){
     double f_up  = f(ub);
     double temp = (ub + lb) / 2.0;
 
-    if(f_low * f_up > 0)
+    if( f_low * f_up > 0.0 )
         smartmath_throw("BISECTION_METHOD: initial extremal values have same sign");    
-    else if(ub - lb <= prec)
+    else if( ub - lb <= prec )
         return temp;
 
     double f_temp;
     while(ub - lb > prec)
     {
-        temp = (ub + lb) / 2.0;
         f_temp = f(temp);
 
-        if( (f_temp*f_low) > 0 )
+        if( f_temp * f_low > 0.0 )
         {
             lb = temp;
             f_low = f_temp;
         }
 
-        if( (f_temp*f_up) > 0 )
+        if( f_temp * f_up > 0.0 )
         {
             ub = temp;
             f_up = f_temp;
         }
 
-        if(f_low * f_up > 0)
+        if( f_low * f_up > 0.0 )
             smartmath_throw("BISECTION_METHOD: iterated extremal values have same sign");
+
+        temp = (ub + lb) / 2.0;
     }
      
     return temp;
@@ -99,31 +100,32 @@ double smartmath::bisection_method_2(std::function<double(double)> f, double lb,
     double f_up  = f(ub);
     double temp = (ub + lb) / 2.0;
 
-    if(f_low * f_up > 0)
+    if( f_low * f_up > 0.0 )
         smartmath_throw("BISECTION_METHOD: initial extremal values have same sign");    
-    else if(ub - lb <= prec)
+    else if( ub - lb <= prec )
         return temp;
 
     double f_temp;
     while(ub - lb > prec)
     {
-        temp = (ub + lb) / 2.0;
         f_temp = f(temp);
 
-        if( (f_temp*f_low) > 0 )
+        if( f_temp * f_low > 0.0 )
         {
             lb = temp;
             f_low = f_temp;
         }
 
-        if( (f_temp*f_up) > 0 )
+        if( f_temp * f_up > 0.0 )
         {
             ub = temp;
             f_up = f_temp;
         }
 
-        if(f_low * f_up > 0)
+        if( f_low * f_up > 0.0 )
             smartmath_throw("BISECTION_METHOD: iterated extremal values have same sign");
+
+        temp = (ub + lb) / 2.0;
     }
      
     return temp;
