@@ -100,7 +100,7 @@ namespace smartmath
    */  
   int bisection_method(fun f, const double &lb0, const double &ub0, const double &prec, const int &iter, double &root);
 
-  double bisection_method_2(std::function<double(double)> f, double lb, double ub, double prec);
+  int bisection_method_2(std::function<double(double)> f, const double &lb0, const double &ub0, const double &prec, const int &iter, double &root);
 
   /**
    * @brief Legendre evaluation of associated Legendre functions
