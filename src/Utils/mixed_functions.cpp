@@ -57,41 +57,47 @@ void smartmath::variations(const std::vector<int> values, const int k, std::vect
 // }
 
 
-double smartmath::bisection_method(fun f, double lb, double ub, double prec){
+int smartmath::bisection_method(fun f, const double &lb0, const double &ub0, const double &prec, const int &iter, double &root){
 
-    double f_low = f(lb);
-    double f_up  = f(ub);
-    double temp = (ub + lb) / 2.0;
+    double f_low = f(lb0);
+    double f_up  = f(ub0);
+    root = (ub0 + lb0) / 2.0;
 
     if( f_low * f_up > 0.0 )
-        smartmath_throw("BISECTION_METHOD: initial extremal values have same sign");    
-    else if( ub - lb <= prec )
-        return temp;
+        return -1;    
+    else if( ub0 - lb0 <= prec )
+        return 0;
 
+    int i = 0;
+    double ub = ub0, lb = lb0;
     double f_temp;
-    while(ub - lb > prec)
+    while( (ub - lb > prec) && (i < iter) )
     {
-        f_temp = f(temp);
+        f_temp = f(root);
 
         if( f_temp * f_low > 0.0 )
         {
-            lb = temp;
+            lb = root;
             f_low = f_temp;
         }
 
         if( f_temp * f_up > 0.0 )
         {
-            ub = temp;
+            ub = root;
             f_up = f_temp;
         }
 
         if( f_low * f_up > 0.0 )
-            smartmath_throw("BISECTION_METHOD: iterated extremal values have same sign");
+            return -1;
 
-        temp = (ub + lb) / 2.0;
+        root = (ub + lb) / 2.0;
+        i++;
     }
      
-    return temp;
+    if(i == iter)
+        return 1;
+    else
+        return 0;
 }
 
 double smartmath::bisection_method_2(std::function<double(double)> f, double lb, double ub, double prec){

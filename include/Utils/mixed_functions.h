@@ -91,12 +91,14 @@ namespace smartmath
   /**
    * @brief bisection_method implementation of the bisection method
    * @param[in] f monotonic function whose zero is to be found
-   * @param[in] lb initial lower bound for root
-   * @param[in] ub initial upper bound for root
+   * @param[in] lb0 initial lower bound for root
+   * @param[in] ub0 initial upper bound for root
    * @param[in] prec tolerance on root finding
-   * @return value of root
+   * @param[in] iter maximum number of iterations
+   * @param[out] value of root
+   * @return flag: 0 if method converged, 1 if max. number of iterations reached, -1 if extremal values are not of opposite signs
    */  
-  double bisection_method(fun f, double lb, double ub, double prec);
+  int bisection_method(fun f, const double &lb0, const double &ub0, const double &prec, const int &iter, double &root);
 
   double bisection_method_2(std::function<double(double)> f, double lb, double ub, double prec);
 
