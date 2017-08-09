@@ -96,7 +96,7 @@ namespace smartmath
    * @param[in] prec tolerance on root finding
    * @param[in] iter maximum number of iterations
    * @param[out] value of root
-   * @return flag: 0 if method converged, 1 if max. number of iterations reached, -1 if extremal values are not of opposite signs
+   * @return flag: 0 if method converged, 1 if max. number of iterations reached, -2 if initialization is wrong sign-wise, -1 if extremal values are not of opposite signs during iterations
    */  
   int bisection_method(fun f, const double &lb0, const double &ub0, const double &prec, const int &iter, double &root);
 

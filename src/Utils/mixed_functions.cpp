@@ -18,7 +18,8 @@ int smartmath::combination(int n, int k)
     int res = 1;
     int j = 1;
 
-    while(j<=min){
+    while(j<=min)
+    {
         res *= max+j;
         j++;
     }
@@ -29,14 +30,15 @@ int smartmath::combination(int n, int k)
 
 void smartmath::rep(std::vector<std::vector<int> > &res, const std::vector<int> &values, std::vector<int> &item, unsigned int count){
     if (count < item.size()){
-        for (unsigned int i = 0; i < values.size(); i++) {
+        for (unsigned int i = 0; i < values.size(); i++) 
+        {
             item[count] = values[i];
             unsigned int tmp_count = count + 1;
             smartmath::rep(res, values, item, tmp_count);
         }
-    }else{
-        res.push_back(item);
     }
+    else
+        res.push_back(item);
 }
 
 
@@ -71,7 +73,7 @@ int smartmath::bisection_method(fun f, const double &lb0, const double &ub0, con
     root = (ub0 + lb0) / 2.0;
 
     if( f_low * f_up > 0.0 )
-        return -1;    
+        return -2;    
     else if( ub0 - lb0 <= prec )
         return 0;
 
@@ -126,7 +128,7 @@ int smartmath::bisection_method_2(
     root = (ub0 + lb0) / 2.0;
 
     if( f_low * f_up > 0.0 )
-        return -1;
+        return -2;
     else if( ub0 - lb0 <= prec )
         return 0;
 
@@ -170,11 +172,14 @@ double smartmath::Lagrange1d(std::vector<double> times, std::vector<double> valu
     double output = 0.0;
     double prod1, prod2;
 
-    for(unsigned int i=0;i<times.size();i++){
+    for(unsigned int i=0;i<times.size();i++)
+    {
         prod1 = 1.0;
         prod2 = 1.0;  
-        for(unsigned int j=0;j<times.size();j++){  
-            if(i!=j){
+        for(unsigned int j=0;j<times.size();j++)
+        {  
+            if(i!=j)
+            {
                 if(times[j]==times[i])
                     smartmath_throw("LAGRANGE1D: interpolated points must be different");
                 prod1 *= t-times[j];
@@ -192,7 +197,8 @@ std::vector<double>  smartmath::LagrangeNd(std::vector<double> times, std::vecto
     if(times.size()!=values.size())
         smartmath_throw("LAGRANGEND: number of values must be equal to number of interpolation points");
 
-    for(unsigned int k=0;k<values.size();k++){
+    for(unsigned int k=0;k<values.size();k++)
+    {
         if(values[k].size()!=values[0].size())
             smartmath_throw("LAGRANGEND: function evaluations at interpolation points must have same number of components");
     }
@@ -203,8 +209,10 @@ std::vector<double>  smartmath::LagrangeNd(std::vector<double> times, std::vecto
     for(unsigned int i=0;i<times.size();i++){
         prod1 = 1.0;
         prod2 = 1.0;  
-        for(unsigned int j=0;j<times.size();j++){  
-            if(i!=j){
+        for(unsigned int j=0;j<times.size();j++)
+        {  
+            if(i!=j)
+            {
                 if(times[j]==times[i])
                    smartmath_throw("LAGRANGEND: interpolated points must be different");
                 prod1 *= t-times[j];
