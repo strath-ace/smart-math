@@ -88,10 +88,18 @@ namespace smartmath
 
   typedef double (*fun)(double);
 
+  /**
+   * @brief bisection_method implementation of the bisection method
+   * @param[in] f monotonic function whose zero is to be found
+   * @param[in] lb initial lower bound for root
+   * @param[in] ub initial upper bound for root
+   * @param[in] prec tolerance on root finding
+   * @return value of root
+   */  
   double bisection_method(fun f, double lb, double ub, double prec);
 
-
   double bisection_method_2(std::function<double(double)> f, double lb, double ub, double prec);
+
   /**
    * @brief Legendre evaluation of associated Legendre functions
    * @param[in] l order

@@ -57,46 +57,76 @@ void smartmath::variations(const std::vector<int> values, const int k, std::vect
 // }
 
 
-
-
 double smartmath::bisection_method(fun f, double lb, double ub, double prec){
+
     double f_low = f(lb);
     double f_up  = f(ub);
-    if( (f_low*f_up) < 0 && (ub-lb) <= prec )
+    double temp = (ub + lb) / 2.0;
+
+    if(f_low * f_up > 0)
+        smartmath_throw("BISECTION_METHOD: initial extremal values have same sign");    
+    else if(ub - lb <= prec)
+        return temp;
+
+    double f_temp;
+    while(ub - lb > prec)
     {
-        return lb;
+        temp = (ub + lb) / 2.0;
+        f_temp = f(temp);
+
+        if( (f_temp*f_low) > 0 )
+        {
+            lb = temp;
+            f_low = f_temp;
+        }
+
+        if( (f_temp*f_up) > 0 )
+        {
+            ub = temp;
+            f_up = f_temp;
+        }
+
+        if(f_low * f_up > 0)
+            smartmath_throw("BISECTION_METHOD: iterated extremal values have same sign");
     }
-
-    double temp   = (ub+lb)/2;
-    double f_temp = f(temp);
-
-    if( (f_temp*f_low) > 0 )
-        lb = temp;
-    
-    if( (f_temp*f_up) > 0 )
-        ub = temp;
      
-return smartmath::bisection_method(f, lb, ub, prec);
+    return temp;
 }
 
 double smartmath::bisection_method_2(std::function<double(double)> f, double lb, double ub, double prec){
+
     double f_low = f(lb);
     double f_up  = f(ub);
-    if( (f_low*f_up) < 0 && (ub-lb) <= prec )
+    double temp = (ub + lb) / 2.0;
+
+    if(f_low * f_up > 0)
+        smartmath_throw("BISECTION_METHOD: initial extremal values have same sign");    
+    else if(ub - lb <= prec)
+        return temp;
+
+    double f_temp;
+    while(ub - lb > prec)
     {
-        return lb;
+        temp = (ub + lb) / 2.0;
+        f_temp = f(temp);
+
+        if( (f_temp*f_low) > 0 )
+        {
+            lb = temp;
+            f_low = f_temp;
+        }
+
+        if( (f_temp*f_up) > 0 )
+        {
+            ub = temp;
+            f_up = f_temp;
+        }
+
+        if(f_low * f_up > 0)
+            smartmath_throw("BISECTION_METHOD: iterated extremal values have same sign");
     }
-
-    double temp   = (ub+lb)/2;
-    double f_temp = f(temp);
-
-    if( (f_temp*f_low) > 0 )
-        lb = temp;
-
-    if( (f_temp*f_up) > 0 )
-        ub = temp;
-
-return smartmath::bisection_method_2(f, lb, ub, prec);
+     
+    return temp;
 }
 
 double smartmath::Lagrange1d(std::vector<double> times, std::vector<double> values, double t)
