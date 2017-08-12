@@ -172,7 +172,15 @@ if(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
   set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}_${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
   set(CPACK_GENERATOR "ZIP")
 
-  if (UNIX)
+  # $LINUX_DISTRO Debian Redhat none
+  set(LINUX_DISTRO "none")
+  if(EXISTS "/etc/debian_version")
+	set ( LINUX_DISTRO "Debian")
+  elseif(EXISTS "/etc/redhat-release")
+	set ( LINUX_DISTRO "Redhat")
+  endif()
+  
+  if (UNIX AND (LINUX_DISTRO STREQUAL "Debian"))
     set(CPACK_GENERATOR "DEB")
     set(CPACK_DEBIAN_PACKAGE_MAINTAINER "strathclydesmart.slack.com")
     set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
