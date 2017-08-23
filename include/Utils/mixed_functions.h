@@ -36,6 +36,9 @@
 
 namespace smartmath
 {
+    //Multinormal sampler. Always use this object to create samples, using the methods setMean, setCovar and samples
+    extern Eigen::EigenMultivariateNormal<double> multinormal_sampler;
+
 
   /**
    * @brief ZERO numerical value that can be used to check if a double can be considered as zero or not

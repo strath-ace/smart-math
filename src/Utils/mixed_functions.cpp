@@ -3,6 +3,13 @@
 // using namespace std;
 // using namespace smartmath;
 
+// general sampler
+Eigen::EigenMultivariateNormal<double> smartmath::multinormal_sampler(
+        Eigen::MatrixXd::Zero(6,1),
+        Eigen::MatrixXd::Zero(6,6),
+        false,
+        time(NULL));
+
 int smartmath::factorial(int n)
 {
     if(n<0)
@@ -274,8 +281,9 @@ Eigen::MatrixXd smartmath::sample_multivariate_normal_distribution(const Eigen::
                                                         const Eigen::MatrixXd &covar,
                                                         const int &N_samples)
 {
-    Eigen::EigenMultivariateNormal<double> sampler(mean,covar,false,time(NULL));
-    return sampler.samples(N_samples);
+    multinormal_sampler.setMean(mean);
+    multinormal_sampler.setCovar(covar);
+    return multinormal_sampler.samples(N_samples);
 }
 
 Eigen::MatrixXd smartmath::sample_truncated_multivariate_normal_distribution(const Eigen::VectorXd &lower_bounds,
