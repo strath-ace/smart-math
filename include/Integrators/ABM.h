@@ -56,13 +56,14 @@ namespace smartmath
              * @param order order of the method
              * @param init boolean defining the type of initializer used by the predictor (true is B-S, false is R-K)
              */
-            ABM(const dynamics::base_dynamics<T> *dyn, const int order=8, const bool init = false): base_multistep<T>("Adam Bashforth Moulton algorithm", dyn, order), m_init(init)
+            ABM(const dynamics::base_dynamics<T> *dyn, const unsigned int order = 8, const bool init = false): base_multistep<T>("Adam Bashforth Moulton algorithm", dyn, order), m_init(init)
             {
 
-                if((order<2)||(order>8))
+                if((order < 2) || (order > 8))
                     smartmath_throw("ABM: order must be between 2 and 8"); 
 
-                double prebeta[7][8]={
+                double prebeta[7][8] = 
+                {
                 {1.0/2.0,1.0/2.0,0.0,0.0,0.0,0.0,0.0,0.0},
                 {-1.0/12.0,8.0/12.0,5.0/12.0,0.0,0.0,0.0,0.0,0.0},
                 {1.0/24.0,-5.0/24.0,19.0/24.0,9.0/24.0,0.0,0.0,0.0,0.0},
@@ -71,10 +72,10 @@ namespace smartmath
                 {-863.0/60480.0,6312.0/60480.0,-20211.0/60480.0,37504.0/60480.0,-46461.0/60480.0,65112.0/60480.0,19087.0/60480.0,0.0},
                 {1375.0/120960.0,-11351.0/120960.0,41499.0/120960.0,-88547.0/120960.0,123133.0/120960.0,-121797.0/120960.0,139849.0/120960.0,36799.0/120960.0}
                 };        
-                for(int i=0; i<m_order; i++)
+                for(unsigned int i = 0; i < m_order; i++)
                     m_beta_Moulton.push_back(prebeta[m_order-2][i]);
 
-                m_predictor = new integrator::AB<T>(m_dyn,m_order,m_init);
+                m_predictor = new integrator::AB<T>(m_dyn, m_order, m_init);
 
             }
 
@@ -96,19 +97,19 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
+            int integration_step(const double &t, const unsigned int &m, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
                 
-                if(f.size()!= static_cast<unsigned int>(m))
+                if(f.size() != m)
                     smartmath_throw("INTEGRATION_STEP: wrong number of saved states in multistep integration"); 
 
-                std::vector<T> dx=x0;    
+                std::vector<T> dx = x0;    
 
-                m_predictor->integration_step(t,m,h,x0,f,xfinal); // prediction 
+                m_predictor->integration_step(t, m, h, x0, f, xfinal); // prediction 
 
-                correction(h,x0,f,xfinal); 
+                correction(h, x0, f, xfinal); 
 
-                m_dyn->evaluate(t+h, xfinal, dx);
-                f[m-1]=dx;
+                m_dyn->evaluate(t + h, xfinal, dx);
+                f[m-1] = dx;
 
                 return 0;
             }            
@@ -125,12 +126,11 @@ namespace smartmath
              */
             int correction(const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
 
-                xfinal=x0;
-                int x0_size = x0.size();
-                for(int i=0; i<x0_size; i++)
+                xfinal = x0;
+                for(unsigned int i = 0; i < x0.size(); i++)
                 {
-                    for(int j=0; j<m_order; j++)
-                        xfinal[i]+=h*m_beta_Moulton[j]*f[j][i];
+                    for(unsigned int j = 0; j < m_order; j++)
+                        xfinal[i] += h * m_beta_Moulton[j] * f[j][i];
                 }
 
                 return 0;
@@ -147,9 +147,9 @@ namespace smartmath
              * @param[out] f vector of saved state vectors for multistep scheme
              * @return
              */     
-            int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{  
+            int initialize(const unsigned int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{  
 
-                m_predictor->initialize(m,ti,h,x0,f);
+                m_predictor->initialize(m, ti, h, x0, f);
 
                 return 0;
             }            

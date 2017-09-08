@@ -33,7 +33,7 @@ namespace smartmath
             /**
              * @brief m_dim half-dimension of Hamiltonian system
              */             
-			int m_dim;
+			unsigned int m_dim;
             /**
              * @brief m_separable flag equal to 1 if the system is separable i.e. if the Hamiltonian is of the type V(p) + W(q), 0 otherwise
              */             
@@ -48,7 +48,7 @@ namespace smartmath
              * @param dim half-order of the Hamiltonian system
              * @param separable boolean precising whether the system is separable or not
              */
-            base_hamiltonian(const std::string &name, const int &dim, const bool &separable = false): base_dynamics<T>(name), m_dim(dim), m_separable(separable){}
+            base_hamiltonian(const std::string &name, const unsigned int &dim, const bool &separable = false): base_dynamics<T>(name), m_dim(dim), m_separable(separable){}
 
             /**
              * @brief ~base_hamiltonian deconstructor
@@ -61,7 +61,7 @@ namespace smartmath
              * The method returns the dimension of the implemented Hamiltonian system
              * @return m_dim half-order of the system
              */
-            int get_dim() const{
+            unsigned int get_dim() const{
             	return m_dim;
             }
 
@@ -91,7 +91,7 @@ namespace smartmath
 				dstate.clear();
 				/* reconstituting the canonical variables q and p from the state vector */
 				std::vector<T> q, p;
-				for(int k = 0; k < m_dim; k++)
+				for(unsigned int k = 0; k < m_dim; k++)
 				{
 					q.push_back(state[k]);
 					p.push_back(state[k + m_dim]);
@@ -103,9 +103,9 @@ namespace smartmath
 				DHp(t, q, p, dHp);
 
 				/* reconstituting the state derivative */
-				for(int k = 0; k < m_dim; k++)
+				for(unsigned int k = 0; k < m_dim; k++)
 					dstate.push_back(dHp[k]);
-				for(int k = 0; k < m_dim; k++)
+				for(unsigned int k = 0; k < m_dim; k++)
 					dstate.push_back(-dHq[k]);
 
             	return 0;

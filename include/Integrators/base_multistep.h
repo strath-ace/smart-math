@@ -32,7 +32,7 @@ namespace smartmath
             /**
              * @brief m_order order of the multistep integrator
              */
-            int m_order;
+            unsigned int m_order;
 
         public:
 
@@ -46,7 +46,7 @@ namespace smartmath
              * @param dyn pointer to a base_dynamics object
              * @param order number of saved steps
              */
-            base_multistep(const std::string &name, const dynamics::base_dynamics<T> *dyn, const int &order) : base_integrator<T>(name, dyn), m_order(order){}
+            base_multistep(const std::string &name, const dynamics::base_dynamics<T> *dyn, const unsigned int &order) : base_integrator<T>(name, dyn), m_order(order){}
 
             /**
              * @brief ~base_multistep deconstructor
@@ -66,7 +66,7 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            virtual int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const=0;
+            virtual int integration_step(const double &t, const unsigned int &m, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const=0;
 
             /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
@@ -86,19 +86,19 @@ namespace smartmath
                 t_history.clear();
                 x_history.clear();
 
-                std::vector<T> x(x0),xp(x0);
+                std::vector<T> x(x0), xp(x0);
                 std::vector<std::vector<T> > f;
-                double t=ti, h = (tend-ti)/double(nsteps);
+                double t = ti, h = (tend - ti) / double(nsteps);
 
-                initialize(m_order,ti,h,x0,f);
+                initialize(m_order, ti, h, x0, f);
 
-                for(int k=0; k<nsteps; k++)
+                for(int k = 0; k < nsteps; k++)
                 {
-                    integration_step(t,m_order,h,x,f,xp);
+                    integration_step(t, m_order, h, x, f, xp);
 
                     /* Saving states */
-                    t+=h;
-                    x=xp;
+                    t += h;
+                    x = xp;
                     t_history.push_back(t);
                     x_history.push_back(x);
                 }
@@ -117,7 +117,7 @@ namespace smartmath
              * @param[out] f vector of saved state vectors for multistep scheme
              * @return
              */     
-            virtual  int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const = 0;
+            virtual  int initialize(const unsigned int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const = 0;
 
         };
 

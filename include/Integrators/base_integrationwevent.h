@@ -59,9 +59,9 @@ namespace smartmath
              */
             base_integrationwevent(const std::string &name, const dynamics::base_dynamics<T> *dyn, const double &minstep_events, const double &maxstep_events) : base_integrator<T>(name, dyn), m_minstep_events(minstep_events), m_maxstep_events(maxstep_events){
                 
-                if(minstep_events<=0.0)
+                if(minstep_events <= 0.0)
                    smartmath_throw("BASE_INTEGRATIONWEVENT: minimum step-size for events must be non negative");
-                if(maxstep_events<0.0)
+                if(maxstep_events < 0.0)
                    smartmath_throw("BASE_INTEGRATIONWEVENT: maximum step-size for events must be positive");
 
             }
@@ -103,10 +103,10 @@ namespace smartmath
              */
             int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history) const{
 
-                double t0=ti, tf=tend, n=nsteps;
+                double t0 = ti, tf = tend, n = nsteps;
                 std::vector<T> x(x0);
 
-                integrate(t0,tf,n,x,x_history,t_history,dummy_event);
+                integrate(t0, tf, n, x, x_history, t_history, dummy_event);
     
                 return 0;
             }
@@ -132,7 +132,7 @@ namespace smartmath
 
                 integrate(ti, tend, nsteps, x0, x_history, t_history, *g);
 
-                xfinal=x_history.back();
+                xfinal = x_history.back();
 
                 return 0;
             }
@@ -146,7 +146,7 @@ namespace smartmath
              */
             static std::vector<int> dummy_event(std::vector<T> x, double d){
 
-                std::vector<int> output(1,0);
+                std::vector<int> output(1, 0);
 
                 return output;
             }
@@ -158,7 +158,7 @@ namespace smartmath
              */
             void set_event_list(std::vector<events::base_event<T>*> &event_list){
 
-                m_event_list=event_list;
+                m_event_list = event_list;
 
             }
 	

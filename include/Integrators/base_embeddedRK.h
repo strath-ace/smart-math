@@ -45,7 +45,7 @@ namespace smartmath
             /**
              * @brief m_control order of scheme used for state estimation in step-size control
              */            
-            double m_control;
+            unsigned int m_control;
             
 
         public:
@@ -67,9 +67,9 @@ namespace smartmath
             base_embeddedRK(const std::string &name, const dynamics::base_dynamics<T> *dyn, const double &tol, const double &multiplier, const double &minstep_events, const double &maxstep_events) : base_integrationwevent<T>(name, dyn, minstep_events, maxstep_events), m_tol(tol), m_multiplier(multiplier){
                 
                 /** sanity checks **/
-                if(tol<=0.0)
+                if(tol <= 0.0)
                    smartmath_throw("BASE_embeddedRK: tolerance for estimated error must be non negative");
-                if((multiplier>5.0)||(multiplier<2.0))
+                if((multiplier > 5.0) || (multiplier < 2.0))
                    smartmath_throw("BASE_embeddedRK: maximum step-multiplier must be between 2 and 5");
 
             }
@@ -93,7 +93,7 @@ namespace smartmath
              * @param[out] er estimated error
              * @return
              */
-            virtual int integration_step(const double &ti, const int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const = 0;
+            virtual int integration_step(const double &ti, const unsigned int &m, const double &h, const std::vector<T> &x0, const std::vector<std::vector<T> > &f, std::vector<T> &xfinal, T &er) const = 0;
 
             /**
              * @brief integrate method to integrate bewteen two given time steps, with initial condition and initial guess for step-size while handling events
@@ -115,19 +115,19 @@ namespace smartmath
                 t_history.clear();
 
                 int k;
-                int check=0;
+                int check = 0;
                 std::vector<T> x(x0), xtemp(x0);
                 std::vector<std::vector<T> > f;
 
-                double factor=1.0, value=0.0, t=ti, h = (tend-ti)/double(nsteps);
-                T er=0.0*x0[0];
+                double factor = 1.0, value = 0.0, t = ti, h = (tend - ti) / double(nsteps);
+                T er = 0.0 * x0[0];
 
                 std::vector<int> events, events2;
-                if(m_event_list.size()==0)
-                    events=g(x0,ti);
+                if(m_event_list.size() == 0)
+                    events = g(x0, ti);
                 else
                 {
-                    events=std::vector<int>(m_event_list.size(),0);
+                    events = std::vector<int>(m_event_list.size(), 0);
                     for(unsigned int index = 0; index < m_event_list.size(); ++index)
                     {
                         if(m_event_list[index]->get_status_scope() != NULL)
@@ -139,35 +139,36 @@ namespace smartmath
                         events[index] = m_event_list[index]->evaluate(ti, x0);
                     }
                 }
-                events2=events;
-                int m=events.size();           
+                events2 = events;
+                unsigned int m= events.size();           
 
                 int i=0;
-                while(sqrt(pow(t-ti,2))<sqrt(pow(tend-ti,2))){
+                while(sqrt(pow(t-ti, 2))<sqrt(pow(tend-ti, 2)))
+                {
 
-                    if((h*h>m_maxstep_events*m_maxstep_events)&&(m_maxstep_events>0.0))
+                    if((h * h > m_maxstep_events*m_maxstep_events) && (m_maxstep_events > 0.0))
                     {
-                        if(h>0.0)
-                            h=m_maxstep_events;
+                        if(h > 0.0)
+                            h = m_maxstep_events;
                         else
-                            h=-m_maxstep_events;
+                            h = -m_maxstep_events;
                     }   
 
-                    if(sqrt(pow(tend-t,2))<sqrt(h*h))
-                        h=tend-t;
+                    if(sqrt(pow(tend - t, 2)) < sqrt(h * h))
+                        h = tend - t;
 
-                    integration_step(t,m_control,h,x,f,xtemp,er);
+                    integration_step(t, m_control, h, x, f, xtemp, er);
                     
                     /* Step-size control */
                     value = evaluate_squarerootintegrationerror(er);
-                    factor=pow(m_tol/value,1.0/(m_control+1.0));
-                    if(er>m_tol) // unsucessful step
-                        h*=0.9*factor;  
+                    factor=pow(m_tol / value, 1.0 / (double(m_control) + 1.0));
+                    if(er > m_tol) // unsucessful step
+                        h *= 0.9 * factor;  
                     else
                     { // sucessful step
                         /* Checking for the events */
-                        if(m_event_list.size()==0)
-                            events2=g(xtemp,t+h);
+                        if(m_event_list.size() == 0)
+                            events2 = g(xtemp, t + h);
                         else
                         {
                             for(unsigned int index = 0; index < m; ++index)
@@ -178,37 +179,37 @@ namespace smartmath
                                         continue;
                                 }
 
-                                events2[index] = m_event_list[index]->evaluate(t+h, xtemp);
+                                events2[index] = m_event_list[index]->evaluate(t + h, xtemp);
                             }
                         }
-                        k=0;
-                        check=0;        
-                        while(k<m)
+                        k = 0;
+                        check = 0;        
+                        while(k < m)
                         {
-                            if(events2[k]-events[k]!=0)
+                            if(events2[k] - events[k] != 0)
                             {
-                                check=1;
-                                k=m;
+                                check = 1;
+                                k = m;
                             }
                             else
                                 k++;
                         }
 
-                        if(check==1)
+                        if(check == 1)
                         {
-                            if(sqrt(h*h)>m_minstep_events)
-                                h*=0.5;
+                            if(sqrt(h * h) > m_minstep_events)
+                                h *= 0.5;
                             else
                             {
-                                tend=t+h; // saving the termination time    
-                                t=tend; // trick to get out of the while loop   
+                                tend = t + h; // saving the termination time    
+                                t = tend; // trick to get out of the while loop   
                                 x_history.push_back(xtemp);
                                 t_history.push_back(t);
-                                if(m_event_list.size()!=0)
+                                if(m_event_list.size() != 0)
                                 {
                                     for(unsigned int index = 0; index < m; ++index)
                                     {
-                                        if(events2[index]-events[index]!=0)
+                                        if(events2[index]-events[index] != 0)
                                             m_event_list[index]->switch_trigger_on(t_history.back());
                                     }
                                 }
@@ -218,15 +219,15 @@ namespace smartmath
                         }
                         else
                         {
-                            x=xtemp; // updating state
-                            t+=h; // updating current time  
-                            events=events2; 
+                            x = xtemp; // updating state
+                            t += h; // updating current time  
+                            events = events2; 
                             x_history.push_back(x);
                             t_history.push_back(t); 
                             /* Step-size control */
-                            if(factor>m_multiplier)
-                                factor=m_multiplier;  
-                            h*=factor; // updating step-size
+                            if(factor > m_multiplier)
+                                factor = m_multiplier;  
+                            h *= factor; // updating step-size
                             i++; // counting the number of steps
                         }           
         

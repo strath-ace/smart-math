@@ -185,21 +185,21 @@ double smartmath::Lagrange1d(std::vector<double> times, std::vector<double> valu
     double output = 0.0;
     double prod1, prod2;
 
-    for(unsigned int i=0;i<times.size();i++)
+    for(unsigned int i = 0;i < times.size(); i++)
     {
         prod1 = 1.0;
         prod2 = 1.0;  
-        for(unsigned int j=0;j<times.size();j++)
+        for(unsigned int j=0; j < times.size(); j++)
         {  
-            if(i!=j)
+            if(i != j)
             {
-                if(times[j]==times[i])
+                if(times[j] == times[i])
                     smartmath_throw("LAGRANGE1D: interpolated points must be different");
-                prod1 *= t-times[j];
-                prod2 *= times[i]-times[j];
+                prod1 *= t - times[j];
+                prod2 *= times[i] - times[j];
             }
         }
-        output += prod1*values[i]/prod2;
+        output += prod1*values[i] / prod2;
     }
 
     return output; 
@@ -210,30 +210,30 @@ std::vector<double>  smartmath::LagrangeNd(std::vector<double> times, std::vecto
     if(times.size()!=values.size())
         smartmath_throw("LAGRANGEND: number of values must be equal to number of interpolation points");
 
-    for(unsigned int k=0;k<values.size();k++)
+    for(unsigned int k = 0;k < values.size(); k++)
     {
-        if(values[k].size()!=values[0].size())
+        if(values[k].size() != values[0].size())
             smartmath_throw("LAGRANGEND: function evaluations at interpolation points must have same number of components");
     }
 
-    std::vector<double> outputs(values[0].size(),0.0);
+    std::vector<double> outputs(values[0].size(), 0.0);
     double prod1, prod2;
 
-    for(unsigned int i=0;i<times.size();i++){
+    for(unsigned int i = 0; i < times.size(); i++){
         prod1 = 1.0;
         prod2 = 1.0;  
-        for(unsigned int j=0;j<times.size();j++)
+        for(unsigned int j = 0; j < times.size(); j++)
         {  
-            if(i!=j)
+            if(i != j)
             {
-                if(times[j]==times[i])
+                if(times[j] == times[i])
                    smartmath_throw("LAGRANGEND: interpolated points must be different");
-                prod1 *= t-times[j];
-                prod2 *= times[i]-times[j];
+                prod1 *= t - times[j];
+                prod2 *= times[i] - times[j];
             }
         }
-        for(unsigned int k=0;k<values[0].size();k++)
-            outputs[k] += prod1*values[i][k]/prod2;
+        for(unsigned int k = 0;k < values[0].size(); k++)
+            outputs[k] += prod1 * values[i][k] / prod2;
 
     }
     return outputs;
@@ -241,37 +241,37 @@ std::vector<double>  smartmath::LagrangeNd(std::vector<double> times, std::vecto
 
 double smartmath::Legendre(int l, int m, double x)
 {
-    if(x*x>1.0)
+    if(x * x > 1.0)
         smartmath_throw("LEGENDRE: real number must be in [-1,1]");
 
-    if(l<0)
-        return smartmath::Legendre(-l-1,m,x);
+    if(l < 0)
+        return smartmath::Legendre(-l - 1, m, x);
 
-    if(m<0)
-        return pow(-1.0,-m)*double(factorial(l+m))*Legendre(l,-m,x)/double(factorial(l-m));
+    if(m < 0)
+        return pow(-1.0, -m) * double(factorial(l + m)) * Legendre(l, -m, x) / double(factorial(l - m));
 
-    if(m>l)
+    if(m > l)
         return 0.0;        
 
     /* l>=m>=0 */
-    double out=1.0; // default value (l=0)
+    double out = 1.0; // default value (l=0)
 
-    if(l==1)
+    if(l == 1)
     {
-        if(m==1)
-            out=-sqrt(1.0-x*x);
-        if(m==0)
-            out=x;    
+        if(m == 1)
+            out = -sqrt(1.0 - x * x);
+        if(m == 0)
+            out = x;    
     }
 
-    if(l>1)
+    if(l > 1)
     {
-        if(l==m)
-            out=-double(2*l-1)*sqrt(1.0-x*x)*smartmath::Legendre(l-1,l-1,x);
-        else if(m==l-1)
-            out=double(2*m+1)*x*smartmath::Legendre(m,m,x);        
+        if(l == m)
+            out = -double(2 * l - 1)*sqrt(1.0 - x * x)*smartmath::Legendre(l - 1, l - 1, x);
+        else if(m == l - 1)
+            out = double(2 * m + 1)*x*smartmath::Legendre(m, m, x);        
         else
-            out=(double(2*l-1)*x*smartmath::Legendre(l-1,m,x)-double(l-1+m)*smartmath::Legendre(l-2,m,x))/double(l-m);     
+            out = (double(2 * l - 1)*x*smartmath::Legendre(l - 1, m, x)-double(l - 1 + m)*smartmath::Legendre(l - 2, m, x)) / double(l - m);     
     }
 
     return out;
@@ -280,7 +280,7 @@ double smartmath::Legendre(int l, int m, double x)
 
 double smartmath::Legendre_derivative(int l, int m, double x)
 {
-    return (double(l)*x*smartmath::Legendre(l,m,x)-double(l+m)*smartmath::Legendre(l-1,m,x))/(x*x-1.0); 
+    return (double(l) * x * smartmath::Legendre(l, m, x) - double(l + m) * smartmath::Legendre(l - 1, m, x)) / (x * x - 1.0); 
 }
 
 Eigen::MatrixXd smartmath::sample_multivariate_normal_distribution(const Eigen::VectorXd &mean,
@@ -404,7 +404,7 @@ std::vector<double> smartmath::vieta_root2coef(const std::vector<double> &roots)
     unsigned int deg = roots.size() ;
 
     // Initialize vector of coefficients to 1.0 (scale vector for a_n)
-    std::vector<double> coeffs(deg+1,1.0), coeffs2, roots2;
+    std::vector<double> coeffs(deg + 1, 1.0), coeffs2, roots2;
 
     if(deg == 1) // linear case
     {

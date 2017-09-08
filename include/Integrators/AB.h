@@ -61,12 +61,13 @@ namespace smartmath
              * @param order order of the method
              * @param init boolean defining the type of initializer used by the method (true is B-S, false is R-K)
              */
-            AB(const dynamics::base_dynamics<T> *dyn, const int order=8, const bool init = false): base_multistep<T>("Adam Bashforth integration scheme", dyn, order)
+            AB(const dynamics::base_dynamics<T> *dyn, const unsigned int order = 8, const bool init = false): base_multistep<T>("Adam Bashforth integration scheme", dyn, order)
             {
-                if((order<1)||(order>8))
+                if((order < 1 )||(order > 8))
                     smartmath_throw("AB: order must be between 1 and 8");  
 
-                double prebeta[8][8]={
+                double prebeta[8][8] =
+                {
                 {1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0},
                 {-1.0/2.0,3.0/2.0,0.0,0.0,0.0,0.0,0.0,0.0},
                 {5.0/12.0,-16.0/12.0,23.0/12.0,0.0,0.0,0.0,0.0,0.0},
@@ -76,7 +77,7 @@ namespace smartmath
                 {19087.0/60480.0,-134472.0/60480.0,407139.0/60480.0,-688256.0/60480.0,705549.0/60480.0,-447288.0/60480.0,198721.0/60480.0,0.0},
                 {-36799.0/120960.0,295767.0/120960.0,-1041723.0/120960.0,2102243.0/120960.0,-2664477.0/120960.0,2183877.0/120960.0,-1152169.0/120960.0,434241.0/120960.0}
                 };        
-                for(int i=0; i<m_order; i++)
+                for(unsigned int i = 0; i < m_order; i++)
                     m_beta.push_back(prebeta[m_order-1][i]);
 
                 m_initializerRK = new integrator::rk4<T>(m_dyn);
@@ -102,20 +103,19 @@ namespace smartmath
              * @param[out] xfinal vector of final states
              * @return
              */
-            int integration_step(const double &t, const int &m, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
+            int integration_step(const double &t, const unsigned int &m, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f, std::vector<T> &xfinal) const{
 
-                if(f.size()!= static_cast<unsigned int>(m))
+                if(f.size() != m)
                     smartmath_throw("INTEGRATION_STEP: wrong number of saved states for multistep integration"); 
 
-                xfinal=x0;
-                int size_x0 = x0.size();
-                for(int i=0; i<size_x0; i++)
+                xfinal = x0;
+                for(unsigned int i = 0; i < x0.size(); i++)
                 {
-                    for(int j=0; j<m; j++)
-                        xfinal[i]+=h*m_beta[j]*f[j][i];
+                    for(unsigned int j = 0; j < m; j++)
+                        xfinal[i] += h * m_beta[j] * f[j][i];
                 }
 
-                update_saved_steps(m,t+h,xfinal,f);
+                update_saved_steps(m, t + h, xfinal, f);
 
                 return 0;
             }
@@ -132,7 +132,7 @@ namespace smartmath
              * @param[out] f vector of saved state vectors for multistep scheme
              * @return
              */    
-            int initialize(const int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{
+            int initialize(const unsigned int &m, const double &ti, const double &h, const std::vector<T> &x0, std::vector<std::vector<T> > &f) const{
 
                 f.clear();
 
@@ -140,23 +140,23 @@ namespace smartmath
                 std::vector< std::vector<T> > fp;
                 
                 /* Computing the initial saved steps */
-                m_dyn->evaluate(ti,x,dx);
+                m_dyn->evaluate(ti, x, dx);
                 fp.push_back(dx);
-                double t=ti;
-                for(int j=0; j<m-1; j++)
+                double t = ti;
+                for(unsigned int j = 0; j < m - 1; j++)
                 {
                     if(m_init)
-                        m_initializerBS->integration_step(t,-h,x,xp);
+                        m_initializerBS->integration_step(t, -h, x, xp);
                     else
-                        m_initializerRK->integration_step(t,-h,x,xp);
-                    t-=h;
-                    x=xp;
-                    m_dyn->evaluate(t,x,dx);
+                        m_initializerRK->integration_step(t, -h, x, xp);
+                    t -= h;
+                    x = xp;
+                    m_dyn->evaluate(t, x, dx);
                     fp.push_back(dx);
                 }
                 
                 /* Putting the saved steps in the right order */
-                for(int j=0; j<m; j++)
+                for(unsigned int j = 0; j < m; j++)
                     f.push_back(fp[m-j-1]);
 
                 return 0;
@@ -172,17 +172,17 @@ namespace smartmath
              * @param[out] f vector of saved state vectors for multistep scheme
              * @return
              */     
-            int update_saved_steps(const int &m, const double &t, const std::vector<T> &x, std::vector<std::vector<T> > &f) const{
+            int update_saved_steps(const unsigned int &m, const double &t, const std::vector<T> &x, std::vector<std::vector<T> > &f) const{
 
-                if(f[0].size()!=x.size())
+                if(f[0].size() != x.size())
                     smartmath_throw("UPDATE_SAVED_STEPS: wrong number of previously saved states for multistep integration"); 
 
-                std::vector<T> dx=x;
-                std::vector<std::vector<T> > fp=f;
-                for(int j=0; j<m-1; j++)
-                    f[j]=fp[j+1];
+                std::vector<T> dx = x;
+                std::vector<std::vector<T> > fp = f;
+                for(unsigned int j = 0; j < m - 1; j++)
+                    f[j] = fp[j+1];
                 m_dyn->evaluate(t, x, dx);
-                f[m-1]=dx;
+                f[m-1] = dx;
 
                 return 0;
             }

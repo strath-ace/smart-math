@@ -94,9 +94,9 @@ namespace smartmath
                 std::vector<std::vector<T> > x_history;
                 std::vector<double> t_history;
 
-                integrate(ti,tend,nsteps,x0,x_history,t_history);
+                integrate(ti, tend, nsteps, x0, x_history, t_history);
 
-                xfinal=x_history.back();
+                xfinal = x_history.back();
 
                 return 0;
             }
@@ -115,12 +115,12 @@ namespace smartmath
              */
             int integrate_eigen(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
 
-                Eigen::MatrixXd x_history = Eigen::MatrixXd::Zero(x0.size(),nsteps);
+                Eigen::MatrixXd x_history = Eigen::MatrixXd::Zero(x0.size(), nsteps);
                 Eigen::VectorXd t_history = Eigen::VectorXd::Zero(nsteps);
 
-                integrate_eigen(ti,tend,nsteps,x0,x_history,t_history);
+                integrate_eigen(ti, tend, nsteps, x0, x_history, t_history);
 
-                xfinal=x_history.rightCols(1);
+                xfinal = x_history.rightCols(1);
 
                 return 0;
             }

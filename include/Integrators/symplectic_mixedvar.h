@@ -38,7 +38,7 @@ namespace smartmath
              * @param dyn pointer to a Hamiltonian dynamics with mixed variables
              * @param stages integer stating the number of integration stages in one step
              */
-            symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn, const int &stages): base_symplectic<T>(name, NULL, stages), m_mix(dyn){}
+            symplectic_mixedvar(const std::string &name, const dynamics::hamiltonian_mixedvar<T> *dyn, const unsigned int &stages): base_symplectic<T>(name, NULL, stages), m_mix(dyn){}
 
             /**
              * @brief ~symplectic_mixedvar deconstructor
@@ -66,7 +66,7 @@ namespace smartmath
                 if(p0.size() != m_mix->get_dim())
                     smartmath_throw("INTEGRATION_STEP: momentum vector must have consistent dimension with Hamiltonian system");     
 
-                int n = m_mix->get_dim();
+                unsigned int n = m_mix->get_dim();
                 std::vector<T> q = q0, p = p0, dq = q0, dp = p0;
                 qf = q0;
                 pf = p0;                
@@ -83,24 +83,22 @@ namespace smartmath
                         pf = p;                        
 
                         m_mix->DHp2(ti, q, p, dp);
-                        for(int i = 0; i < n; i++)
+                        for(unsigned int i = 0; i < n; i++)
                             qf[i] += m_c[j] * tau * dp[i];
 
                         m_mix->conversion2(qf, pf, q, p);
                         qf = q;
                         pf = p;
-
                     }
 
                     if(m_d[j] != 0.0)
                     { // kick with first set of coordinates
                         
                         m_mix->DHq(ti, q, p, dq);
-                        for(int i = 0; i < n; i++)
+                        for(unsigned int i = 0; i < n; i++)
                             pf[i] -= m_d[j] * tau * dq[i];
 
                         p = pf;
-
                     }       
 
                 }
@@ -151,7 +149,7 @@ namespace smartmath
                     t += h;
                     q0 = q;
                     p0 = p;
-                    for(int j = 0; j < n; j++)
+                    for(unsigned int j = 0; j < n; j++)
                     {
                         x[j] = q0[j];
                         x[j + n] = p0[j];

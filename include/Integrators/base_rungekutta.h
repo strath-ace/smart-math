@@ -32,7 +32,7 @@ namespace smartmath
             /**
              * @brief m_stages number of stages
              */            
-            int m_stages;
+            unsigned int m_stages;
             /**
              * @brief m_coeT coefficients for evaluation in time inside the integration step
              */             
@@ -85,7 +85,7 @@ namespace smartmath
 
                 xfinal = x0;
 
-                for(int i = 0; i < m_stages; i++)
+                for(unsigned int i = 0; i < m_stages; i++)
                 {
                     x_temp = x0;
                     if(i == 0)
@@ -126,7 +126,7 @@ namespace smartmath
 
                 xfinal = x0;
 
-                for(int i = 0; i < m_stages; i++)
+                for(unsigned int i = 0; i < m_stages; i++)
                 {
                     x_temp = x0;
                     if(i == 0)
@@ -164,14 +164,15 @@ namespace smartmath
                 t_history.clear();
                 x_history.clear();
 
-                std::vector<T> dx=x0, x=x0, x_temp=x0;
+                std::vector<T> dx = x0, x = x0, x_temp = x0;
 
-                double t=ti, h = (tend-ti)/double(nsteps);
+                double t = ti, h = (tend - ti) / double(nsteps);
 
-                for(int i=0; i<nsteps; i++){
-                    integration_step(t,h,x,x_temp);
-                    t+=h;
-                    x=x_temp;
+                for(int i = 0; i < nsteps; i++)
+                {
+                    integration_step(t, h, x, x_temp);
+                    t +=h ;
+                    x = x_temp;
                     t_history.push_back(t);
                     x_history.push_back(x);
                 }
@@ -197,14 +198,15 @@ namespace smartmath
                 t_history.setZero();
                 x_history.setZero();
 
-                Eigen::VectorXd x=x0, x_temp=x0;
+                Eigen::VectorXd x = x0, x_temp = x0;
 
-                double t=ti, h = (tend-ti)/double(nsteps);
+                double t = ti, h = (tend - ti) / double(nsteps);
 
-                for(int i=0; i<nsteps; i++){
-                    integration_step_eigen(t,h,x,x_temp);
-                    t+=h;
-                    x=x_temp;
+                for(int i = 0; i < nsteps; i++)
+                {
+                    integration_step_eigen(t, h, x, x_temp);
+                    t += h;
+                    x = x_temp;
                     t_history(i) = t;
                     x_history.col(i) = x;
                 }

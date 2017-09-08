@@ -32,11 +32,11 @@ namespace smartmath
             /**
              * @brief m_sequence Bulirsch sequence
              */              
-            std::vector<int> m_sequence;
+            std::vector<unsigned int> m_sequence;
             /**
              * @brief m_extrapol size of the extrapolation table
              */               
-            int m_extrapol;
+            unsigned int m_extrapol;
 
         public:
 
@@ -49,14 +49,14 @@ namespace smartmath
              * @param dyn pointer to the dynamical system to be integrated
              * @param extrapol size of the extrapolation table (the order equals twice that number)
              */
-            bulirschstoer(const dynamics::base_dynamics<T> *dyn, const int &extrapol = 7) : base_integrator<T>("Bulirsch-Stoer algorithm", dyn), m_extrapol(extrapol){
+            bulirschstoer(const dynamics::base_dynamics<T> *dyn, const unsigned int &extrapol = 7) : base_integrator<T>("Bulirsch-Stoer algorithm", dyn), m_extrapol(extrapol){
 
                 /* sanity checks */
                 if(m_extrapol < 1)
                     smartmath_throw("BULIRSCHSTOER: number of extrapolations needs to be non negative"); 
 
                 /* defining Bulirsch sequence */
-                std::vector<int> sequence(m_extrapol);
+                std::vector<unsigned int> sequence(m_extrapol);
                 sequence[0] = 2;
                 if(m_extrapol > 1)
                     sequence[1] = 4;
@@ -64,7 +64,7 @@ namespace smartmath
                     sequence[2] = 6;
                 if(m_extrapol > 3)
                 {
-                    for(int k = 3; k < m_extrapol; k++)
+                    for(unsigned int k = 3; k < m_extrapol; k++)
                         sequence[k] = 2 * sequence[k - 2];
                 }
                 m_sequence = sequence;
@@ -113,16 +113,16 @@ namespace smartmath
                 t_history.clear();
                 x_history.clear();
 
-                std::vector<T> x(x0),xp(x0);
-                double t=ti, H = (tend-ti)/double(nsteps);
+                std::vector<T> x(x0), xp(x0);
+                double t = ti, H = (tend - ti) / double(nsteps);
 
-                for(int k=0; k<nsteps; k++){
+                for(int k = 0; k < nsteps; k++){
 
-                    integration_step(t,H,x,xp);
+                    integration_step(t, H, x, xp);
 
                     /* Saving states */
-                    t+=H;
-                    x=xp;
+                    t += H;
+                    x = xp;
                     t_history.push_back(t);
                     x_history.push_back(x);
 
@@ -142,7 +142,7 @@ namespace smartmath
              * @param[out] eta estimation of the state at t + H
              * @return
              */ 
-            int midpoint(const int &n, const double &H, const std::vector<T> &y, const double &t, std::vector<T> &eta) const{
+            int midpoint(const unsigned int &n, const double &H, const std::vector<T> &y, const double &t, std::vector<T> &eta) const{
 
                 /* sanity checks */
                 if(n < 2)
@@ -164,7 +164,7 @@ namespace smartmath
                     u2[j] += h2 * f[j];
 
                 std::vector<T> v = y, w = y;
-                for(int i = 2; i <= n; i++)
+                for(unsigned int i = 2; i <= n; i++)
                 {
                     v = u2;
                     u2 = u1;
@@ -194,7 +194,7 @@ namespace smartmath
              * @param[out] M last line of extrapolatio table (vector of state vectors)
              * @return
              */ 
-            int extrapolation(const int &i, const double &H, const std::vector<T> &y, const double &t, std::vector<std::vector<T> > &M) const{
+            int extrapolation(const unsigned int &i, const double &H, const std::vector<T> &y, const double &t, std::vector<std::vector<T> > &M) const{
 
                 /* sanity checks */
                 if(i < 1)
@@ -213,7 +213,7 @@ namespace smartmath
                     std::vector<std::vector<T> > Mp;
                     extrapolation(i - 1, H, y, t, Mp); // recursive call
 
-                    for(int j = 1; j < i; j++)
+                    for(unsigned int j = 1; j < i; j++)
                     {
                         eta = M[j - 1];
                         M.push_back(eta);

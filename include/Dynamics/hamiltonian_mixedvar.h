@@ -40,7 +40,7 @@ namespace smartmath
              * @param dim half-order of the Hamiltonian system
              * @param separable boolean precising whether the system is separable or not
              */
-            hamiltonian_mixedvar(const std::string &name, const int &dim, const bool &separable = false): base_hamiltonian<T>(name, dim, separable){}
+            hamiltonian_mixedvar(const std::string &name, const unsigned int &dim, const bool &separable = false): base_hamiltonian<T>(name, dim, separable){}
 
             /**
              * @brief ~hamiltonian_mixedvar deconstructor
