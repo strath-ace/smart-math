@@ -91,6 +91,9 @@ int smartmath::bisection_method(fun f, const double &lb0, const double &ub0, con
     {
         f_temp = f(root);
 
+        if (f_temp == 0.0)
+            return 0;
+
         if( f_temp * f_low > 0.0 )
         {
             lb = root;
@@ -145,6 +148,9 @@ int smartmath::bisection_method_2(
     while( (ub - lb > prec) && (i < iter) )
     {
         f_temp = f(root);
+
+        if (f_temp == 0.0)
+            return 0;
 
         if( f_temp * f_low > 0.0 )
         {
