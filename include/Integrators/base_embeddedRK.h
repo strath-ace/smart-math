@@ -114,7 +114,7 @@ namespace smartmath
                 x_history.clear();
                 t_history.clear();
 
-                int k;
+                unsigned int k;
                 int check = 0;
                 std::vector<T> x(x0), xtemp(x0);
                 std::vector<std::vector<T> > f;
@@ -142,8 +142,8 @@ namespace smartmath
                 events2 = events;
                 unsigned int m= events.size();           
 
-                int i=0;
-                while(sqrt(pow(t-ti, 2))<sqrt(pow(tend-ti, 2)))
+                unsigned int i = 0;
+                while(sqrt(pow(t - ti, 2)) < sqrt(pow(tend - ti, 2)))
                 {
 
                     if((h * h > m_maxstep_events*m_maxstep_events) && (m_maxstep_events > 0.0))

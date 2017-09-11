@@ -72,7 +72,7 @@ namespace smartmath
                 pf = p0;                
 
                 /* performing the integration step per se using the precomputed coefficients */
-                for(int j = 0; j < m_stages; j++)
+                for(unsigned int j = 0; j < m_stages; j++)
                 {
 
                     if(m_c[j] != 0.0)
@@ -134,9 +134,9 @@ namespace smartmath
 
                 /* splitting the initial state vector */
                 T zero = 0.0 * x0[0];
-                int n = m_mix->get_dim();
+                unsigned int n = m_mix->get_dim();
                 std::vector<T> q0(n, zero), p0(n, zero);
-                for(int j = 0; j < n; j++)
+                for(unsigned int j = 0; j < n; j++)
                 {
                     q0[j] = x0[j];
                     p0[j] = x0[j + n];
