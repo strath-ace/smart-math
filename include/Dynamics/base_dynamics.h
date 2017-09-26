@@ -57,18 +57,6 @@ namespace smartmath
             virtual int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const = 0;
 
             /**
-             * @brief evaluate evaluate the dynamics at a given instant of time and a given state handling Eigen vectors
-             *
-             * Function to evaluate the dinamics at a given instant of time and a given state. It is a virtual function so any class that inherites from base_dynamics need to implement it.
-             * @param[in] t time
-             * @param[in] state state values at time t
-             * @param[out] dstate derivative of the states at time t
-             * @return
-             */
-            virtual int evaluate_eigen(const double &t, const Eigen::VectorXd &state, Eigen::Ref<Eigen::VectorXd> dstate) const
-            { smartmath_throw("evaluate_function using Eigen not implemented "); return 1; }
-
-            /**
              * @brief get_name return dynamical system name
              *
              * Function to get the name of the dynamical system
