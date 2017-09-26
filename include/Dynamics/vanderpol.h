@@ -48,9 +48,9 @@ namespace smartmath
             ~vanderpol(){}
 
             /**
-             * @brief evaluate evaluate the dinamics of the Van der Pol oscillator at a given instant of time and a given state.
+             * @brief evaluate evaluates the dynamics of the Van der Pol oscillator at a given instant of time and a given state.
              *
-             * Function to evaluate the dinamics of the Van der Pol Oscillator at a given instant of time and a given state. It is a virtual function so any class that inherites from base_dynamics need to implement it.
+             * Function to evaluate the dynamics of the Van der Pol Oscillator at a given instant of time and a given state. It is a virtual function so any class that inherits from base_dynamics need to implement it.
              * @param[in] t time
              * @param[in] state state values at time t
              * @param[out] dstate derivative of the states at time t
