@@ -48,7 +48,7 @@ int main(){
     prop1.integrate(0.0, dt, steps, x, x1); // propagation with non-symplectic integrator
     prop2.integrate(0.0, dt, steps, x, x2); // propagation with symplectic integrator
 
-    cout << "State after an elapsed time of " << dt << " are: (" << x2[0] << ", " << x2[1] << ") with symplectic integration and (" << x1[0] << ", " << x1[1] << ") without" << endl;
+    cout << "States after an elapsed time of " << dt << " are: (" << x2[0] << ", " << x2[1] << ") with symplectic integration and (" << x1[0] << ", " << x1[1] << ") without" << endl;
 	cout << "Values for H are respectively " << H(x2) << " and " << H(x1) << endl;
     cout << endl;
 

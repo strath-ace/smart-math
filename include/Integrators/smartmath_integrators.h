@@ -22,7 +22,6 @@
 #include "AB.h"
 #include "ABM.h"
 #include "base_integrationwevent.h"
-#include "PECEvar.h"
 #include "base_embeddedRK.h"
 #include "rkf45.h"
 #include "rk87.h"
