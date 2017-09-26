@@ -21,6 +21,5 @@
 #include "twobody.h"
 #include "spring.h"
 #include "pendulum.h"
-#include "oscul.h"
 
 #endif // SMARTMATH_DYNAMICS_H
