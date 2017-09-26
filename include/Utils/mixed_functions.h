@@ -19,7 +19,6 @@
 #include "../LinearAlgebra/Eigen/Core"
 #include "../LinearAlgebra/EigenMultivariateNormal.h"
 #include "../exception.h"
-#include "chebyshev_inequality.h"
 #include <time.h>
 #include <functional>
 #include <utility>
