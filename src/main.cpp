@@ -23,35 +23,5 @@ double H(const std::vector<double> vec){
 int main(){
 
     cout << "Welcome to SMART-MATH!" << endl;
-    cout << endl;
-
-    cout << "Following is a simple example (the mathematical pendulum) on the advantage of using symplectic integrators for Hamiltonian systems" << endl;
-
-    /* Creating the dynamics */
-    smartmath::dynamics::pendulum<double> *dyn = new smartmath::dynamics::pendulum<double>();
-
-	/* Creating integrators */
-    smartmath::integrator::ABM<double> prop1(dyn, 6); // predictor-corrector of order 6 
-    smartmath::integrator::yoshida6<double> prop2(dyn); // symplectic integrator of order 6 (note that the dynamics has to be coded in an Hamiltonian form)
-
-    /* Setting initial conditions */
-    std::vector<double> x(2), x1 = x, x2 = x;
-    x[0] = 0.1; // angle
-    x[1] = 0.01; // angular velocity
-
-    cout << "Initial conditions are: (" << x[0] << ", " << x[1] << ")." << endl;
-    cout << "The corresponding value for the Hamiltonian H is: " << H(x) << endl;
-
-    double dt = 1.0e5; // time of propagation
-    int steps = floor(dt / 0.1); // number of integration steps
-
-    prop1.integrate(0.0, dt, steps, x, x1); // propagation with non-symplectic integrator
-    prop2.integrate(0.0, dt, steps, x, x2); // propagation with symplectic integrator
-
-    cout << "States after an elapsed time of " << dt << " are: (" << x2[0] << ", " << x2[1] << ") with symplectic integration and (" << x1[0] << ", " << x1[1] << ") without" << endl;
-	cout << "Values for H are respectively " << H(x2) << " and " << H(x1) << endl;
-    cout << endl;
-
-    delete dyn;
-
+    
 }
