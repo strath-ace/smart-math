@@ -62,22 +62,6 @@ namespace smartmath
             virtual int integrate(const double &ti, const double &tend, const int &nsteps, const std::vector<T> &x0, std::vector<std::vector<T> > &x_history, std::vector<double> &t_history)  const = 0;
             
             /**
-             * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states) handling Eigen vectors
-             *
-             * The method implements the scheme to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize) returning the full history of propagation
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] x_history vector of intermediate state vector (including final one)
-             * @param[out] t_history vector of intermediate times (including final one)
-             * @return
-             */
-            virtual int integrate_eigen(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::MatrixXd> x_history, Eigen::Ref<Eigen::VectorXd> t_history)  const
-            { smartmath_throw("integrate_function using Eigen not implemented "); return 1; }
-
-            /**
              * @brief integrate method to integrate from initial conditions to a final time with a given number of steps
              *
              * The method implements the corresponding integration scheme with given initial time,
@@ -97,30 +81,6 @@ namespace smartmath
                 integrate(ti, tend, nsteps, x0, x_history, t_history);
 
                 xfinal = x_history.back();
-
-                return 0;
-            }
-
-            /**
-             * @brief integrate method to integrate from initial conditions to a final time with a given number of steps handling Eigen vectors
-             *
-             * The method implements the corresponding integration scheme with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integrate_eigen(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
-
-                Eigen::MatrixXd x_history = Eigen::MatrixXd::Zero(x0.size(), nsteps);
-                Eigen::VectorXd t_history = Eigen::VectorXd::Zero(nsteps);
-
-                integrate_eigen(ti, tend, nsteps, x0, x_history, t_history);
-
-                xfinal = x_history.rightCols(1);
 
                 return 0;
             }

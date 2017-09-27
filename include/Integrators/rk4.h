@@ -37,7 +37,6 @@ namespace smartmath
         public:
 
             using base_rungekutta<T>::integrate;
-            using base_rungekutta<T>::integrate_eigen;
 
             /**
              * @brief rk4 constructor
