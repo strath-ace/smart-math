@@ -2,16 +2,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 /*
-------------Copyright (C) 2017 University of Strathclyde--------------
--------------------- Author: Romain Serra -------------------------
--------------- e-mail: romain.serra@strath.ac.uk ------------------
+------------Copyright (C) 2016 University of Strathclyde--------------
+------------ e-mail: romain.serra@strath.ac.uk -----------------------
+----------------- Author: Romain Serra -------------------------------
 */
 
 
-#ifndef SMARTMATH_SPRING_H
-#define SMARTMATH_SPRING_H
+#ifndef SMARTMATH_HAMILTONIAN_MIXEDVAR_H
+#define SMARTMATH_HAMILTONIAN_MIXEDVAR_H
 
-#include "hamiltonian_mixedvar.h"
+#include "hamiltonian_momentum.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -19,68 +19,47 @@ namespace smartmath
     namespace dynamics {
 
         /**
-         * @brief The mathematical spring problem
+         * @brief The hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system with mixed variables needs to inherit from it
          *
-         * The problem models the dynamics of a spring with unit scales.
-         *
+         * The hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
+         * The system has two sets of canonical variables and the Hamiltonian writes H(q, p) =  H(q2, p2).
          */
         template < class T >
-        class spring: public hamiltonian_mixedvar<T>
+        class hamiltonian_mixedvar: public hamiltonian_momentum<T>
         {
 
-        private:
-            using hamiltonian_mixedvar<T>::m_dim;
+        protected:
+        	using smartmath::dynamics::hamiltonian_momentum<T>::m_dim;
 
         public:
-
-            /**
-             * @brief spring constructor
+        	 /**
+             * @brief hamiltonian_mixedvar constructor
              *
-             * The constructor initializes the problem
+             * The constructor initializes the name of the Hamiltonian dynamics, its half-dimension and a flag about its separability
+             * @param name integrator name
+             * @param dim half-order of the Hamiltonian system
+             * @param separable boolean precising whether the system is separable or not
              */
-            spring() : hamiltonian_mixedvar<double>("Mathematical spring problem", 1, true)
-            {
-
-            }
+            hamiltonian_mixedvar(const std::string &name, const unsigned int &dim, const bool &separable = false): hamiltonian_momentum<T>(name, dim, separable){}
 
             /**
-              * @brief ~spring deconstructor
-              */
-            ~spring(){}
+             * @brief ~hamiltonian_mixedvar deconstructor
+             */
+            ~hamiltonian_mixedvar(){}
 
             /**
              * @brief evaluate differential equations of the implemented Hamiltonian system
              * @param[in] t time in scaled units
              * @param[in] state vector in scaled units
-             * @param[out] dstate derivative in scaled units
+             * @param[out] dstate vector of time derivatives in scaled units
              * @return exit flag (0=success)
              */
             int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
 
-                /* sanity checks */
-                if(state.size() != 2 * m_dim)
-                    smartmath_throw("EVALUATE: the Hamiltonian state must have a consistent dimension");
-
-                dstate[0] = state[1];
-                dstate[1] = -state[0];
+                smartmath_throw("EVALUATE: do not use EVALUATE for Hamiltonian systems with mixed variables because part of the dynamics is missing");
 
                 return 0;
-            }
-
-            /**
-             * @brief DHq evaluates partial derivative of Hamiltonian with respect to q
-             * @param[in] t time in TU
-             * @param[in] q vector of primary canonical position
-             * @param[in] p vector of primary canonical momenta 
-             * @param[out] dH partial derivative of H with respect to q in scaled units (DU, TU)
-             * @return exit flag (0=success)
-             */
-            int DHq(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const{
-
-                dH[0] = q[0];
-
-                return 0;
-            };
+            }          
 
             /**
              * @brief DHq2 computes the partial derivative of the Hamiltonian with respect to the second 'position' q2
@@ -92,12 +71,7 @@ namespace smartmath
              * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector q
              * @return exit flag (0=success)
              */
-            int DHq2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const{
-
-                dH2[0] = 0.0 * q2[0];
-
-                return 0;
-            };
+            virtual int DHq2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const = 0;
 
             /**
              * @brief DHp2 computes the partial derivative of the Hamiltonian with respect to the second 'momentum' p2
@@ -109,12 +83,7 @@ namespace smartmath
              * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector p
              * @return exit flag (0=success)
              */
-            int DHp2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const{
-
-                dH2[0] = 0.0 * q2[0] + 1.0;
-
-                return 0;
-            };
+            virtual int DHp2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const = 0;            
 
             /**
              * @brief conversion performs the conversion from the first set of canonical variables to the second one
@@ -126,13 +95,7 @@ namespace smartmath
              * @param[out] p2 vector in scaled units
              * @return exit flag (0=success)
              */
-            int conversion(const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &q2, std::vector<T> &p2) const{
-
-                p2[0] = (q[0] * q[0] + p[0] * p[0]) / 2.0;
-                q2[0] = atan2(q[0], p[0]);
-
-                return 0;
-            }; 
+            virtual int conversion(const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &q2, std::vector<T> &p2) const = 0; 
 
             /**
              * @brief conversion performs the conversion from the second set of canonical variables to the first one
@@ -144,18 +107,11 @@ namespace smartmath
              * @param[out] p vector in scaled units
              * @return exit flag (0=success)
              */
-            int conversion2(const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &q, std::vector<T> &p) const{
-
-                T inter = sqrt(2.0 * p2[0]);
-                p[0] = inter * cos(q2[0]);
-                q[0] = inter * sin(q2[0]);
-
-                return 0;
-            }; 
+            virtual int conversion2(const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &q, std::vector<T> &p) const = 0; 
 
         };
 
     }
 }
 
-#endif // SMARTMATH_SPRING_H
+#endif // SMARTMATH_HAMILTONIAN_MIXEDVAR_H
