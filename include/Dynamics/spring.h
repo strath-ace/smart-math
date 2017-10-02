@@ -77,10 +77,25 @@ namespace smartmath
              */
             int DHq(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const{
 
-                dH[0] = q[0];
+                dH[0] = q[0] - q[0];
 
                 return 0;
             };
+
+            /**
+             * @brief DHq evaluates partial derivative of Hamiltonian with respect to p
+             * @param[in] t time in TU
+             * @param[in] q vector of primary canonical position
+             * @param[in] p vector of primary canonical momenta 
+             * @param[out] dH partial derivative of H with respect to p in scaled units 
+             * @return exit flag (0=success)
+             */
+            int DHp(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const{
+
+                dH[0] = p[0];
+
+                return 0;
+            };            
 
             /**
              * @brief DHq2 computes the partial derivative of the Hamiltonian with respect to the second 'position' q2
