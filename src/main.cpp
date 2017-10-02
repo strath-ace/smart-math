@@ -7,16 +7,33 @@
 --------- Author: Annalisa Riccardi ----------------------------------
 */
 
-
-#include <iostream>
-#include <Eigen/Dense>
-
 #include "../include/smartmath.h"
 
 using namespace std;
 
 int main(){
 
-    cout << "Welcome to SMART-MATH!" << endl;
-    
+	cout << "This is an example to illustrate integration with mixed variables" << endl;
+
+	/* Creating the dynamics */
+	smartmath::dynamics::spring<double> *dyn = new smartmath::dynamics::spring<double>();
+
+	/* Creating integrator */
+	smartmath::integrator::leapfrog<double> prop(dyn, true);
+
+	/* Setting initial conditions */
+	std::vector<double> x(2), xf;
+	x[0] = 0.1; // angle
+	x[1] = 0.01; // angular velocity
+
+	/* Integration */
+	double t_0 = 5.0;
+	double t_f = 10.0; // projected final time
+	prop.integrate(t_0, t_f, 1e2, x, xf); 
+
+	cout << "The analytical solution to the harmonic oscillator is compared to the numerical one:" << endl;
+
+	cout << sqrt(x[0] * x[0] + x[1] * x[1]) * sin(t_f - (t_0 - atan2(x[0], x[1]))) << " VS " << xf[0] << endl;
+
+	delete dyn;
 }
