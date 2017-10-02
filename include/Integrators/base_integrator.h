@@ -91,7 +91,9 @@ namespace smartmath
              * Function to get the name of the integration scheme
              * @return
              */
-            std::string get_name() const {return m_name;}
+            std::string get_name() const {
+                return m_name;
+            }
 
             /**
              * @brief set_comments changes the flag for printing comments

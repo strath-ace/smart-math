@@ -15,11 +15,6 @@
 
 using namespace std;
 
-double H(const std::vector<double> vec){
-
-	return 0.5 * vec[1] * vec[1] - cos(vec[0]);
-}
-
 int main(){
 
     cout << "Welcome to SMART-MATH!" << endl;
