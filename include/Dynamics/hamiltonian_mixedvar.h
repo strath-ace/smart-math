@@ -32,8 +32,6 @@ namespace smartmath
         	using smartmath::dynamics::hamiltonian_momentum<T>::m_dim;
 
         public:
-
-            using smartmath::dynamics::hamiltonian_momentum<T>::DHp;
             
         	 /**
              * @brief hamiltonian_mixedvar constructor
