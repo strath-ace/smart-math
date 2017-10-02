@@ -2,16 +2,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 /*
-------------Copyright (C) 2016 University of Strathclyde--------------
--------------------- Author: Francesco Torre -------------------------
--------------- e-mail: francesco.torre@strath.ac.uk ------------------
+------------Copyright (C) 2017 University of Strathclyde--------------
+-------------------- Author: Romain Serra -------------------------
+-------------- e-mail: romain.serra@strath.ac.uk ------------------
 */
 
 
 #ifndef SMARTMATH_SPRING_H
 #define SMARTMATH_SPRING_H
 
-#include "base_dynamics.h"
+#include "hamiltonian_mixedvar.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -19,36 +19,27 @@ namespace smartmath
     namespace dynamics {
 
         /**
-         * @brief The spring problem
+         * @brief The mathematical spring problem
          *
-         * The spring problem models the dynamics of an object of mass \f$m\f$ linked to the equilibrium point by a spring.
+         * The problem models the dynamics of a spring with unit scales.
          *
          */
         template < class T >
-        class spring: public base_dynamics<T>
+        class spring: public hamiltonian_mixedvar<T>
         {
 
         private:
-            double m_k;
-            double m_t_scale;
-            double m_r_scale;
+            using hamiltonian_mixedvar<T>::m_dim;
 
         public:
 
             /**
              * @brief spring constructor
              *
-             * The constructor initializes the problem parameters and scaling factors to the value supplied by the user.
-             * Default values for scaling factors are 1 and parameters is a vector of zero values or zero polynomials.
-             * @param k elastic coefficient of the spring
-             * @param t_scale time scaling factor
-             * @param r_scale position scaling factor
+             * The constructor initializes the problem
              */
-            spring(const double &k, const double &t_scale=1, const double &r_scale=1) : base_dynamics<double>("Spring Problem"),
-                m_k(k), m_t_scale(t_scale), m_r_scale(r_scale)
+            spring() : hamiltonian_mixedvar<double>("Mathematical spring problem", 1, true)
             {
-                if(m_k < 0.0)
-                    smartmath_throw(this->m_name+": the elastic coefficient must be >= 0");
 
             }
 
@@ -58,44 +49,125 @@ namespace smartmath
             ~spring(){}
 
             /**
-             * @brief evaluate evaluates the dynamics of the Two-body problem at a given instant of time and a given state.
-             *
-             * Function to evaluate the dynamics of the Two-body problem at a given instant of time and a given state. It is a virtual function so any class that inherits from base_dynamics need to implement it.
-             * @param[in] t time
-             * @param[in] state state values at time t
-             * @param[out] dstate derivative of the states at time t
-             * @return
+             * @brief evaluate differential equations of the implemented Hamiltonian system
+             * @param[in] t time in scaled units
+             * @param[in] state vector in scaled units
+             * @param[out] dstate derivative in scaled units
+             * @return exit flag (0=success)
              */
             int evaluate(const double &t, const std::vector<T> &state, std::vector<T> &dstate) const{
-                //sanity checks
-                if(t<0)
-                    smartmath_throw(this->m_name+": negative time supplied in evaluation of the dynamical system");
-                if(state.size() > 6)
-                    smartmath_throw(this->m_name+": it's difficult to imagine a spring acting ot time or higher dimensions...");
-                if(state.size()%2 != 0)
-                    smartmath_throw(this->m_name+": half dimensions are not contemplated in this version. Wait for update #42.");
 
-                unsigned int dimension = state.size()/2;
+                /* sanity checks */
+                if(state.size() != 2 * m_dim)
+                    smartmath_throw("EVALUATE: the Hamiltonian state must have a consistent dimension");
 
-                dstate.clear();
-
-                // velocities
-                for(unsigned int index = 0; index < dimension; ++index)
-                {
-                    dstate.push_back(state[dimension+index]);
-                }
-
-                // acceerations
-                for(unsigned int index = 0; index < dimension; ++index)
-                {
-                    dstate.push_back(-m_k*state[index]);
-                }
-
-                if(dstate.size() != state.size())
-                    smartmath_throw(this->m_name+": state and dstate dimensions mismatch.");
+                dstate[0] = state[1];
+                dstate[1] = -state[0];
 
                 return 0;
-}
+            }
+
+            /**
+             * @brief DHq evaluates partial derivative of Hamiltonian with respect to q
+             * @param[in] t time in TU
+             * @param[in] q vector of primary canonical position
+             * @param[in] p vector of primary canonical momenta 
+             * @param[out] dH partial derivative of H with respect to q in scaled units 
+             * @return exit flag (0=success)
+             */
+            int DHq(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const{
+
+                dH[0] = q[0] - q[0];
+
+                return 0;
+            };
+
+            /**
+             * @brief DHq evaluates partial derivative of Hamiltonian with respect to p
+             * @param[in] t time in TU
+             * @param[in] q vector of primary canonical position
+             * @param[in] p vector of primary canonical momenta 
+             * @param[out] dH partial derivative of H with respect to p in scaled units 
+             * @return exit flag (0=success)
+             */
+            int DHp(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const{
+
+                dH[0] = p[0];
+
+                return 0;
+            };            
+
+            /**
+             * @brief DHq2 computes the partial derivative of the Hamiltonian with respect to the second 'position' q2
+             *
+             * The method computes the partial derivative of the Hamiltonian with respect to q2
+             * @param[in] t time in scaled units
+             * @param[in] q2 vector in scaled units
+             * @param[in] p2 vector in scaled units
+             * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector q2
+             * @return exit flag (0=success)
+             */
+            int DHq2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const{
+
+                dH2[0] = 0.0;
+
+                return 0;
+            };
+
+            /**
+             * @brief DHp2 computes the partial derivative of the Hamiltonian with respect to the second 'momentum' p2
+             *
+             * The method computes the partial derivative of the Hamiltonian with respect to p2
+             * @param[in] t time in scaled units
+             * @param[in] q2 vector in scaled units
+             * @param[in] p2 vector in scaled units
+             * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector p2
+             * @return exit flag (0=success)
+             */
+            int DHp2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const{
+
+                dH2[0] = 1.0;
+
+                return 0;
+            };
+
+            /**
+             * @brief conversion performs the conversion from the first set of canonical variables to the second one
+             *
+             * The method converts the first set of canonical variables into the second one
+             * @param[in] q vector in scaled units
+             * @param[in] p vector in scaled units            
+             * @param[out] q2 vector in scaled units
+             * @param[out] p2 vector in scaled units
+             * @return exit flag (0=success)
+             */
+            int conversion(const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &q2, std::vector<T> &p2) const{
+
+                p2[0] = (q[0] * q[0] + p[0] * p[0]) / 2.0;
+                q2[0] = atan2(q[0], p[0]);
+
+                return 0;
+            }; 
+
+            /**
+             * @brief conversion performs the conversion from the second set of canonical variables to the first one
+             *
+             * The method converts the second set of canonical variables into the first one
+             * @param[in] q2 vector in scaled units
+             * @param[in] p2 vector in scaled units            
+             * @param[out] q vector in scaled units
+             * @param[out] p vector in scaled units
+             * @return exit flag (0=success)
+             */
+            int conversion2(const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &q, std::vector<T> &p) const{
+
+                T inter = sqrt(2.0 * p2[0]);
+                p[0] = inter * cos(q2[0]);
+                q[0] = inter * sin(q2[0]);
+
+                return 0;
+            }; 
+
         };
 
     }
