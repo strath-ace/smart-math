@@ -68,7 +68,7 @@ namespace smartmath
              * @param[in] t time in scaled units
              * @param[in] q2 vector in scaled units
              * @param[in] p2 vector in scaled units
-             * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector q
+             * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector q2
              * @return exit flag (0=success)
              */
             virtual int DHq2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const = 0;
@@ -80,7 +80,7 @@ namespace smartmath
              * @param[in] t time in scaled units
              * @param[in] q2 vector in scaled units
              * @param[in] p2 vector in scaled units
-             * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector p
+             * @param[out] dH2 vector of partial derivatives of H w.r.t. the vector p2
              * @return exit flag (0=success)
              */
             virtual int DHp2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const = 0;            
