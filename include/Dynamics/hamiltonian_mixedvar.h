@@ -74,7 +74,7 @@ namespace smartmath
             virtual int DHq2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const = 0;
 
             /**
-             * @brief DHp2 computes the partial derivative of the Hamiltonian with respect to the second 'position' q2
+             * @brief DHp2 computes the partial derivative of the Hamiltonian with respect to the second 'momentum' p2
              *
              * The method computes the partial derivative of the Hamiltonian with respect to p2
              * @param[in] t time in scaled units
