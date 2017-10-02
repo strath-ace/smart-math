@@ -77,7 +77,7 @@ namespace smartmath
              */
             int DHq(const double &t, const std::vector<T> &q, const std::vector<T> &p, std::vector<T> &dH) const{
 
-                dH[0] = q[0] - q[0];
+                dH[0] = 0.0;
 
                 return 0;
             };
