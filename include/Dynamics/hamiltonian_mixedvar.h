@@ -11,7 +11,7 @@
 #ifndef SMARTMATH_HAMILTONIAN_MIXEDVAR_H
 #define SMARTMATH_HAMILTONIAN_MIXEDVAR_H
 
-#include "base_hamiltonian.h"
+#include "hamiltonian_momentum.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -21,15 +21,15 @@ namespace smartmath
         /**
          * @brief The hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system with mixed variables needs to inherit from it
          *
-         * The base_hamiltonian class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
+         * The hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
          * The system has two sets of canonical variables and the Hamiltonian writes H(q, p) =  H(q2, p2).
          */
         template < class T >
-        class hamiltonian_mixedvar: public base_hamiltonian<T>
+        class hamiltonian_mixedvar: public hamiltonian_momentum<T>
         {
 
         protected:
-        	using smartmath::dynamics::base_hamiltonian<T>::m_dim;
+        	using smartmath::dynamics::hamiltonian_momentum<T>::m_dim;
 
         public:
         	 /**
@@ -40,7 +40,7 @@ namespace smartmath
              * @param dim half-order of the Hamiltonian system
              * @param separable boolean precising whether the system is separable or not
              */
-            hamiltonian_mixedvar(const std::string &name, const unsigned int &dim, const bool &separable = false): base_hamiltonian<T>(name, dim, separable){}
+            hamiltonian_mixedvar(const std::string &name, const unsigned int &dim, const bool &separable = false): hamiltonian_momentum<T>(name, dim, separable){}
 
             /**
              * @brief ~hamiltonian_mixedvar deconstructor
@@ -74,7 +74,7 @@ namespace smartmath
             virtual int DHq2(const double &t, const std::vector<T> &q2, const std::vector<T> &p2, std::vector<T> &dH2) const = 0;
 
             /**
-             * @brief DHp2 computes the partial derivative of the Hamiltonian with respect to the second 'position' q2
+             * @brief DHp2 computes the partial derivative of the Hamiltonian with respect to the second 'momentum' p2
              *
              * The method computes the partial derivative of the Hamiltonian with respect to p2
              * @param[in] t time in scaled units
