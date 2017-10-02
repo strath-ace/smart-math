@@ -12,7 +12,6 @@
 
 #include "base_integrator.h"
 #include "../exception.h"
-#include "../Events/base_event.h"
 #include <type_traits>
 
 namespace smartmath
@@ -32,8 +31,7 @@ namespace smartmath
             using base_integrationwevent<T>::m_name;
             using base_integrationwevent<T>::m_dyn;
             using base_integrationwevent<T>::m_minstep_events;
-            using base_integrationwevent<T>::m_maxstep_events;     
-            using base_integrationwevent<T>::m_event_list;            
+            using base_integrationwevent<T>::m_maxstep_events;               
             /**
              * @brief m_tol tolerance for step-size control
              */
@@ -51,7 +49,6 @@ namespace smartmath
         public:
 
             using base_integrationwevent<T>::integrate;
-            using base_integrationwevent<T>::set_event_list;
 
             /**
              * @brief base_embeddedRK constructor
@@ -123,24 +120,9 @@ namespace smartmath
                 T er = 0.0 * x0[0];
 
                 std::vector<int> events, events2;
-                if(m_event_list.size() == 0)
-                    events = g(x0, ti);
-                else
-                {
-                    events = std::vector<int>(m_event_list.size(), 0);
-                    for(unsigned int index = 0; index < m_event_list.size(); ++index)
-                    {
-                        if(m_event_list[index]->get_status_scope() != NULL)
-                        {
-                            if(*(m_event_list[index]->get_status_scope()) == false)
-                                continue;
-                        }
-                        
-                        events[index] = m_event_list[index]->evaluate(ti, x0);
-                    }
-                }
+                events = g(x0, ti);
                 events2 = events;
-                unsigned int m= events.size();           
+                unsigned int m = events.size();           
 
                 unsigned int i = 0;
                 while(sqrt(pow(t - ti, 2)) < sqrt(pow(tend - ti, 2)))
@@ -167,21 +149,8 @@ namespace smartmath
                     else
                     { // sucessful step
                         /* Checking for the events */
-                        if(m_event_list.size() == 0)
-                            events2 = g(xtemp, t + h);
-                        else
-                        {
-                            for(unsigned int index = 0; index < m; ++index)
-                            {
-                                if(m_event_list[index]->get_status_scope() != NULL)
-                                {
-                                    if(*(m_event_list[index]->get_status_scope()) == false)
-                                        continue;
-                                }
+                        events2 = g(xtemp, t + h);
 
-                                events2[index] = m_event_list[index]->evaluate(t + h, xtemp);
-                            }
-                        }
                         k = 0;
                         check = 0;        
                         while(k < m)
@@ -205,14 +174,7 @@ namespace smartmath
                                 t = tend; // trick to get out of the while loop   
                                 x_history.push_back(xtemp);
                                 t_history.push_back(t);
-                                if(m_event_list.size() != 0)
-                                {
-                                    for(unsigned int index = 0; index < m; ++index)
-                                    {
-                                        if(events2[index]-events[index] != 0)
-                                            m_event_list[index]->switch_trigger_on(t_history.back());
-                                    }
-                                }
+
                                 if(this->m_comments)
                                     std::cout << "Propagation interrupted by terminal event at time " << tend << " after " << i << " steps" << std::endl;
                             }

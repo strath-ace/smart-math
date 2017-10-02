@@ -12,7 +12,6 @@
 
 #include "base_embeddedRK.h"
 #include "../exception.h"
-#include "../Events/base_event.h"
 
 namespace smartmath
 {
