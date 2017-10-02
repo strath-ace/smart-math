@@ -19,7 +19,7 @@ namespace smartmath
     namespace dynamics {
 
         /**
-         * @brief The mathematical spring problem
+         * @brief The harmonic oscillator
          *
          * The problem models the dynamics of a spring with unit scales.
          *
