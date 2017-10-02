@@ -11,7 +11,7 @@
 #ifndef SMARTMATH_HAMILTONIAN_MIXEDVAR_H
 #define SMARTMATH_HAMILTONIAN_MIXEDVAR_H
 
-#include "hamiltonian_momentum.h"
+#include "base_hamiltonian.h"
 #include "../exception.h"
 
 namespace smartmath
@@ -25,11 +25,11 @@ namespace smartmath
          * The system has two sets of canonical variables and the Hamiltonian writes H(q, p) =  H(q2, p2).
          */
         template < class T >
-        class hamiltonian_mixedvar: public hamiltonian_momentum<T>
+        class hamiltonian_mixedvar: public base_hamiltonian<T>
         {
 
         protected:
-        	using smartmath::dynamics::hamiltonian_momentum<T>::m_dim;
+        	using smartmath::dynamics::base_hamiltonian<T>::m_dim;
 
         public:
         	 /**
@@ -40,7 +40,7 @@ namespace smartmath
              * @param dim half-order of the Hamiltonian system
              * @param separable boolean precising whether the system is separable or not
              */
-            hamiltonian_mixedvar(const std::string &name, const unsigned int &dim, const bool &separable = false): hamiltonian_momentum<T>(name, dim, separable){}
+            hamiltonian_mixedvar(const std::string &name, const unsigned int &dim, const bool &separable = false): base_hamiltonian<T>(name, dim, separable){}
 
             /**
              * @brief ~hamiltonian_mixedvar deconstructor
