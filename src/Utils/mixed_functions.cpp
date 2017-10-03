@@ -35,7 +35,7 @@ int smartmath::combination(int n, int k)
     return res / smartmath::factorial(min);
 }
 
-int smartmath::bisection_method(fun f, const double &lb0, const double &ub0, const double &prec, const int &iter, double &root){
+int smartmath::bisection_method(std::function<double(double)> f, const double &lb0, const double &ub0, const double &prec, const int &iter, double &root){
 
     if(lb0 > ub0)
         smartmath_throw("BISECTION_METHOD: lower bound must be smaller than upper one");

@@ -73,14 +73,6 @@ namespace smartmath
    */   
   int combination(int n, int k);
 
-  /** @typedef fun
-   * @brief A type defined structure for scalar functions of one variable
-   *
-   * @param double
-   * @return double
-   */
-  typedef double (*fun)(double);
-
   /**
    * @brief bisection_method implementation of the bisection method
    * @param[in] f monotonic function whose zero is to be found
@@ -91,7 +83,7 @@ namespace smartmath
    * @param[out] value of root
    * @return flag: 0 if method converged, 1 if max. number of iterations reached, -2 if initialization is wrong sign-wise, -1 if extremal values are not of opposite signs during iterations
    */  
-  int bisection_method(fun f, const double &lb0, const double &ub0, const double &prec, const int &iter, double &root);
+  int bisection_method(std::function<double(double)> f, const double &lb0, const double &ub0, const double &prec, const int &iter, double &root);
 
   /**
    * @brief Legendre evaluation of associated Legendre functions
