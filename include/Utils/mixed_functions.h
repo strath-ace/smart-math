@@ -73,7 +73,14 @@ namespace smartmath
    */   
   int combination(int n, int k);
 
+  /** @typedef fun
+   * @brief A type defined structure for scalar functions of one variable
+   *
+   * @param double
+   * @return double
+   */
   typedef double (*fun)(double);
+
   /**
    * @brief bisection_method implementation of the bisection method
    * @param[in] f monotonic function whose zero is to be found
