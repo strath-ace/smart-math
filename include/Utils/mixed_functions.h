@@ -28,7 +28,6 @@
 #include <iostream>
 #include "../LinearAlgebra/Eigen/Eigen"
 #include "../LinearAlgebra/Eigen/Core"
-#include "../LinearAlgebra/EigenMultivariateNormal.h"
 #include "../exception.h"
 #include <time.h>
 #include <functional>

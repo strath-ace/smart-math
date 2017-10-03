@@ -14,7 +14,6 @@
 #define SMARTMATH_VERSION_MINOR @PROJECT_VERSION_MINOR@
 #define SMARTMATH_VERSION_PATCH @PROJECT_VERSION_PATCH@
 
-#include "LinearAlgebra/smartmath_la.h"
 #include "Dynamics/smartmath_dynamics.h"
 #include "Integrators/smartmath_integrators.h"
 #include "Utils/smartmath_utils.h"
