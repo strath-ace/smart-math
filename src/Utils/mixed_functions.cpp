@@ -1,3 +1,14 @@
+ /* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+/*
+-------Copyright (C) 2017 University of Strathclyde and Authors-------
+------------ e-mail: annalisa.riccardi@strath.ac.uk ------------------
+------------ e-mail: carlos.ortega@strath.ac.uk ----------------------
+------------ e-mail: romain.serra@strath.ac.uk -----------------------
+--- Author: Annalisa Riccardi, Carlos Ortega Absil and Romain Serra --
+*/
+
 #include "../../include/Utils/mixed_functions.h"
 
 int smartmath::factorial(int n)

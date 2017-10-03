@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 /*
-------------Copyright (C) 2017 University of Strathclyde--------------
--------------------- Author: Romain Serra -------------------------
--------------- e-mail: romain.serra@strath.ac.uk ------------------
+-------Copyright (C) 2017 University of Strathclyde and Authors-------
+-------- e-mail: romain.serra@strath.ac.uk ---------------------------
+--------- Author: Romain Serra ---------------------------------------
 */
 
 #ifndef SMARTMATH_BASE_EMBEDDEDRK_H

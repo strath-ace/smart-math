@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 /*
-------------Copyright (C) 2016 University of Strathclyde--------------
------------- e-mail: annalisa.riccardi@strath.ac.uk ------------------
---------- Author: Annalisa Riccardi ----------------------------------
+------------Copyright (C) 2017 University of Strathclyde and Authors---------
+------------ e-mail: annalisa.riccardi@strath.ac.uk -------------------------
+------------- Author: Annalisa Riccardi -------------------------------------
 */
 
 
@@ -21,8 +21,6 @@ int main(){
 
     int n = 5;
     int k = 3;
-    std::cout << "\nCombination between " << n << " and " << k << ": " << smartmath::combination(n,k) << std::endl;
+    cout << "\nCombination between " << n << " and " << k << ": " << combination(n,k) << endl;
 
 }
-
-

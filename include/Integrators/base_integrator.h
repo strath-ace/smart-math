@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 /*
-------------Copyright (C) 2016 University of Strathclyde--------------
+------------Copyright (C) 2017 University of Strathclyde and Authors--
 ------------ e-mail: annalisa.riccardi@strath.ac.uk ------------------
 ------------ e-mail: carlos.ortega@strath.ac.uk ----------------------
 -------------- e-mail: romain.serra@strath.ac.uk ---------------------
@@ -13,7 +13,6 @@
 #ifndef SMARTMATH_BASE_INTEGRATOR_H
 #define SMARTMATH_BASE_INTEGRATOR_H
 
-#include "../LinearAlgebra/Eigen/Core"
 #include "../Dynamics/base_dynamics.h"
 #include "../exception.h"
 
