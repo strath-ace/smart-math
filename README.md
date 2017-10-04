@@ -4,9 +4,9 @@ Strathclyde Mechanical and Aerospace Research Toolbox for Mathematics
 
 `SMART` is a collection of toolboxes developed and maintained since 2015 by the department of Mechanical and Aerospace Engineer of Strathclyde University. `SMART-MATH` in particular, is a collection of mathematical core routines.
 
-`SMART` is aimed at making code development inside the team more efficient, reusable and easy maintainabile.
+`SMART` is aimed at making code development inside the team more efficient, reusable and easily maintainable.
 
-`SMART` is CMake-based C++ project. It can be used as the basis for new projects. 
+`SMART` is a CMake-based C++ project. It can be used as the basis for new projects. 
 
 
 Features
