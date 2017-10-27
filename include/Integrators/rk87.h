@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 /*
-------------Copyright (C) 2017 University of Strathclyde--------------
--------------------- Author: Romain Serra -------------------------
--------------- e-mail: romain.serra@strath.ac.uk ------------------
+-------Copyright (C) 2017 University of Strathclyde and Authors-------
+-------- e-mail: romain.serra@strath.ac.uk ---------------------------
+--------- Author: Romain Serra ---------------------------------------
 */
 
 #ifndef SMARTMATH_RK87_H
@@ -12,7 +12,6 @@
 
 #include "base_embeddedRK.h"
 #include "../exception.h"
-#include "../Events/base_event.h"
 
 namespace smartmath
 {
@@ -169,9 +168,9 @@ namespace smartmath
 		        er = 0.0;
 		        for(unsigned int j = 0; j < n; j++)
 		        {
-		            xbar[j] +=  (k1[j]*14005451.0/335480064.0 -k6[j]*59238493.0/1068277825.0 +k7[j]*181606767.0/758867731.0 +k8[j]* 561292985.0/797845732.0
+		            xbar[j] += (k1[j]*14005451.0/335480064.0 -k6[j]*59238493.0/1068277825.0 +k7[j]*181606767.0/758867731.0 +k8[j]* 561292985.0/797845732.0
 		             -k9[j]*1041891430.0/1371343529.0 +k10[j]*760417239.0/1151165299.0  +k11[j]*118820643.0/751138087.0 -k12[j]*528747749.0/2220607170.0 + k13[j]/4.0)*h;
-		            xfinal[j] +=  (k1[j]*13451932.0/455176623.0 -k6[j]*808719846.0/976000145.0 +k7[j]*1757004468.0/5645159321.0 +k8[j]*656045339.0/265891186.0
+		            xfinal[j] += (k1[j]*13451932.0/455176623.0 -k6[j]*808719846.0/976000145.0 +k7[j]*1757004468.0/5645159321.0 +k8[j]*656045339.0/265891186.0
 		             -k9[j]*3867574721.0/1518517206.0 +k10[j]*465885868.0/322736535.0  +k11[j]*53011238.0/667516719.0 +k12[j]*2.0/45.0)*h;
 		            er += pow(xbar[j]-xfinal[j], 2);
 		        }

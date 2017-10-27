@@ -1,8 +1,8 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
+ /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 /*
-------------Copyright (C) 2016 University of Strathclyde--------------
+-------Copyright (C) 2017 University of Strathclyde and Authors-------
 ------------ e-mail: annalisa.riccardi@strath.ac.uk ------------------
 ------------ e-mail: carlos.ortega@strath.ac.uk ----------------------
 --------- Author: Annalisa Riccardi and Carlos Ortega Absil ----------
@@ -22,7 +22,6 @@
 #include "AB.h"
 #include "ABM.h"
 #include "base_integrationwevent.h"
-#include "PECEvar.h"
 #include "base_embeddedRK.h"
 #include "rkf45.h"
 #include "rk87.h"

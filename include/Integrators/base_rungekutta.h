@@ -2,9 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 /*
-------------Copyright (C) 2017 University of Strathclyde--------------
--------------------- Author: Romain Serra -------------------------
--------------- e-mail: romain.serra@strath.ac.uk ------------------
+-------Copyright (C) 2017 University of Strathclyde and Authors-------
+-------- e-mail: romain.serra@strath.ac.uk ---------------------------
+--------- Author: Romain Serra ---------------------------------------
 */
 
 #ifndef SMARTMATH_BASE_RUNGEKUTTA_H
@@ -49,7 +49,6 @@ namespace smartmath
         public:
 
             using base_integrator<T>::integrate;
-            using base_integrator<T>::integrate_eigen;
 
             /**
              * @brief base_rungekutta constructor
@@ -108,45 +107,6 @@ namespace smartmath
             }
 
             /**
-             * @brief integration_step_eigen performs one integration step from the Runge-Kutta scheme handling Eigen vectors
-             *
-             * The method implements one step of a Runge-Kutta scheme to integrate with given initial time,
-             * final time, initial state condition (constant stepsize)
-             * This implementation only works for methods whose Butcher tableau has only a sub-diagonal of non-zero coefficients
-             * It needs to be overwritten in other cases e.g. Kutta's third order method
-             * @param[in] ti initial time instant
-             * @param[in] h time step
-             * @param[in] x0 vector of initial states
-             * @param[out] xfinal vector of final states
-             * @return
-             */
-            int integration_step_eigen(const double &ti, const double &h, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::VectorXd> xfinal) const{
-
-                Eigen::VectorXd x_temp=x0, k=x0;
-
-                xfinal = x0;
-
-                for(unsigned int i = 0; i < m_stages; i++)
-                {
-                    x_temp = x0;
-                    if(i == 0)
-                    {
-                        m_dyn->evaluate_eigen(ti + h * m_coeT[i], x_temp, k);
-                        xfinal += m_coeX[i] * k * h;
-                    }
-                    else
-                    { 
-                        x_temp += m_coeK[i - 1] * k * h;    
-                        m_dyn->evaluate_eigen(ti + h * m_coeT[i], x_temp, k);
-                        xfinal += m_coeX[i] * k * h;        
-                    }
-                }              
-
-                return 0;
-            }
-
-
-            /**
              * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states)
              *
              * The method implements a fixed-step Runge-Kutta scheme to integrate with given initial time,
@@ -175,40 +135,6 @@ namespace smartmath
                     x = x_temp;
                     t_history.push_back(t);
                     x_history.push_back(x);
-                }
-
-                return 0;
-            }
-
-            /**
-             * @brief integrate method to integrate between two given time steps, initial condition and number of steps (saving intermediate states) handling Eigen vectors
-             *
-             * The method implements a fixed-step Runge-Kutta scheme to integrate with given initial time,
-             * final time, initial state condition and number of steps (constant stepsize)
-             * @param[in] ti initial time instant
-             * @param[in] tend final time instant
-             * @param[in] nsteps number of integration steps
-             * @param[in] x0 vector of initial states
-             * @param[out] x_history vector of intermediate state vector (including final one)
-             * @param[out] t_history vector of intermediate times (including final one)
-             * @return
-             */
-            int integrate_eigen(const double &ti, const double &tend, const int &nsteps, const Eigen::VectorXd &x0, Eigen::Ref<Eigen::MatrixXd> x_history, Eigen::Ref<Eigen::VectorXd> t_history) const{
-
-                t_history.setZero();
-                x_history.setZero();
-
-                Eigen::VectorXd x = x0, x_temp = x0;
-
-                double t = ti, h = (tend - ti) / double(nsteps);
-
-                for(int i = 0; i < nsteps; i++)
-                {
-                    integration_step_eigen(t, h, x, x_temp);
-                    t += h;
-                    x = x_temp;
-                    t_history(i) = t;
-                    x_history.col(i) = x;
                 }
 
                 return 0;

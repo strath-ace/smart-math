@@ -14,13 +14,12 @@ Features
 
   - General directory structure common to C++ projects
   - Example of CMake module
-  - Testing framework ([Catch](https://www.github.com/philsquared/Catch "Catch Github repository"))
+  - Testing framework ([Catch](https://www.github.com/philsquared/Catch "Catch Github repository")) (pending)
   - Install script (`make install`)
-  - CPack script for packaging (`make package`)
+  - CPack script for packaging (`make package`) 
   - Automatic API documentation ([Doxygen](http://www.doxygen.org "Doxygen homepage"))
-  - Continuous Integration ([Travis CI](https://travis-ci.org/ "Travis CI homepage"))  (PENDING)
-  - Example of how to include external dependencies (using `ExternalProject` module)
-
+  - Continuous Integration ([Travis CI](https://travis-ci.org/ "Travis CI homepage")) 
+  
 Requirements
 ------
 
