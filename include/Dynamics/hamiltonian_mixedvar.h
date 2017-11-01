@@ -22,7 +22,8 @@ namespace smartmath
          * @brief The %hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system with mixed variables needs to inherit from it
          *
          * The %hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
-         * The system has two sets of canonical variables and the Hamiltonian writes H(q, p) =  H(q2, p2).
+         * The system has two sets of canonical variables and the Hamiltonian writes H(q, p) =  H(q2, p2). 
+         * It should not be used with non-modified symplectic integrators since the function evaluates() would return an incomplete result 
          */
         template < class T >
         class hamiltonian_mixedvar: public base_hamiltonian<T>

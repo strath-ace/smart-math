@@ -18,10 +18,21 @@ namespace smartmath
     namespace dynamics {
 
         /**
-         * @brief The harmonic oscillator
+         * @brief The harmonic oscillator as a Hamiltonian system with mixed variables
          *
-         * The problem models the dynamics of a spring with unit scales.
-         *
+         * The problem models the Hamiltonian dynamics of a 1-D spring with unit scales i.e.
+         * \f{eqnarray*}{
+            \ddot{x} &=& -x
+          \f}  
+         * whose analytical solution is \f$x (t)= \sqrt{x(t_0)^2+\dot{x}(t_0)^2}\sin(t-t_0+\arctan2(x(t_0),\dot{x}(t_0))) \f$.
+         * In order to introduce mixed variables for modified symplectic integration, the Hamiltonian is artificially written as \f$ H(q,p) = H_0(\theta,\Theta) + V(q,p)\f$ with \f$ H_0 = \Theta \f$ and \f$ V = 0 \f$ where:          
+         * \f{eqnarray*}{
+            q &=& x \\
+            p &=& \dot{x} \\
+            \Theta &=& \frac{p^2}{2} + \frac{q^2}{2} \\
+            \theta &= &\arctan2(q,p) 
+          \f} 
+         *    
          */
         template < class T >
         class spring: public hamiltonian_mixedvar<T>

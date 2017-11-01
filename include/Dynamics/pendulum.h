@@ -19,9 +19,13 @@ namespace smartmath
     namespace dynamics {
 
         /**
-         * @brief The mathematical pendulum problem
+         * @brief The mathematical pendulum problem expressed as a Hamiltonian system
          *
-         * The problem models the dynamics of a pendulum with unit scales.
+         * The problem models the Hamiltonian dynamics of a pendulum with unit scales i.e.
+         * \f{eqnarray*}{
+            \dot{q} &=& p\\
+            \dot{p} &=& -\sin q
+          \f}
          *
          */
         template < class T >
