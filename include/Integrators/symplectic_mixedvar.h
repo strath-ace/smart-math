@@ -18,9 +18,11 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The symplectic_mixedvar class is a template abstract class. Any symplectic integrator using mixed variables needs to inherit from it and implement the method integrate()
+         * @brief The %symplectic_mixedvar class is a template abstract class. Any symplectic integrator using mixed variables needs to inherit from it and implement the method integrate()
          *
-         * The symplectic_mixedvar class is a template abstract class. Any integrator using mixed variables needs to inherit from it and implement the method that integrates between to given times, initial state and stepsize
+         * The %symplectic_mixedvar class is a template abstract class. Any symplectic integrator using mixed variables needs to inherit from it and implement the method that integrates between to given times, initial state and stepsize.
+         * The use of mixed variables requires the dynamics to be formed in two parts: one accounting for the perturbed Hamiltonian and computed with the primary set (position-momentum) while the rest is evaluated with the secondary variables (action-angles). 
+         * Usual symplectic schemes are then modified to take advantage of this formulation by performing part of the integration with the primary variables and the rest with the secondaries, requiring back and forth conversions between the two sets.
          */
         template < class T >
         class symplectic_mixedvar: public base_symplectic<T>
