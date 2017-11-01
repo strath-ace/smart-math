@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The leapfrog_mixedvar class is an adaptation of the leapfrog algorithm for mixed variables.
+         * @brief The %leapfrog_mixedvar class is an adaptation of the leapfrog algorithm for mixed variables.
          *
-         * The leapfrog class is an adaptation of the leapfrog algorithm for mixed variables. It has two versions: kick-drift-kick and drift-kick-drift.
+         * The %leapfrog_mixedvar class is an adaptation of the leapfrog algorithm for mixed variables. It has two versions: kick-drift-kick and drift-kick-drift.
          */
         template < class T >
         class leapfrog_mixedvar: public symplectic_mixedvar<T>

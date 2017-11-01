@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_symplectic class is a template abstract class. Any sympletic integrator added to the toolbox needs to inherit from it
+         * @brief The %base_symplectic class is a template abstract class. Any sympletic integrator added to the toolbox needs to inherit from it
          *
-         * The base_symplectic class is a template abstract class. Any symplectic integrator added to the toolbox needs to inherit from it
+         * The %base_symplectic class is a template abstract class. Any symplectic integrator added to the toolbox needs to inherit from it
          */
         template < class T >
         class base_symplectic: public base_integrator<T>

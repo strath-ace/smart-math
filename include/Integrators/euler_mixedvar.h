@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The euler_mixedvar class is an adaptation of the leapfrog algorithm for mixed variables.
+         * @brief The %euler_mixedvar class is an adaptation of the leapfrog algorithm for mixed variables.
          *
-         * The euler_mixedvar class is an adaptation of the symplectic Euler algorithm for mixed variables. It has two versions: kick-drift and drift-kick.
+         * The %euler_mixedvar class is an adaptation of the symplectic Euler algorithm for mixed variables. It has two versions: kick-drift and drift-kick.
          */
         template < class T >
         class euler_mixedvar: public symplectic_mixedvar<T>

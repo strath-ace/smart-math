@@ -19,9 +19,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_integrationwevent class is a template abstract class. Any integrator handling events added to the toolbox needs to inherit from it and implement the method integrate with events
+         * @brief The %base_integrationwevent class is a template abstract class. Any integrator handling events added to the toolbox needs to inherit from it and implement the method integrate with events
          *
-         * The base_integrationwevent class is a template abstract class. Any integrator handling events added to the toolbox needs to inherit from it and implement the method that integrates while dealing with events 
+         * The %base_integrationwevent class is a template abstract class. Any integrator handling events added to the toolbox needs to inherit from it and implement the method that integrates while dealing with events 
          */
         template < class T >
         class base_integrationwevent: public base_integrator<T>

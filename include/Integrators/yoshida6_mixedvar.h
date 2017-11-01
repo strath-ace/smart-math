@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The yoshida6_mixedvar class is an adaptation for mixed variables of the Yoshida 6 integrator.
+         * @brief The %yoshida6_mixedvar class is an adaptation for mixed variables of the Yoshida 6 integrator.
          *
-         * The yoshida6_mixedvar class is an adaptation for mixed variables of a 6th order integrator by Yoshida.
+         * The %yoshida6_mixedvar class is an adaptation for mixed variables of a 6th order integrator by Yoshida.
          */
         template < class T >
         class yoshida6_mixedvar: public symplectic_mixedvar<T>

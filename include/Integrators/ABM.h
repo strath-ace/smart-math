@@ -19,9 +19,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The ABM class is an implementation of the Adam-Bashforth-Moulton algorithm 
+         * @brief The %ABM class is an implementation of the Adam-Bashforth-Moulton algorithm 
          *
-         * The ABM class is an implementation of a multistep integrator with fixed step-size namely the Adam-Bashforth-Moulton algorithm (a type of predictor-corrector)
+         * The %ABM class is an implementation of a multistep integrator with fixed step-size namely the Adam-Bashforth-Moulton algorithm (a type of predictor-corrector)
          */
         template < class T >
         class ABM: public base_multistep<T>

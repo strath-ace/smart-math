@@ -19,9 +19,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_embeddedRK class is a template abstract class. Any variable step-size Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method integration_step()
+         * @brief The %base_embeddedRK class is a template abstract class. Any variable step-size Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method integration_step()
          *
-         * The base_embeddedRK class is a template abstract class. Any variable step-size Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state 
+         * The %base_embeddedRK class is a template abstract class. Any variable step-size Runge-Kutta algorithm added to the toolbox needs to inherit from it and implement the method that performs on integration step between to given times given the initial state 
          */
         template < class T >
         class base_embeddedRK: public base_integrationwevent<T>

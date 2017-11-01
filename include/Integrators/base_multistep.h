@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_multistep class is a template abstract class. Any fixed-size, fixed order multistep integrator added to the toolbox needs to inherit from it and implement the method integration_step() as well as initialize()
+         * @brief The %base_multistep class is a template abstract class. Any fixed-size, fixed order multistep integrator added to the toolbox needs to inherit from it and implement the method integration_step() as well as initialize()
          *
-         * The base_multistep class is a template abstract class. Any fixed-size, fixed order multistep integrator added to the toolbox needs to inherit from it and implement the methods integration_step() and initialize() 
+         * The %base_multistep class is a template abstract class. Any fixed-size, fixed order multistep integrator added to the toolbox needs to inherit from it and implement the methods integration_step() and initialize() 
          */
         template < class T >
         class base_multistep: public base_integrator<T>

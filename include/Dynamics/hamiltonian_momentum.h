@@ -17,9 +17,9 @@ namespace smartmath
 {
     namespace dynamics {
         /**
-         * @brief The hamiltonian_momentum class is a template abstract class. Any Hamiltonian system using position and momenta as canonical variables needs to inherit from it
+         * @brief The %hamiltonian_momentum class is a template abstract class. Any Hamiltonian system using position and momenta as canonical variables needs to inherit from it
          *
-         * The hamiltonian_momentum class is a template abstract class. Any Hamiltonian system using position and momenta as canonical variables needs to inherit from it
+         * The %hamiltonian_momentum class is a template abstract class. Any Hamiltonian system using position and momenta as canonical variables needs to inherit from it
          */
         template < class T >
         class hamiltonian_momentum: public base_hamiltonian<T>

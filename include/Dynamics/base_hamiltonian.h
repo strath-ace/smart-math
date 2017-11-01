@@ -18,9 +18,9 @@ namespace smartmath
     namespace dynamics {
 
         /**
-         * @brief The base_hamiltonian class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
+         * @brief The %base_hamiltonian class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
          *
-         * The base_hamiltonian class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
+         * The %base_hamiltonian class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
          * The canonical variables are called q and p. 
          */
         template < class T >

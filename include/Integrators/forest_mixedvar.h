@@ -18,9 +18,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The forest_mixedvar class is an adaptation for mixed variables of the Forest integrator.
+         * @brief The %forest_mixedvar class is an adaptation for mixed variables of the Forest integrator.
          *
-         * The forest_mixedvar class is an adaptation for mixed variables of a 4th order integrator by Forest (1987).
+         * The %forest_mixedvar class is an adaptation for mixed variables of a 4th order integrator by Forest (1987).
          */
         template < class T >
         class forest_mixedvar: public symplectic_mixedvar<T>

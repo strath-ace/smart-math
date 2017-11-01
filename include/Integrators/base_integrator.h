@@ -21,9 +21,9 @@ namespace smartmath
     namespace integrator {
 
         /**
-         * @brief The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method integrate()
+         * @brief The %base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method integrate()
          *
-         * The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method that integrates between two given times, with initial state and stepsize
+         * The %base_integrator class is a template abstract class. Any integrator added to the toolbox needs to inherit from it and implement the method that integrates between two given times, with initial state and stepsize
          */
         template < class T >
         class base_integrator

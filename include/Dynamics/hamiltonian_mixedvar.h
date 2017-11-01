@@ -19,9 +19,9 @@ namespace smartmath
     namespace dynamics {
 
         /**
-         * @brief The hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system with mixed variables needs to inherit from it
+         * @brief The %hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system with mixed variables needs to inherit from it
          *
-         * The hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
+         * The %hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system added to the toolbox needs to inherit from it
          * The system has two sets of canonical variables and the Hamiltonian writes H(q, p) =  H(q2, p2).
          */
         template < class T >

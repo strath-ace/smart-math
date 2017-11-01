@@ -33,18 +33,6 @@
 #include <functional>
 #include <utility>
 
-
-template < class T >
-std::ostream& operator << (std::ostream& os, const std::vector<T>& v)
-{
-  for (unsigned int index = 0; index < v.size(); ++index)
-  {
-      os << " " << v[index];
-  }
-  return os;
-}
-
-
 namespace smartmath
 {
 
