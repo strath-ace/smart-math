@@ -18,7 +18,7 @@
 #include "hamiltonian_mixedvar.h"
 #include "lotkavolterra.h"
 #include "vanderpol.h"
-#include "twobody.h"
+#include "spaceflight.h"
 #include "spring.h"
 #include "pendulum.h"
 
