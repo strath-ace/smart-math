@@ -9,8 +9,8 @@
 */
 
 
-#ifndef SMARTMATH_TWOBODY_H
-#define SMARTMATH_TWOBODY_H
+#ifndef SMARTMATH_SPACEFLIGHT_H
+#define SMARTMATH_SPACEFLIGHT_H
 
 #include "base_dynamics.h"
 #include "../exception.h"
@@ -20,9 +20,9 @@ namespace smartmath
     namespace dynamics {
 
         /**
-         * @brief The Two-body problem
+         * @brief The dynamics of an artificial Earth satellite with thrust
          *
-         * The Two-body problem models the dynamics of an object of mass \f$m\f$ orbiting around Earth is deifned as
+         * The dynamics entitled spaceflight models the dynamics of an object of mass \f$m\f$ orbiting around Earth is defined as
          * \f{eqnarray*}{
            \ddot{\mathbf{x}} &=& -\frac{\mu}{r^3}\mathbf{x} + \frac{\mathbf{T}}{m} + \frac{1}{2}\rho \frac{C_D A}{m} \|\mathbf{v}_{rel}\| \mathbf{v}_{rel} + \mathbf{\epsilon}
            \f}
@@ -30,7 +30,7 @@ namespace smartmath
             \f{eqnarray*}{\dot{m} = - \alpha \|\mathbf{T}\|\f}
          */
         template < class T >
-        class twobody: public base_dynamics<T>
+        class spaceflight: public base_dynamics<T>
         {
 
         private:
@@ -39,7 +39,7 @@ namespace smartmath
         public:
 
             /**
-             * @brief twobody constructor
+             * @brief spaceflight constructor
              *
              * The constructor initializes the problem parameters and scaling factors to the value supplied by the user.
              * The model parameters (10 in total) are supplied in order as:
@@ -53,7 +53,7 @@ namespace smartmath
              * @param t_scale time scaling factor
              * @param r_scale position scaling factor
              */
-            twobody(const std::vector<T> &param = std::vector<T>(10), const double &t_scale=1, const double &r_scale=1) : base_dynamics<T>("Two Body Problem"),
+            spaceflight(const std::vector<T> &param = std::vector<T>(10), const double &t_scale=1, const double &r_scale=1) : base_dynamics<T>("Spaceflight mechanics"),
 				m_param(param), m_t_scale(t_scale), m_r_scale(r_scale)
 			{
 				if(m_param.size()!=10)
@@ -63,9 +63,9 @@ namespace smartmath
 
 
             /**
-              * @brief ~twobody deconstructor
+              * @brief ~spaceflight deconstructor
               */
-            ~twobody(){}
+            ~spaceflight(){}
 
             /**
              * @brief evaluate evaluates the dynamics of the Two-body problem at a given instant of time and a given state.
@@ -130,4 +130,4 @@ namespace smartmath
     }
 }
 
-#endif // SMARTMATH_TWOBODY_H
+#endif // SMARTMATH_SPACEFLIGHT_H
