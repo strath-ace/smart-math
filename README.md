@@ -1,4 +1,4 @@
-# SMART-MATH [![Build Status](https://travis-ci.com/strath-ace/smart-math.svg?token=BGZD8zC9w6stvzyuFQhA&branch=master)](https://travis-ci.com/strath-ace/smart-math)
+# SMART-MATH [![Build Status](https://travis-ci.org/strath-ace/smart-math.svg?branch=master)](https://travis-ci.org/strath-ace/smart-math)
 Strathclyde Mechanical and Aerospace Research Toolbox for Mathematics
 ------
 
