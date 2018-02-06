@@ -1,4 +1,4 @@
-# SMART-MATH [![Build Status](https://travis-ci.com/space-art/smart-math.svg?token=BGZD8zC9w6stvzyuFQhA&branch=master)](https://travis-ci.com/space-art/smart-math)
+# SMART-MATH [![Build Status](https://travis-ci.com/strath-ace/smart-math.svg?token=BGZD8zC9w6stvzyuFQhA&branch=master)](https://travis-ci.com/strath-ace/smart-math)
 Strathclyde Mechanical and Aerospace Research Toolbox for Mathematics
 ------
 
@@ -41,7 +41,7 @@ Installation
 
 Run the following commands to download, build, and install this project.
 
-    git clone https://github.com/space-art/smart-math.git
+    git clone https://github.com/strath-ace/smart-math.git
     (Introcude your username and password)
     cd smart-math
     mkdir build && cd build
@@ -77,7 +77,7 @@ Contributing
 
 Once you've made your great commits:
 
-  1. [Fork](https://github.com/space-art/smart-math//fork) `smart-math`
+  1. [Fork](https://github.com/strath-ace/smart-math//fork) `smart-math`
   2. Create a topic branch - `git checkout -b my_branch`
   3. Push to your branch - `git push origin my_branch`
   4. Create a [Pull Request](http://help.github.com/pull-requests/) from your branch
