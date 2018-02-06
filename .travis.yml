@@ -7,11 +7,3 @@ os:
 dist: trusty
 
 script: ./build.sh
-
-notifications:
-  email: false
-  slack:
-    rooms:
-      - strathclydesmart:So5Q15xFrEAf8NB4lJaD8PNb
-    on_success: change
-    on_failure: always
