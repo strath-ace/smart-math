@@ -1,7 +1,0 @@
-<map id="smartmath::integrator::base_rungekutta&lt; T &gt;" name="smartmath::integrator::base_rungekutta&lt; T &gt;">
-<area shape="rect" id="node3" href="$classsmartmath_1_1integrator_1_1euler.html" title="The Euler explicit integration scheme. " alt="" coords="413,5,560,46"/>
-<area shape="rect" id="node4" href="$classsmartmath_1_1integrator_1_1heun.html" title="The Heun integration scheme. " alt="" coords="413,70,560,111"/>
-<area shape="rect" id="node5" href="$classsmartmath_1_1integrator_1_1midpoint.html" title="The midpoint explicit integration scheme. " alt="" coords="413,135,560,177"/>
-<area shape="rect" id="node6" href="$classsmartmath_1_1integrator_1_1rk4.html" title="The Runge Kutta 4 integrator scheme. " alt="" coords="413,201,560,242"/>
-<area shape="rect" id="node2" href="$classsmartmath_1_1integrator_1_1base__integrator.html" title="The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to ..." alt="" coords="6,103,157,145"/>
-</map>

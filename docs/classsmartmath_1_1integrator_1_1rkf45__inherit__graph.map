@@ -1,5 +1,0 @@
-<map id="smartmath::integrator::rkf45&lt; T &gt;" name="smartmath::integrator::rkf45&lt; T &gt;">
-<area shape="rect" id="node2" href="$classsmartmath_1_1integrator_1_1base__stepsizecontrol.html" title="The base_stepsizecontrol class is a template abstract class. Any variable step&#45;size algorithm added t..." alt="" coords="11,187,196,229"/>
-<area shape="rect" id="node3" href="$classsmartmath_1_1integrator_1_1base__integrationwevent.html" title="The base_integrationwevent class is a template abstract class. Any integrator handling events added t..." alt="" coords="5,97,203,138"/>
-<area shape="rect" id="node4" href="$classsmartmath_1_1integrator_1_1base__integrator.html" title="The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to ..." alt="" coords="29,6,179,47"/>
-</map>

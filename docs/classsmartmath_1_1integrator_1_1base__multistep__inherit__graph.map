@@ -1,5 +1,0 @@
-<map id="smartmath::integrator::base_multistep&lt; T &gt;" name="smartmath::integrator::base_multistep&lt; T &gt;">
-<area shape="rect" id="node3" href="$classsmartmath_1_1integrator_1_1AB.html" title="The AB class is an implementation of the Adam&#45;Bashforth algorithm. " alt="" coords="5,187,152,229"/>
-<area shape="rect" id="node4" href="$classsmartmath_1_1integrator_1_1ABM.html" title="The ABM class is an implementation of the Adam&#45;Bashforth&#45;Moulton algorithm. " alt="" coords="176,187,323,229"/>
-<area shape="rect" id="node2" href="$classsmartmath_1_1integrator_1_1base__integrator.html" title="The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to ..." alt="" coords="89,6,239,47"/>
-</map>

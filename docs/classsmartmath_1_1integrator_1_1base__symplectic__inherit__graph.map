@@ -1,7 +1,0 @@
-<map id="smartmath::integrator::base_symplectic&lt; T &gt;" name="smartmath::integrator::base_symplectic&lt; T &gt;">
-<area shape="rect" id="node3" href="$classsmartmath_1_1integrator_1_1euler__symplectic.html" title="The euler_symplectic class is an instantiation of symplectic integrators with order 1..." alt="" coords="413,5,573,46"/>
-<area shape="rect" id="node4" href="$classsmartmath_1_1integrator_1_1forest.html" title="The forest class is an instantiation of symplectic integrators with order 4. " alt="" coords="420,70,567,111"/>
-<area shape="rect" id="node5" href="$classsmartmath_1_1integrator_1_1leapfrog.html" title="The leapfrog class is an instantiation of symplectic integrators with order 2. " alt="" coords="420,135,567,177"/>
-<area shape="rect" id="node6" href="$classsmartmath_1_1integrator_1_1yoshida6.html" title="The yoshida6 class is an instantiation of symplectic integrators with order 6. " alt="" coords="420,201,567,242"/>
-<area shape="rect" id="node2" href="$classsmartmath_1_1integrator_1_1base__integrator.html" title="The base_integrator class is a template abstract class. Any integrator added to the toolbox needs to ..." alt="" coords="6,103,157,145"/>
-</map>

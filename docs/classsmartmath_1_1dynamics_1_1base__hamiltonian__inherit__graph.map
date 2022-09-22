@@ -1,5 +1,0 @@
-<map id="smartmath::dynamics::base_hamiltonian&lt; T &gt;" name="smartmath::dynamics::base_hamiltonian&lt; T &gt;">
-<area shape="rect" id="node3" href="$classsmartmath_1_1dynamics_1_1hamiltonian__mixedvar.html" title="The hamiltonian_mixedvar class is a template abstract class. Any Hamiltonian system with mixed variab..." alt="" coords="425,5,613,46"/>
-<area shape="rect" id="node4" href="$classsmartmath_1_1dynamics_1_1hamiltonian__momentum.html" title="The hamiltonian_momentum class is a template abstract class. Any Hamiltonian system using position an..." alt="" coords="419,70,619,111"/>
-<area shape="rect" id="node2" href="$classsmartmath_1_1dynamics_1_1base__dynamics.html" title="The base_dynamics class is a template abstract class. Any dynamics added to the toolbox needs to inhe..." alt="" coords="6,38,159,79"/>
-</map>
